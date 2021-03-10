@@ -12,7 +12,7 @@
             <validation-observer v-slot="{ invalid }">
               <v-card-text>
                 <v-form>
-                  <validation-provider v-slot="{ errors }" rules="required">
+                  <!-- <validation-provider v-slot="{ errors }" rules="required">
                     <v-text-field
                       label="Username"
                       name="login"
@@ -22,7 +22,7 @@
                       :hint="errors.length ? errors[0] : ''"
                       v-model="form.username"
                     ></v-text-field>
-                  </validation-provider>
+                  </validation-provider> -->
                   <validation-provider v-slot="{ errors }" rules="required">
                     <v-text-field
                       label="Old Password"

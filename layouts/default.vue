@@ -22,6 +22,7 @@
             :key="item.text"
             v-model="item.model"
             :prepend-icon="item.model ? item.icon : item['icon-alt']"
+            :color="isDarkMode ? '#aaa' : 'primary'"
           >
             <template v-slot:activator>
               <v-list-item-content>
@@ -30,13 +31,13 @@
                 </v-list-item-title>
               </v-list-item-content>
             </template>
-            <v-list-item-group color="primary">
+            <v-list-item-group :color="isDarkMode ? 'warning' : 'primary'">
               <v-list-item
                 v-for="(child, i) in item.children"
                 :key="i"
                 link
                 @click="handleUpdateRoute(child)"
-                color="primary"
+                :color="isDarkMode ? '#fff' : 'primary'"
               >
                 <v-list-item-action v-if="child.icon">
                   <v-icon x-small class="ml-2">{{ child.icon }}</v-icon>
@@ -66,13 +67,13 @@
     <v-app-bar
       :clipped-left="$vuetify.breakpoint.lgAndUp"
       app
-      color="primary"
+      :color="isDarkMode ? '#181818' : 'primary'"
       dark
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title style="width: 300px" class="ml-0 pl-4">
         <span class="hidden-sm-and-down">
-          {{ h1 }}
+          {{ info.h1 }}
         </span>
       </v-toolbar-title>
       <!-- <v-text-field
@@ -95,24 +96,31 @@
         :offset-y="menuSetting.offsetY"
       >
         <template v-slot:activator="{ on, attrs }">
-          <v-btn color="default" text class="mr-5" v-bind="attrs" v-on="on" large>
+          <v-btn color="default" text v-bind="attrs" v-on="on" large>
             <v-icon>mdi-cog</v-icon>
           </v-btn>
         </template>
         <v-list>
           <v-list-item>
             <v-card flat>
+              <v-btn color="primary" x-small fab @click="handleToggleTheme" style="position:absolute;right: 3rem;top:.6rem;">
+                <v-icon v-if="$vuetify.theme.dark">mdi-white-balance-sunny</v-icon>
+                <v-icon v-if="!$vuetify.theme.dark">mdi-moon-waning-crescent</v-icon>
+              </v-btn>
+              <v-btn color="primary" text x-small @click="dialog.version = !dialog.version" style="position:absolute;right: 0;top:1rem;">
+                <v-icon>mdi-xml</v-icon>
+              </v-btn>
               <v-card-title>
                 <v-container>
                   <v-row>
                     <v-col cols="4" class="px-0">
-                      <!-- <v-img :src="dP" height="60" width="60"></v-img> -->
+                      <!-- <v-img :src="info.dP" height="60" width="60"></v-img> -->
                       <v-icon x-large class="mt-7 ml-4">mdi-account-circle</v-icon>
                     </v-col>
                     <v-col cols="8" class="px-0 pl-4">
-                      <span>{{ username }}</span>
+                      <span>{{ info.username }}</span>
                       <br />
-                      <span>{{ companyName }}</span>
+                      <span>{{ info.companyName }}</span>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -130,6 +138,34 @@
           </v-list-item>
         </v-list>
       </v-menu>
+      <v-menu
+        v-model="menuSetting.i18nValue"
+        :disabled="menuSetting.disabled"
+        :absolute="menuSetting.absolute"
+        :open-on-hover="menuSetting.openOnHover"
+        :close-on-click="menuSetting.closeOnClick"
+        :close-on-content-click="menuSetting.closeOnContentClick"
+        :offset-x="menuSetting.offsetX"
+        :offset-y="menuSetting.offsetY"
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn color="default" class="ml-2" text large v-bind="attrs" v-on="on">
+            {{ $vuetify.lang.current }}
+          </v-btn>
+        </template>
+        <v-list style="padding:0;margin:0;">
+          <v-list-item v-for="(value, key) of $vuetify.lang.locales" :key="key.toString()" style="cursor:pointer;padding:0;">
+            <v-btn
+              text
+              :color="key === $vuetify.lang.current ? 'primary' : 'default'"
+              style="width:100%;"
+              @click="handleI18nUpdate(key)"
+            >
+              {{ key.toUpperCase() }}
+              </v-btn>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </v-app-bar>
     <v-main>
       <v-container fluid class="pt-0">
@@ -140,58 +176,36 @@
         </v-row>
       </v-container>
     </v-main>
-    <v-btn
-      bottom
-      :color="!$vuetify.theme.dark ? 'primary' : '#fb8c00'"
-      fab
-      fixed
-      left
-      @click="handleToggleTheme"
-    >
-      <v-icon v-show="$vuetify.theme.dark">mdi-white-balance-sunny</v-icon>
-      <v-icon v-show="!$vuetify.theme.dark">mdi-moon-waning-crescent</v-icon>
-    </v-btn>
-    <v-btn
-      bottom
-      color="primary"
-      dark
-      fab
-      fixed
-      right
-      @click="dialog = !dialog"
-    >
-      <v-icon>mdi-xml</v-icon>
-    </v-btn>
-    <v-dialog v-model="dialog" width="800px">
+    <v-dialog v-model="dialog.version" width="800px">
       <v-card>
         <v-card-title class="primary white--text">
           Version
         </v-card-title>
         <v-card-text class="mt-4">
-          v{{ version }} <br />
+          v{{ info.version }} <br />
           <strong class="primary--text">Last Updated: </strong>
-          {{ lastUpdated }} <br />
+          {{ info.lastUpdated }} <br />
           <div class="mt-7">
-            Copyright © {{ crDate }}
+            Copyright © {{ info.crDate }}
             <a
               class="primary--text text-decoration-none"
               href=""
               target="_blank"
             >
-              {{ crSource }}.
+              {{ info.crSource }}.
             </a>
             &nbsp;All rights reserved.
           </div>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn text color="primary" @click="dialog = false" large>
+          <v-btn text color="primary" @click="dialog.version = false" large>
             <strong>Close</strong>
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="errorDialog" width="800px">
+    <v-dialog v-model="dialog.error" width="800px">
       <v-card>
         <v-card-title class="primary white--text">
           Hint
@@ -201,7 +215,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn text color="primary" @click="errorDialog = false" large>
+          <v-btn text color="primary" @click="dialog.error = false" large>
             <strong>Close</strong>
           </v-btn>
         </v-card-actions>
@@ -211,74 +225,50 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'nuxt-property-decorator'
+import { Component, Vue } from 'nuxt-property-decorator'
 import { authStore } from '~/store'
 
 @Component
 export default class DefaultLayout extends Vue {
-  private errorDialog: boolean = false
-
-  private get username() {
-    return authStore.user ? authStore.user.email : 'Username'
+  private get isDarkMode(): boolean {
+    return this.$vuetify.theme.dark
   }
 
-  private get companyName() {
-    return 'Welcome!'
-  }
-
-  private get dP() {
-    return authStore.user ? authStore.user.photopath : ''
-  }
-
-  private get h1() {
-    return 'Restaurant CMS'
-  }
-
-  private get lastUpdated(): string {
-    return new Date().toLocaleDateString('en',
-      { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' }
-    )
-  }
-
-  private get version(): string {
-    return '1.0.0'
-  }
-
-  private get crDate(): string {
-    return '2021'
-  }
-
-  private get crSource(): string {
-    return 'Ire'
+  private get info(): any {
+    return {
+      username: authStore.user ? authStore.user.email : 'Username',
+      companyName: 'Welcome!',
+      dp: authStore.user ? authStore.user.photopath : '',
+      h1: 'Application Title Here',
+      lastUpdated: new Date().toLocaleDateString('en',
+      { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' }),
+      version: '1.0.0',
+      crDate: '2021',
+      crSource: 'Ire'
+    }
   }
 
   private menuSetting: any = {
-    items: [
-      { title: 'Click Me' },
-      { title: 'Click Me' },
-      { title: 'Click Me' },
-      { title: 'Click Me 2' }
-    ],
     disabled: false,
     absolute: false,
     openOnHover: false,
     value: false,
+    i18nValue: false,
     closeOnClick: true,
-    closeOnContentClick: true,
+    closeOnContentClick: false,
     offsetX: false,
     offsetY: true
   }
 
-  private source: string = ''
-
-  private dialog: boolean = false
+  private dialog: any = {
+    cog: false,
+    version: false,
+    error: false
+  }
 
   private drawer: boolean | null = null
 
-  private currentTabName: string = ''
-
   private handleUpdateRoute(item: any) {
-    this.currentTabName = item.route
     this.$router.push(
       {
         name: item.route,
@@ -335,6 +325,19 @@ export default class DefaultLayout extends Vue {
       ]
     },
     {
+      icon: 'mdi-store',
+      'icon-alt': 'mdi-store-outline',
+      text: 'Stores',
+      model: false,
+      children: [
+        {
+          text: 'Mgmt',
+          icon: 'mdi-checkbox-blank-circle-outline',
+          route: 'stores'
+        }
+      ]
+    },
+    {
       icon: 'mdi-silverware',
       'icon-alt': 'mdi-silverware',
       text: 'Menus',
@@ -357,7 +360,7 @@ export default class DefaultLayout extends Vue {
     {
       icon: 'mdi-ticket-percent',
       'icon-alt': 'mdi-ticket-percent-outline',
-      text: 'Promotions',
+      text: 'Promotions (In Dev)',
       model: false,
       children: [
         {
@@ -395,28 +398,20 @@ export default class DefaultLayout extends Vue {
       ]
     },
     {
-      icon: 'mdi-store',
-      'icon-alt': 'mdi-store-outline',
-      text: 'Stores',
-      model: false,
-      children: [
-        {
-          text: 'Mgmt',
-          icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'stores'
-        }
-      ]
-    },
-    {
       icon: 'mdi-cog',
       'icon-alt': 'mdi-cog-outline',
       text: 'Settings',
       model: false,
       children: [
         {
-          text: 'Account Mgmt',
+          text: 'Accounts',
           icon: 'mdi-checkbox-blank-circle-outline',
           route: 'sys'
+        },
+        {
+          text: 'Privacy Policies',
+          icon: 'mdi-checkbox-blank-circle-outline',
+          route: 'sys-application-policies'
         }
       ]
     }
@@ -428,20 +423,30 @@ export default class DefaultLayout extends Vue {
       // const result = await authStore.signOut({
       //   token: this.$cookies.get('accessToken')
       // })
-      this.$nuxt.$cookies.remove('accessToken')
+      // this.$nuxt.$cookies.remove('accessToken')
       this.$router.push('/account')
     } catch (e) {
-      this.errorDialog = true
+      this.dialog.error = true
     } finally {
       this.$nuxt.$loading.finish()
     }
   }
 
-  private created() {
-    this.currentTabName = this.$route.name ? this.$route.name : ''
+  private handleI18nUpdate(localeStr: string): void {
+    this.$vuetify.lang.current = localeStr
+    this.menuSetting.i18nValue = false
   }
 
-  private mounted() {
+  private getLangFromLs(): void {
+    const lang = window.localStorage.getItem('lang')
+    if (lang) {
+      this.$vuetify.lang.current = lang
+    } else {
+      window.localStorage.setItem('lang', 'en')
+    }
+  }
+
+  private getThemeFromLs(): void {
     const theme = window.localStorage.getItem('tm')
     if (theme) {
       if (theme === 'true') {
@@ -452,6 +457,14 @@ export default class DefaultLayout extends Vue {
     } else {
       window.localStorage.setItem('tm', 'false')
     }
+  }
+
+  private created() {
+  }
+
+  private mounted() {
+    this.getThemeFromLs()
+    this.getLangFromLs()
   }
 }
 </script>

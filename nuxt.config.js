@@ -4,11 +4,11 @@ export default {
 
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
-    title: 'Restaurant CMS',
+    title: 'CMS',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '達人 ERP' }
+      { hid: 'description', name: 'description', content: 'CMS' }
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
   },
@@ -54,6 +54,9 @@ export default {
       presets() {
         return [['@nuxt/babel-preset-app', { loose: true }]]
       }
+    },
+    extend() {
+
     },
     uglify: {
       uglifyOptions: {

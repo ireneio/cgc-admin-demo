@@ -1,5 +1,5 @@
 {
-  "name": "cy-cms-central",
+  "name": "cms",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -13,14 +13,6 @@
     "lint": "npm run lint:js",
     "test": "jest"
   },
-  "lint-staged": {
-    "*.{js,vue}": "eslint"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "dependencies": {
     "@baoshishu/vue-editor": "^0.3.0",
     "@nuxt/types": "^2.14.5",
@@ -32,6 +24,7 @@
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^26.3.0",
+    "chart.js": "^2.9.4",
     "cookie-universal-nuxt": "^2.1.4",
     "core-js": "^2.6.5",
     "cross-env": "^7.0.2",
@@ -45,6 +38,7 @@
     "v-tooltip": "^2.0.3",
     "vee-validate": "^3.4.0",
     "vue": "^2.6.12",
+    "vue-chartjs": "^3.5.1",
     "vuex-module-decorators": "^1.0.1"
   },
   "devDependencies": {

@@ -1,4 +1,4 @@
-# RESTAURANT CMS-CENTRAL
+# CMS Template
 
 ## Specs
 
@@ -15,6 +15,8 @@
 - Frontend Frameworks
   - Vue v2.6.12
   - Nuxt v2.14.5
+- UI Framework
+  - Vuetify
 - Frontend Compiler
   - Typescript 2
 - Frontend Transpiler
@@ -28,6 +30,13 @@
   - Typescript Integration with @nuxt/typescript
     - Syntax: Class Style
   - Typescript Integration on Vuex with nuxt-property-decorator
+
+## Functionalities
+
+- Localization (i18n)
+- Text Editor (tiptap)
+- Charts & Graphs (chartjs)
+- Light/Dark Mode (Vuetify)
 
 ## Build Setup
 
