@@ -110,7 +110,7 @@
 import { Component, Vue } from 'nuxt-property-decorator'
 import { ProxyRequestObject, ResponseObject } from 'Http'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
-import { $axios } from '~/utils/api'
+import { $api } from '~/utils/api'
 import { authStore } from '~/store'
 
 @Component({
@@ -149,7 +149,7 @@ export default class AccountUpdatePassword extends Vue {
 
     try {
       this.$nuxt.$loading.start()
-      const result: ResponseObject = await $axios.post('/api', requestBody)
+      const result: ResponseObject = await $api.post('/api', requestBody)
       switch (Number(result.data.syscode)) {
         case 200:
           this.form = {

@@ -3,25 +3,22 @@ import { NuxtCookies } from 'cookie-universal-nuxt'
 import { AxiosInstance } from 'axios'
 
 let $nuxtAxiosInstance: NuxtAxiosInstance
-let $axios: AxiosInstance
+// eslint-disable-next-line import/no-mutable-exports
+let $api: AxiosInstance
 
 export function initializeAxios(axiosInstance: NuxtAxiosInstance) {
   $nuxtAxiosInstance = axiosInstance
-  $axios = $nuxtAxiosInstance.create({
-    headers: {
-      common: {
-        Accept: 'text/plain, */*'
-      }
-    },
+  $api = $nuxtAxiosInstance.create({
     baseURL: process.env.PROXY_URL,
     timeout: 20000
   })
 }
 
+// eslint-disable-next-line import/no-mutable-exports
 let $cookies: NuxtCookies
 
 export function initializeCookies(cookiesInstance: NuxtCookies) {
   $cookies = cookiesInstance
 }
 
-export { $axios, $cookies }
+export { $api, $cookies }

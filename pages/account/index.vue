@@ -5,7 +5,7 @@
         <v-col cols="12" sm="8">
           <v-card class="elevation-12">
             <v-toolbar color="primary" dark flat>
-              <v-toolbar-title>Login</v-toolbar-title>
+              <v-toolbar-title>登入</v-toolbar-title>
               <v-spacer></v-spacer>
               <v-icon>mdi-code-tags</v-icon>
             </v-toolbar>
@@ -14,7 +14,7 @@
                 <v-form>
                   <validation-provider v-slot="{ errors }" rules="required">
                     <v-text-field
-                      label="Username"
+                      label="帳號"
                       name="login"
                       prepend-icon="mdi-account"
                       type="text"
@@ -25,7 +25,7 @@
                   </validation-provider>
                   <validation-provider v-slot="{ errors }" rules="required">
                     <v-text-field
-                      id="password"
+                      id="密碼"
                       label="Password"
                       name="password"
                       prepend-icon="mdi-lock"
@@ -45,7 +45,7 @@
                   :disabled="invalid"
                   @click="handleSignIn"
                 >
-                  login
+                  登入
                 </v-btn>
               </v-card-actions>
             </validation-observer>
@@ -85,6 +85,7 @@ import { authStore } from '~/store'
 
 @Component({
   layout: 'login',
+  middleware: ['auth'],
   components: {
     ValidationObserver,
     ValidationProvider
@@ -104,38 +105,13 @@ export default class AccountIndex extends Vue {
     password: ''
   }
 
-  private async handleSignIn(valid?: boolean): Promise<any> {
+  private async handleSignIn(valid?: boolean): Promise<void> {
     // if (!valid) return
-    try {
-      this.$nuxt.$loading.start()
-      const result = await authStore.getAccessToken(this.form)
-
-      if (result === 40102) {
-        this.dialog = true
-      } else if (result === 406) {
-        this.dialog = true
-      } else if (result === 400) {
-        this.dialog = true
-      } else if (result === 40101) {
-        this.dialogMessage = authStore.errorMessage
-        this.dialog = true
-      } else if (result && result.t) {
-        const {
-          t
-        } = result
-
-        this.$cookies.set('accessToken', t, {
-          path: '/',
-          maxAge: 60 * 60 * 24 * 7,
-          sameSite: true
-        })
-        this.$router.push('/')
-      }
-    } catch (e) {
-      // console.log(e)
-    } finally {
-      this.$nuxt.$loading.finish()
-    }
+    const result = await authStore.getTokenLocal({
+      password: this.form.password,
+      email: this.form.username
+    })
+    this.$router.push('/')
   }
 }
 </script>

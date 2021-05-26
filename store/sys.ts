@@ -1,5 +1,5 @@
 import { Module, VuexModule, Action, Mutation } from 'vuex-module-decorators'
-import { $axios } from '~/utils/api'
+// import { $axios } from '~/utils/api'
 import { ProxyRequestObject, ResponseObject } from 'Http'
 // import store from './index'
 @Module({
@@ -17,18 +17,18 @@ export default class SysModule extends VuexModule {
     this.accountList = [...payload]
   }
 
-  @Action({ commit: 'setAccountList' })
-  public async getAccountList({ token }: any) {
-    try {
-      const result: ResponseObject = await $axios.get('/user/', { headers: { Authorization: token }})
-      switch (Number(result.data.statusCode)) {
-        case 200:
-          return result.data.data
-        default:
-          throw new Error('Error fetching')
-      }
-    } catch (e) {
-      throw new Error(e)
-    }
-  }
+  // @Action({ commit: 'setAccountList' })
+  // public async getAccountList({ token }: any) {
+  //   try {
+  //     const result: ResponseObject = await $axios.get('/user/', { headers: { Authorization: token }})
+  //     switch (Number(result.data.statusCode)) {
+  //       case 200:
+  //         return result.data.data
+  //       default:
+  //         throw new Error('Error fetching')
+  //     }
+  //   } catch (e) {
+  //     throw new Error(e)
+  //   }
+  // }
 }

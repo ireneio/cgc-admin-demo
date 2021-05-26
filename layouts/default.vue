@@ -228,7 +228,9 @@
 import { Component, Vue } from 'nuxt-property-decorator'
 import { authStore } from '~/store'
 
-@Component
+@Component({
+  middleware: ['auth']
+})
 export default class DefaultLayout extends Vue {
   private get isDarkMode(): boolean {
     return this.$vuetify.theme.dark
@@ -239,7 +241,7 @@ export default class DefaultLayout extends Vue {
       username: authStore.user ? authStore.user.email : 'Username',
       companyName: 'Welcome!',
       dp: authStore.user ? authStore.user.photopath : '',
-      h1: 'Application Title Here',
+      h1: '業主管理後台',
       lastUpdated: new Date().toLocaleDateString('en',
       { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' }),
       version: '1.0.0',
@@ -298,13 +300,13 @@ export default class DefaultLayout extends Vue {
       ]
     },
     {
-      icon: 'mdi-cart',
-      'icon-alt': 'mdi-cart-outline',
-      text: 'Orders',
+      icon: 'mdi-calendar-text',
+      'icon-alt': 'mdi-calendar-text-outline',
+      text: '注單管理',
       model: false,
       children: [
         {
-          text: 'Mgmt',
+          text: '紀錄',
           icon: 'mdi-checkbox-blank-circle-outline',
           route: 'orders'
         }
@@ -313,11 +315,24 @@ export default class DefaultLayout extends Vue {
     {
       icon: 'mdi-database',
       'icon-alt': 'mdi-database-outline',
-      text: 'Inventory',
+      text: '系統管理',
       model: false,
       children: [
         {
-          text: 'Mgmt',
+          text: '遊戲設定',
+          icon: 'mdi-checkbox-blank-circle-outline',
+          route: 'orders'
+        }
+      ]
+    },
+    {
+      icon: 'mdi-account-box-multiple',
+      'icon-alt': 'mdi-account-box-multiple-outline',
+      text: '會員管理',
+      model: false,
+      children: [
+        {
+          text: '帳號管理',
           icon: 'mdi-checkbox-blank-circle-outline',
           route: 'ingredients',
           tabTitle: 'Inventory Management'
@@ -325,73 +340,13 @@ export default class DefaultLayout extends Vue {
       ]
     },
     {
-      icon: 'mdi-store',
-      'icon-alt': 'mdi-store-outline',
-      text: 'Stores',
+      icon: 'mdi-clipboard-text',
+      'icon-alt': 'mdi-clipboard-text-outline',
+      text: '規章管理',
       model: false,
       children: [
         {
-          text: 'Mgmt',
-          icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'stores'
-        }
-      ]
-    },
-    {
-      icon: 'mdi-silverware',
-      'icon-alt': 'mdi-silverware',
-      text: 'Menus',
-      model: false,
-      children: [
-        {
-          text: 'Menus',
-          icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'menus',
-          tabTitle: 'Menus Management'
-        },
-        {
-          text: 'Courses',
-          icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'menus-courses',
-          tabTitle: 'Menu Edit'
-        }
-      ]
-    },
-    {
-      icon: 'mdi-ticket-percent',
-      'icon-alt': 'mdi-ticket-percent-outline',
-      text: 'Promotions (In Dev)',
-      model: false,
-      children: [
-        {
-          text: 'Mgmt',
-          icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'promotions'
-        }
-      ]
-    },
-    {
-      icon: 'mdi-badge-account-horizontal',
-      'icon-alt': 'mdi-badge-account-horizontal-outline',
-      text: 'Employees',
-      model: false,
-      children: [
-        {
-          text: 'Mgmt',
-          icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'employees',
-          tabTitle: 'Employees Management'
-        }
-      ]
-    },
-    {
-      icon: 'mdi-account-box-multiple',
-      'icon-alt': 'mdi-account-box-multiple-outline',
-      text: 'Customers',
-      model: false,
-      children: [
-        {
-          text: 'Mgmt',
+          text: '條款設定',
           icon: 'mdi-checkbox-blank-circle-outline',
           route: 'customers'
         }
@@ -400,18 +355,13 @@ export default class DefaultLayout extends Vue {
     {
       icon: 'mdi-cog',
       'icon-alt': 'mdi-cog-outline',
-      text: 'Settings',
+      text: '後台管理',
       model: false,
       children: [
         {
-          text: 'Accounts',
+          text: '後台帳號',
           icon: 'mdi-checkbox-blank-circle-outline',
           route: 'sys'
-        },
-        {
-          text: 'Privacy Policies',
-          icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'sys-application-policies'
         }
       ]
     }
