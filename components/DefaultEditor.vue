@@ -132,7 +132,6 @@
 
 <script>
 // official tiptap example
-import Icon from '~/components/DefaultEditorIcon.vue'
 import { Editor, EditorContent, EditorMenuBar } from 'tiptap'
 import {
   Blockquote,
@@ -154,61 +153,74 @@ import {
   History,
   Placeholder
 } from 'tiptap-extensions'
+// import Icon from '~/components/DefaultEditorIcon.vue'
+
+function makeEditor(content) {
+  return new Editor({
+    extensions: [
+      new Blockquote(),
+      new BulletList(),
+      new CodeBlock(),
+      new HardBreak(),
+      new Heading({ levels: [1, 2, 3] }),
+      new HorizontalRule(),
+      new ListItem(),
+      new OrderedList(),
+      new TodoItem(),
+      new TodoList(),
+      new Link(),
+      new Bold(),
+      new Code(),
+      new Italic(),
+      new Strike(),
+      new Underline(),
+      new History(),
+      new Placeholder({
+        emptyEditorClass: 'is-editor-empty',
+        emptyNodeClass: 'is-empty',
+        emptyNodeText: 'Enter Content here …',
+        showOnlyWhenEditable: true,
+        showOnlyCurrent: true,
+      }),
+    ],
+    // content: this.preloadValue !== '' ? this.preloadValue : '',
+    content,
+    onUpdate: ({ getHTML }) => {
+      // get new content on update
+      const newContent = getHTML()
+      this.$emit('update-value', newContent)
+    }
+  })
+}
+
 export default {
   components: {
     EditorContent,
     EditorMenuBar,
-    Icon,
+    // Icon,
+  },
+  props: {
+    preloadValue: {
+      type: String,
+      default: ''
+    }
   },
   data() {
     return {
-      editor: new Editor({
-        extensions: [
-          new Blockquote(),
-          new BulletList(),
-          new CodeBlock(),
-          new HardBreak(),
-          new Heading({ levels: [1, 2, 3] }),
-          new HorizontalRule(),
-          new ListItem(),
-          new OrderedList(),
-          new TodoItem(),
-          new TodoList(),
-          new Link(),
-          new Bold(),
-          new Code(),
-          new Italic(),
-          new Strike(),
-          new Underline(),
-          new History(),
-          new Placeholder({
-            emptyEditorClass: 'is-editor-empty',
-            emptyNodeClass: 'is-empty',
-            emptyNodeText: 'Enter Content here …',
-            showOnlyWhenEditable: true,
-            showOnlyCurrent: true,
-          }),
-        ],
-        content: ``,
-        onUpdate: ({ getHTML }) => {
-          // get new content on update
-          const newContent = getHTML()
-          console.log(newContent)
-        }
-      }),
+      editor: makeEditor(this.preloadValue !== '' ? this.preloadValue : ''),
     }
   },
   watch: {
-    'editor.content': {
-      handler(val) {
-        console.log(val)
+    preloadValue: {
+      immediate: true,
+      handler(newVal) {
+        // this.editor = null
+        // this.editor = makeEditor(newVal)
       }
     }
   },
   beforeDestroy() {
     this.editor.destroy()
-
-    // this.editor.watch()
   },
 }
 </script>

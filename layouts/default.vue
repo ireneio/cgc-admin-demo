@@ -117,7 +117,7 @@
                       <!-- <v-img :src="info.dP" height="60" width="60"></v-img> -->
                       <v-icon x-large class="mt-7 ml-4">mdi-account-circle</v-icon>
                     </v-col>
-                    <v-col cols="8" class="px-0 pl-4">
+                    <v-col cols="8" class="px-0 pl-4 pt-8">
                       <span>{{ info.username }}</span>
                       <br />
                       <span>{{ info.companyName }}</span>
@@ -127,18 +127,20 @@
               </v-card-title>
               <v-card-actions>
                 <v-btn
+                  v-if="isAllowPasswordUpdate"
                   class="primary"
                   @click="$router.push('/account/updatePassword')"
                 >
                   <span>Update Password</span>
                 </v-btn>
-                <v-btn class="warning" @click="handleLogout">Sign out</v-btn>
+                <div style="width: 100px;"></div>
+                <v-btn class="warning" @click="handleLogout">登出</v-btn>
               </v-card-actions>
             </v-card>
           </v-list-item>
         </v-list>
       </v-menu>
-      <v-menu
+      <!-- <v-menu
         v-model="menuSetting.i18nValue"
         :disabled="menuSetting.disabled"
         :absolute="menuSetting.absolute"
@@ -165,7 +167,7 @@
               </v-btn>
           </v-list-item>
         </v-list>
-      </v-menu>
+      </v-menu> -->
     </v-app-bar>
     <v-main>
       <v-container fluid class="pt-0">
@@ -227,20 +229,26 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
 import { authStore } from '~/store'
+import { $api } from '~/utils/api'
+import { httpResponseMapper } from '~/utils/http'
 
 @Component({
   middleware: ['auth']
 })
 export default class DefaultLayout extends Vue {
+  private get isAllowPasswordUpdate(): boolean {
+    return false
+  }
+
   private get isDarkMode(): boolean {
     return this.$vuetify.theme.dark
   }
 
   private get info(): any {
     return {
-      username: authStore.user ? authStore.user.email : 'Username',
-      companyName: 'Welcome!',
-      dp: authStore.user ? authStore.user.photopath : '',
+      username: '歡迎,',
+      companyName: authStore.info.email ? authStore.info.email : 'username',
+      dp: '',
       h1: '業主管理後台',
       lastUpdated: new Date().toLocaleDateString('en',
       { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' }),
@@ -289,13 +297,13 @@ export default class DefaultLayout extends Vue {
     {
       icon: 'mdi-chart-areaspline',
       'icon-alt': 'mdi-chart-areaspline-variant',
-      text: 'Overview',
+      text: '遊戲紀錄管理',
       model: false,
       children: [
         {
-          text: 'Reports',
+          text: '紀錄操作',
           icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'overview'
+          route: 'record'
         }
       ]
     },
@@ -321,7 +329,7 @@ export default class DefaultLayout extends Vue {
         {
           text: '遊戲設定',
           icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'orders'
+          route: 'setting'
         }
       ]
     },
@@ -334,8 +342,7 @@ export default class DefaultLayout extends Vue {
         {
           text: '帳號管理',
           icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'ingredients',
-          tabTitle: 'Inventory Management'
+          route: 'member'
         }
       ]
     },
@@ -348,7 +355,7 @@ export default class DefaultLayout extends Vue {
         {
           text: '條款設定',
           icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'customers'
+          route: 'rules'
         }
       ]
     },
@@ -369,16 +376,13 @@ export default class DefaultLayout extends Vue {
 
   private handleLogout(): void {
     try {
-      this.$nuxt.$loading.start()
-      // const result = await authStore.signOut({
-      //   token: this.$cookies.get('accessToken')
-      // })
-      // this.$nuxt.$cookies.remove('accessToken')
+      // this.$nuxt.$loading.start()
+      window.localStorage.removeItem('t')
       this.$router.push('/account')
     } catch (e) {
       this.dialog.error = true
     } finally {
-      this.$nuxt.$loading.finish()
+      // this.$nuxt.$loading.finish()
     }
   }
 

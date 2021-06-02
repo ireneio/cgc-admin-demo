@@ -1,9 +1,9 @@
 <template>
   <div>
     <v-toolbar flat class="banner">
-      <h1>
+      <!-- <h1>
         <strong class="primary--text">Select a functionality from the left...</strong>
-      </h1>
+      </h1> -->
     </v-toolbar>
   </div>
 </template>
@@ -14,7 +14,17 @@ import { Component, Vue, Watch } from 'nuxt-property-decorator'
 @Component({
   layout: 'default'
 })
-export default class Index extends Vue {}
+export default class Index extends Vue {
+  private beforeRouteEnter(to: any, from: any, next: Function) {
+    next((vm: Vue) => {
+      vm.$router.push('/record')
+    })
+  }
+
+  // private created() {
+  //   this.$router.push('/orders')
+  // }
+}
 </script>
 <style lang="scss" scoped>
 .banner {

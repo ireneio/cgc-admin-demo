@@ -10,32 +10,16 @@ import { httpResponseMapper } from '~/utils/http'
   namespaced: true
 })
 export default class AuthModule extends VuexModule {
-  public user: User | null = {
-    clientserialno: '',
-    accountid: '',
-    username: '',
-    email: '',
-    birth: '',
-    nickname: '',
-    gender: 0,
-    photopath: '',
-    address: '',
-    phonenumber: '',
-    mobilephonenumber: '',
-    mobileVerifyStatus: 0,
-    memberLevel: 0,
-    isfirstlogin: false,
-    accountAttribute: 0,
-    mainGroup: '',
-    groups: [],
-    isPasswordExpired: false
-  }
-
   private tokenLocal: string = ''
 
   public info = {
     email: '',
     id: 0
+  }
+
+  @Mutation
+  public setInfo(payload: { email: string, id: number }) {
+    this.info = { ...payload }
   }
 
   @Mutation

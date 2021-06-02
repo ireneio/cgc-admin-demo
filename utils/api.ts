@@ -10,7 +10,10 @@ export function initializeAxios(axiosInstance: NuxtAxiosInstance) {
   $nuxtAxiosInstance = axiosInstance
   $api = $nuxtAxiosInstance.create({
     baseURL: process.env.PROXY_URL,
-    timeout: 20000
+    timeout: 20000,
+    headers: {
+      area: 'admin'
+    }
   })
 }
 

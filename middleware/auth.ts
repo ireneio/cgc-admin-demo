@@ -18,13 +18,21 @@ async function tokenAcquisition(ctx: Context): Promise<any> {
   return httpResponseMapper(result)
 }
 
+async function profile(token: string): Promise<any> {
+  const result: ResponseObject = await $api.get(
+    '/auth/local/info',
+    { headers: { Authorization: `Bearer ${token}` } }
+  )
+  return httpResponseMapper(result)
+}
+
 export default async function(ctx: Context) {
   const { store, redirect, route } = ctx
   const token = window.localStorage.getItem('t')
-  if (token) {
+  if (token !== 'undefined' && token !== undefined && token !== null) {
     try {
-      const data = await verification(token)
-      if (!data.t) {
+      const verificationResult = await verification(token)
+      if (!verificationResult.t) {
         // throw new Error('verification error')
 
         const { accessToken: tokenNew } = await tokenAcquisition(ctx)
@@ -33,7 +41,9 @@ export default async function(ctx: Context) {
       } else if (isSignInPage(ctx)) {
         redirect('/')
       } else {
-        store.commit('auth/setTokenLocal', data)
+        const profileResult = await profile(token)
+        store.commit('auth/setTokenLocal', verificationResult)
+        store.commit('auth/setInfo', profileResult)
       }
     } catch (e) {
       !isSignInPage(ctx) && redirect('/account')

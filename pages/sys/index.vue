@@ -2,14 +2,14 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12">
-        <h2 class="mb-4">Accounts Management</h2>
+        <h2 class="mb-4">後台帳號管理</h2>
         <v-card outlined>
           <v-toolbar flat>
             <v-btn
               color="primary"
               @click="handleCreateItem"
             >
-              <v-icon>mdi-plus</v-icon> Add
+              <v-icon>mdi-plus</v-icon> 新增
             </v-btn>
           </v-toolbar>
           <v-card-text>
@@ -46,7 +46,16 @@
                           >
                             <v-text-field
                               v-model="form.username"
-                              label="Username"
+                              label="帳號"
+                              counter="50"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col
+                            cols="12"
+                          >
+                            <v-text-field
+                              v-model="form.password"
+                              label="密碼"
                               counter="50"
                             ></v-text-field>
                           </v-col>
@@ -56,17 +65,7 @@
                             <v-select
                               v-model="form.perm"
                               :items="selectPerm"
-                              label="Permission Level"
-                            ></v-select>
-                          </v-col>
-                          <v-col
-                            cols="12"
-                          >
-                            <v-select
-                              v-model="form.users"
-                              :items="selectUser"
-                              label="Assigned User(s)"
-                              multiple
+                              label="權限等級"
                             ></v-select>
                           </v-col>
                         </v-row>
@@ -79,14 +78,14 @@
                         text
                         @click="handleCreateCancel"
                       >
-                        Cancel
+                        取消
                       </v-btn>
                       <v-btn
                         color="blue darken-1"
                         text
                         @click="handleCreateSave"
                       >
-                        Save
+                        儲存
                       </v-btn>
                     </v-card-actions>
                   </v-card>
@@ -96,24 +95,28 @@
                     <v-card-title class="headline">{{ dialog.deleteConfimationText }}</v-card-title>
                     <v-card-actions>
                       <v-spacer></v-spacer>
-                      <v-btn color="blue darken-1" text @click="handleDeleteCancel">Cancel</v-btn>
-                      <v-btn color="blue darken-1" text @click="handleDeleteConfirm">Confirm</v-btn>
+                      <v-btn color="blue darken-1" text @click="handleDeleteCancel">取消</v-btn>
+                      <v-btn color="blue darken-1" text @click="handleDeleteConfirm(false)">確認</v-btn>
                     </v-card-actions>
                   </v-card>
                 </v-dialog>
-              </template>
-              <template v-slot:item.perm="{ item }">
-                {{ item.perm.text }}
-              </template>
-              <template v-slot:item.users="{ item }">
-                <div v-for="user in item.users" :key="user.value">{{ user.text }}<br /></div>
+                <v-dialog v-model="dialog.activate" max-width="50vw">
+                  <v-card>
+                    <v-card-title class="headline">{{ dialog.activateConfimationText }}</v-card-title>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn color="blue darken-1" text @click="handleDeleteCancel">取消</v-btn>
+                      <v-btn color="blue darken-1" text @click="handleDeleteConfirm(true)">確認</v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
               </template>
               <template v-slot:item.misc="{ item }">
                 <v-icon
                   small
                   @click.stop="handleDeleteItem(item)"
                 >
-                  mdi-delete
+                {{ item.status === '啟用' ? 'mdi-stop' : 'mdi-play' }}
                 </v-icon>
               </template>
             </v-data-table>
@@ -121,54 +124,60 @@
         </v-card>
       </v-col>
     </v-row>
+    <v-snackbar
+      v-model="snackbar.toggle"
+      :timeout="snackbar.timeout"
+      top
+    >
+      {{ snackbar.text }}
+
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          color="blue"
+          text
+          v-bind="attrs"
+          @click="snackbar.toggle = false"
+        >
+          {{ snackbar.closeText }}
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-container>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'nuxt-property-decorator'
-import { DateFactory } from '~/utils/date'
-import { sysStore } from '~/store'
+import { sysStore, userStore } from '~/store'
+import { $api } from '~/utils/api'
+import { httpResponseMapper } from '~/utils/http'
 
 @Component({
   layout: 'default'
 })
 export default class SysIndex extends Vue {
+  private snackbar = {
+    toggle: false,
+    timeout: 5000,
+    closeText: '關閉',
+    text: ''
+  }
+
   private headers: Array<any> = [
-    { text: 'Username', value: 'username', align: 'start', sortable: true },
-    { text: 'Permission Level', value: 'perm', align: 'start', sortable: true },
-    { text: 'Assigned User(s)', value: 'users', align: 'start', sortable: true },
-    { text: 'Last Login', value: 'lastLogin', align: 'start', sortable: true },
+    { text: '帳號', value: 'email', align: 'start', sortable: true },
+    { text: '權限等級', value: 'access_level', align: 'start', sortable: true },
+    { text: '建立日期', value: 'created_at', align: 'start', sortable: true },
+    { text: '狀態', value: 'status', align: 'start', sortable: true },
     { text: '', value: 'misc', align: 'start', sortable: false }
   ]
 
-  private get tableData(): Array<any> {
-    return [
-      {
-        id: '123',
-        username: 'test123@gmail.com',
-        perm: {
-          text: 'root',
-          value: '1'
-        },
-        users: [
-          {
-            text: 'Seattle-1',
-            value: '1'
-          },
-          {
-            text: 'Seattle-2',
-            value: '2'
-          }
-        ],
-        lastLogin: new DateFactory(new Date()).yymmddhhmmss()
-      }
-    ]
+  private get tableData(): any[] {
+    return userStore.adminUsers
   }
 
   private tableOptions: any = {
       page: 1,
       itemsPerPage: 10,
-      sortBy: ['date'],
+      sortBy: ['status'],
       sortDesc: [true],
       // groupBy: string[],
       // groupDesc: boolean[],
@@ -182,31 +191,12 @@ export default class SysIndex extends Vue {
 
   private selectPerm: Array<any> = [
     {
-      text: 'root',
-      value: '1'
+      text: '管理員',
+      value: '6'
     },
     {
-      text: 'mgr',
-      value: '2'
-    },
-    {
-      text: 'emp',
-      value: '3'
-    }
-  ]
-
-  private selectUser: Array<any> = [
-    {
-      text: 'Seattle-1',
-      value: '1'
-    },
-    {
-      text: 'Seattle-2',
-      value: '2'
-    },
-    {
-      text: 'Seattle-3',
-      value: '3'
+      text: '現場人員',
+      value: '5'
     }
   ]
 
@@ -214,24 +204,25 @@ export default class SysIndex extends Vue {
     id: '',
     username: '',
     perm: '',
-    users: '',
-    lastLogin: ''
+    password: ''
   }
 
   private dialog: any = {
-    deleteConfimationText: 'Are you sure you want to delete this account?',
+    activateConfimationText: '確認啟用此帳號',
+    activate: false,
+    deleteConfimationText: '確認停用此帳號',
     delete: false,
     edit: false,
     editTitle: 'Edit Account',
     new: false,
-    newTitle: 'Create Account',
+    newTitle: '建立帳號',
     error: false,
     errorTitle: 'Server Error. Please try again later.'
   }
 
   private handleSelectItem(obj: any): void {
     const { value, item } = obj
-    if(value === true) {
+    if (value === true) {
       this.selected = [...item]
     } else {
       this.selected = []
@@ -240,7 +231,7 @@ export default class SysIndex extends Vue {
 
   private handleSelectItemAll(obj: any): void {
     const { value, items } = obj
-    if(value === true) {
+    if (value === true) {
       this.selected = [...items]
     } else {
       this.selected = []
@@ -248,7 +239,7 @@ export default class SysIndex extends Vue {
   }
 
   private handleRowClick(row: any, col: any): void {
-    this.handleEditItem(row)
+    // this.handleEditItem(row)
   }
 
   private clearForm(): void {
@@ -256,20 +247,7 @@ export default class SysIndex extends Vue {
       id: '',
       username: '',
       perm: '',
-      users: '',
-      lastLogin: ''
-    }
-  }
-
-  private fillForm(item: any): void {
-    const { id, username, perm, users, lastLogin } = item
-    this.form = {
-      ...this.form,
-      id,
-      username,
-      perm,
-      users,
-      lastLogin
+      password: ''
     }
   }
 
@@ -277,14 +255,13 @@ export default class SysIndex extends Vue {
     this.dialog.new = true
   }
 
-  private handleEditItem(item: any): void {
-    this.fillForm(item)
-    this.dialog.new = true
-  }
-
-  private handleDeleteItem(item: any): void {
-    this.fillForm(item)
-    this.dialog.delete = true
+  private handleDeleteItem({ id, status }: { id: string, status: string }): void {
+    this.form.id = id
+    if (status === '啟用') {
+      this.dialog.delete = true
+    } else {
+      this.dialog.activate = true
+    }
   }
 
   private handleCreateCancel(): void {
@@ -292,32 +269,35 @@ export default class SysIndex extends Vue {
     this.clearForm()
   }
 
-  private handleCreateSave(): void {
+  private async handleCreateSave() {
+    const result = await $api.post('/user/admin', { ...this.form, action: 'create' })
+    httpResponseMapper(result)
+    await userStore.getAdminUsers()
     this.dialog.new = false
     this.clearForm()
+    this.snackbar.toggle = true
+    this.snackbar.text = '成功建立帳號'
   }
 
-  private handleDeleteConfirm(): void {
-    this.dialog.delete = false
+  private async handleDeleteConfirm(flag: boolean) {
+    await $api.post('/user/admin', { id: this.form.id, action: flag ? 'activate' : 'delete' })
+    await userStore.getAdminUsers()
+    if (flag) {
+      this.dialog.activate = false
+    } else {
+      this.dialog.delete = false
+    }
     this.clearForm()
   }
 
   private handleDeleteCancel(): void {
     this.dialog.delete = false
-    this.clearForm()
-  }
-
-  private handleEditCancel(): void {
-    this.dialog.new = false
-    this.clearForm()
-  }
-
-  private handleEditSave(): void {
-    this.dialog.new = false
+    this.dialog.activate = false
     this.clearForm()
   }
 
   private async created() {
+    await userStore.getAdminUsers()
   }
 }
 </script>

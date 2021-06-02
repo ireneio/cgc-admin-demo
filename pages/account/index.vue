@@ -25,8 +25,8 @@
                   </validation-provider>
                   <validation-provider v-slot="{ errors }" rules="required">
                     <v-text-field
-                      id="密碼"
-                      label="Password"
+                      id="password"
+                      label="密碼"
                       name="password"
                       prepend-icon="mdi-lock"
                       type="password"
@@ -78,7 +78,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'nuxt-property-decorator'
+import { Component, Vue } from 'nuxt-property-decorator'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import { User } from 'SignIn'
 import { authStore } from '~/store'
@@ -111,7 +111,10 @@ export default class AccountIndex extends Vue {
       password: this.form.password,
       email: this.form.username
     })
-    this.$router.push('/')
+
+    if (!result.error) {
+      this.$router.push('/')
+    }
   }
 }
 </script>
