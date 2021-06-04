@@ -1,29 +1,23 @@
 <template>
   <div>
     <v-toolbar flat class="banner">
-      <!-- <h1>
-        <strong class="primary--text">Select a functionality from the left...</strong>
-      </h1> -->
+      <h1>
+        <strong class="primary--text">載入中...</strong>
+      </h1>
     </v-toolbar>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'nuxt-property-decorator'
+import { Component, Vue } from 'nuxt-property-decorator'
 
 @Component({
-  layout: 'default'
+  layout: 'frontend'
 })
 export default class Index extends Vue {
   private beforeRouteEnter(to: any, from: any, next: Function) {
-    next((vm: Vue) => {
-      vm.$router.push('/record')
-    })
+    next(false)
   }
-
-  // private created() {
-  //   this.$router.push('/orders')
-  // }
 }
 </script>
 <style lang="scss" scoped>

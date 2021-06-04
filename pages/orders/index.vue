@@ -48,7 +48,7 @@ import { transactionStore } from '~/store'
 import { numberWithCommas } from '~/utils/formatters'
 
 @Component({
-  layout: 'default'
+  layout: 'admin'
 })
 export default class OrdersIndex extends Vue {
   private headers: Array<any> = [

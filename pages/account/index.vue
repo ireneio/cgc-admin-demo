@@ -53,27 +53,24 @@
         </v-col>
       </v-row>
     </v-container>
-    <v-dialog v-model="dialog" width="800px">
-      <v-card>
-        <v-card-title class="primary white--text">
-          提示
-        </v-card-title>
-        <v-card-text class="mt-4">
-          <h2 class="mt-4">{{ dialogMessage || '帳號或密碼錯誤' }}</h2>
-          <div class="mt-4">
-            {{
-              dialogMessage ? '' : '密碼為 8-12 碼，包含英文大小寫字母與數字'
-            }}
-          </div>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn text color="primary" @click="handleDialogClose" large>
-            <strong>關閉</strong>
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <v-snackbar
+      v-model="snackbar.toggle"
+      :timeout="snackbar.timeout"
+      top
+    >
+      {{ snackbar.text }}
+
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          color="blue"
+          text
+          v-bind="attrs"
+          @click="snackbar.toggle = false"
+        >
+          {{ snackbar.closeText }}
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-main>
 </template>
 
@@ -81,7 +78,7 @@
 import { Component, Vue } from 'nuxt-property-decorator'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import { User } from 'SignIn'
-import { authStore } from '~/store'
+import { authStore, errorStore } from '~/store'
 
 @Component({
   layout: 'login',
@@ -92,12 +89,11 @@ import { authStore } from '~/store'
   }
 })
 export default class AccountIndex extends Vue {
-  private dialog: boolean = false
-
-  private dialogMessage: User | string | number | null = ''
-
-  private handleDialogClose(): void {
-    this.dialog = false
+  private snackbar = {
+    toggle: false,
+    timeout: 5000,
+    closeText: '關閉',
+    text: ''
   }
 
   private form: any = {
@@ -111,10 +107,14 @@ export default class AccountIndex extends Vue {
       password: this.form.password,
       email: this.form.username
     })
-
-    if (!result.error) {
+    if (errorStore.isActive) {
+      this.snackbar.text = '登入資訊錯誤'
+      errorStore.clearError()
+    } else {
+      this.snackbar.text = '登入成功'
       this.$router.push('/')
     }
+    this.snackbar.toggle = true
   }
 }
 </script>

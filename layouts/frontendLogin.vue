@@ -1,11 +1,15 @@
 <template>
   <v-app>
-    <nuxt />
+    <Nuxt />
   </v-app>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
-@Component
-export default class LoginLayout extends Vue {}
+
+@Component({
+  middleware: ['authFrontend'],
+})
+export default class FrontendLoginLayout extends Vue {
+}
 </script>

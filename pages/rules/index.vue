@@ -136,7 +136,7 @@ import { ruleStore } from '~/store'
 import { $api } from '~/utils/api'
 
 @Component({
-  layout: 'default',
+  layout: 'admin',
   components: {
     DefaultEditor
   }

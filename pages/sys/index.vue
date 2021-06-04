@@ -147,12 +147,12 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'nuxt-property-decorator'
-import { sysStore, userStore } from '~/store'
+import { errorStore, sysStore, userStore } from '~/store'
 import { $api } from '~/utils/api'
 import { httpResponseMapper } from '~/utils/http'
 
 @Component({
-  layout: 'default'
+  layout: 'admin'
 })
 export default class SysIndex extends Vue {
   private snackbar = {
@@ -272,22 +272,35 @@ export default class SysIndex extends Vue {
   private async handleCreateSave() {
     const result = await $api.post('/user/admin', { ...this.form, action: 'create' })
     httpResponseMapper(result)
-    await userStore.getAdminUsers()
-    this.dialog.new = false
-    this.clearForm()
+    if (errorStore.isActive) {
+      this.snackbar.text = `建立帳號失敗: ${errorStore.message}`
+      errorStore.clearError()
+    } else {
+      await userStore.getAdminUsers()
+      this.snackbar.text = '建立帳號成功'
+      this.dialog.new = false
+      this.clearForm()
+    }
     this.snackbar.toggle = true
-    this.snackbar.text = '成功建立帳號'
   }
 
   private async handleDeleteConfirm(flag: boolean) {
-    await $api.post('/user/admin', { id: this.form.id, action: flag ? 'activate' : 'delete' })
-    await userStore.getAdminUsers()
-    if (flag) {
-      this.dialog.activate = false
+    const result = await $api.post('/user/admin', { id: this.form.id, action: flag ? 'activate' : 'delete' })
+    httpResponseMapper(result)
+    if (errorStore.isActive) {
+      this.snackbar.text = '操作失敗'
+      errorStore.clearError()
     } else {
-      this.dialog.delete = false
+      await userStore.getAdminUsers()
+      if (flag) {
+        this.dialog.activate = false
+      } else {
+        this.dialog.delete = false
+      }
+      this.clearForm()
+      this.snackbar.text = '操作成功'
     }
-    this.clearForm()
+    this.snackbar.toggle = true
   }
 
   private handleDeleteCancel(): void {

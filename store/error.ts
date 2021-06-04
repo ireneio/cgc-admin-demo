@@ -3,18 +3,24 @@ import { ResponseObject } from 'Http'
 import { $api } from '~/utils/api'
 import { httpResponseMapper } from '~/utils/http'
 
+interface Error {
+  active: boolean,
+  message: string,
+  code: number
+}
 @Module({
   name: 'error',
   stateFactory: true,
   namespaced: true
 })
 export default class ErrorModule extends VuexModule {
-  private _error = {
+  private _error: Error = {
     active: false,
-    message: ''
+    message: '',
+    code: 0
   }
 
-  public get errorMessage(): string {
+  public get message(): string {
     return this._error.message
   }
 
@@ -23,7 +29,12 @@ export default class ErrorModule extends VuexModule {
   }
 
   @Mutation
-  public setError(payload: { active: boolean, message: string }) {
+  public setError(payload: Error) {
     this._error = { ...payload }
+  }
+
+  @Mutation
+  public clearError() {
+    this._error = { active: false, message: '', code: 0 }
   }
 }

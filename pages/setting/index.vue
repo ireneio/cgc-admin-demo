@@ -14,13 +14,23 @@
             </v-btn>
             <v-btn
               color="primary"
-              @click="$router.push({ name: 'promotions-create' })"
+              @click="handleUpdate"
               v-show="formOption.isEdit"
               class="ml-4"
             >
               <v-icon>mdi-edit</v-icon> 更新
             </v-btn>
           </v-toolbar>
+          <v-card-subtitle class="d-flex align-center">
+            遊戲狀態:&nbsp;
+            <v-chip
+              class="ml-2"
+              outlined
+              :color="isRoundActive ? 'primary' : 'default'"
+            >
+              {{ roundStatusText }}
+            </v-chip>
+          </v-card-subtitle>
           <v-card-text>
             <!-- <v-form ref="form"> -->
               <v-row>
@@ -69,24 +79,13 @@
                     :error="isPositiveInt(form.allowedCoHosts)"
                   ></v-text-field>
                 </v-col>
-              </v-row>
-              <v-row>
                 <v-col>
                   <v-text-field
-                    label="每場局數"
+                    label="每輪莊家次數"
                     v-model="form.roundsPerMatch"
                     hint="僅限 > 0 整數"
                     :disabled="!formOption.isEdit"
                     :error="isPositiveInt(form.roundsPerMatch)"
-                  ></v-text-field>
-                </v-col>
-                <v-col>
-                  <v-text-field
-                    label="每輪莊家次數"
-                    v-model="form.hostRoundsPerMatch"
-                    hint="僅限 > 0 整數"
-                    :disabled="!formOption.isEdit"
-                    :error="isPositiveInt(form.hostRoundsPerMatch)"
                   ></v-text-field>
                 </v-col>
               </v-row>
@@ -115,20 +114,45 @@
         </v-card>
       </v-col>
     </v-row>
+    <v-snackbar
+      v-model="snackbar.toggle"
+      :timeout="snackbar.timeout"
+      top
+    >
+      {{ snackbar.text }}
+
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          color="blue"
+          text
+          v-bind="attrs"
+          @click="snackbar.toggle = false"
+        >
+          {{ snackbar.closeText }}
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-container>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
-import { sysStore } from '~/store'
+import { errorStore, sysStore } from '~/store'
 import { $api } from '~/utils/api'
 import { httpResponseMapper } from '~/utils/http'
 import { isInteger, isPositiveInteger } from '~/utils/number'
 
 @Component({
-  layout: 'default'
+  layout: 'admin'
 })
 export default class SettingIndex extends Vue {
+  private snackbar = {
+    toggle: false,
+    timeout: 5000,
+    closeText: '關閉',
+    text: ''
+  }
+
   private headers: Array<any> = [
     { text: 'Name', value: 'calories', align: 'start', sortable: true },
     { text: 'Type', value: 'carbs', align: 'start', sortable: true },
@@ -144,9 +168,12 @@ export default class SettingIndex extends Vue {
     minHostBet: 0,
     minPlayerBet: 0,
     roundsPerMatch: 0,
-    hostRoundsPerMatch: 0,
     version: '',
     hostFeeIncreaseIterations: 0
+  }
+
+  private formOption = {
+    isEdit: false
   }
 
   private isPositiveInt(val: string) {
@@ -157,8 +184,12 @@ export default class SettingIndex extends Vue {
     return isInteger(val)
   }
 
-  private formOption = {
-    isEdit: false
+  private get isRoundActive(): boolean {
+    return sysStore.isRoundActive
+  }
+
+  private get roundStatusText(): string {
+    return sysStore.isRoundActive ? '進行中' : '已結束'
   }
 
   private get isHostFeeError(): boolean {
@@ -167,6 +198,11 @@ export default class SettingIndex extends Vue {
   }
 
   private handleEdit() {
+    if (sysStore.isRoundActive) {
+      this.snackbar.text = '遊戲進行中，無法編輯'
+      this.snackbar.toggle = true
+      return
+    }
     if (this.formOption.isEdit) {
       this.formHelper()
     }
@@ -177,7 +213,6 @@ export default class SettingIndex extends Vue {
     const hostFee = this.list.hostFee.map((item: number) => item.toString())
     this.form = {
       ...this.list,
-      hostRoundsPerMatch: 0,
       hostFee
     }
   }
@@ -187,8 +222,22 @@ export default class SettingIndex extends Vue {
   }
 
   private async updateSetting(): Promise<void> {
-    const result = await $api.post('/setting?id=60b2747875c3d0d42a0a6a35')
+    const result = await $api.post('/setting?id=60b2747875c3d0d42a0a6a35', { ...this.form })
     httpResponseMapper(result)
+    if (errorStore.isActive) {
+      this.snackbar.text = `儲存失敗: ${errorStore.message}`
+      errorStore.clearError()
+    } else {
+      await sysStore.getSettingList()
+      this.formHelper()
+      this.snackbar.text = '儲存成功'
+      this.formOption.isEdit = false
+    }
+    this.snackbar.toggle = true
+  }
+
+  private async handleUpdate() {
+    await this.updateSetting()
   }
 
   private async created() {

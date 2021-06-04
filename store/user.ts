@@ -16,6 +16,8 @@ export default class UserModule extends VuexModule {
 
   private _wallets: any[] = []
 
+  private _tabCurrent: number = 0
+
   public get adminUsers(): any[] {
     return this._adminUsers.map((item: any) => {
       return {
@@ -41,6 +43,15 @@ export default class UserModule extends VuexModule {
 
   public get wallets(): any[] {
     return this._wallets
+  }
+
+  public get tabCurrent(): number {
+    return this._tabCurrent
+  }
+
+  @Mutation
+  public setTabCurrent(payload: number) {
+    this._tabCurrent = payload
   }
 
   @Mutation

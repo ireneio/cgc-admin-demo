@@ -4,11 +4,11 @@ export default {
 
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
-    title: 'CMS',
+    title: 'Bet Bucket',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: 'CMS' }
+      { hid: 'description', name: 'description', content: 'Bet Bucket' }
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
   },
@@ -72,10 +72,11 @@ export default {
   env: {
     PROXY_URL: process.env.NUXT_ENV_PROXY_URL
   },
-  loading: {
-    color: '#fff',
-    height: '2px'
-  },
+  // loading: {
+  //   color: '#fff',
+  //   height: '2px'
+  // },
+  loading: '~/components/DefaultLoading.vue',
   vuetify: {
     optionsPath: './vuetify.options.js'
   }

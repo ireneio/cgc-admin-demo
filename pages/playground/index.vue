@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12">
-        <h2 class="mb-4">Promotions Management</h2>
+        <h2 class="mb-4">Playground</h2>
         <v-card outlined>
           <v-toolbar flat>
             <v-btn
@@ -35,7 +35,7 @@ import { Component, Vue, Watch } from 'nuxt-property-decorator'
 import { sysStore } from '~/store'
 
 @Component({
-  layout: 'default'
+  layout: 'admin'
 })
 export default class PromotionsIndex extends Vue {
   private headers: Array<any> = [

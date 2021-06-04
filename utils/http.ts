@@ -9,13 +9,14 @@ export function httpResponseMapper(result: any, next?: Function, nextArgs?: any[
       case 200:
         return data
       default:
-        throw new Error(statusMsg)
+        throw new Error(`${statusCode}~${statusMsg}`)
     }
   } catch (e) {
-    console.log(`[Http Error] ${e.message}`)
-    errorStore.setError({ active: true, message: e.message })
+    const [statusCode, statusMsg] = e.message.split('~')
+    console.log(`[Http Error] ${statusMsg}`)
+    errorStore.setError({ active: true, message: statusMsg, code: Number(statusCode) })
     return {
-      error: `[Http Error] ${e.message}`
+      error: `[Http Error] ${statusMsg}`
     }
   }
 }

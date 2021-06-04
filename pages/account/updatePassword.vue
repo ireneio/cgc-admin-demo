@@ -135,38 +135,6 @@ export default class AccountUpdatePassword extends Vue {
   }
 
   private async handleUpdatePassword(): Promise<any> {
-    const requestBody: ProxyRequestObject = {
-      endpoint: '/api/Auth/UpdatePassword',
-      method: 'post',
-      token: this.$cookies.get('accessToken'),
-      data: {
-        acct: this.form.username,
-        _newpassword: this.form.password,
-        _confirmpassword: this.form.repeatPassword,
-        token: this.form.oldPassword
-      }
-    }
-
-    try {
-      this.$nuxt.$loading.start()
-      const result: ResponseObject = await $api.post('/api', requestBody)
-      switch (Number(result.data.syscode)) {
-        case 200:
-          this.form = {
-            email: '',
-            oldPassword: '',
-            password: '',
-            repeatPassword: ''
-          }
-          break
-        default:
-          throw new Error('Error fetching')
-      }
-    } catch (e) {
-      this.errorDialog = true
-    } finally {
-      this.$nuxt.$loading.finish()
-    }
   }
 }
 </script>
