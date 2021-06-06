@@ -12,11 +12,13 @@
 import { Component, Vue } from 'nuxt-property-decorator'
 
 @Component({
-  layout: 'frontend'
+  layout: 'admin'
 })
 export default class Index extends Vue {
   private beforeRouteEnter(to: any, from: any, next: Function) {
-    next(false)
+    next((vm: Vue) => {
+      vm.$router.push('/account')
+    })
   }
 }
 </script>

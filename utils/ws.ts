@@ -1,19 +1,17 @@
-import { sysStore } from '~/store/'
+import { authStore, sysStore } from '~/store/'
 
 export function init() {
-  const ws = new WebSocket(`ws://localhost:8081/ws/game`)
+  const ws = new WebSocket(`${process.env.WS_GAME_URL}/${authStore.info.id}`)
 
   // @ts-ignore
-  ws.onmessage = (ev) => {
+  ws.onmessage = async (ev) => {
     const parse = JSON.parse(ev.data)
     console.log(parse)
     const { message, data } = parse
+
     switch (message) {
-      case 'player-bet-disallow':
-        onPlayerBetDisallow(data)
-        break
-      case 'player-bet-allow':
-        onPlayerBetAllow(data)
+      case 'round-host-bet':
+        await sysStore.getConfig()
         break
     }
   }
@@ -27,18 +25,4 @@ export function init() {
 
 export function sendMessage(ws: WebSocket, message: any) {
   ws.send(JSON.stringify(message))
-}
-
-function onPlayerBetDisallow(data: any) {
-  sysStore.setPlayerBetAllow(false)
-  if (Object.keys(data).length) {
-    sysStore.setGameInfo(data)
-  }
-}
-
-function onPlayerBetAllow(data: any) {
-  sysStore.setPlayerBetAllow(true)
-  if (Object.keys(data).length) {
-    sysStore.setGameInfo(data)
-  }
 }
