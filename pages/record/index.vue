@@ -192,7 +192,7 @@
                 </v-row>
               </v-col>
               <v-col cols="12" md="8">
-                <v-card v-show="toggle.isShowUpdateHost">
+                <!-- <v-card v-show="toggle.isShowUpdateHost">
                   <v-card-title>手動設置玩家</v-card-title>
                   <v-card-subtitle>輸入玩家識別碼進行設置</v-card-subtitle>
                   <v-card-text>
@@ -236,6 +236,13 @@
                         </v-btn>
                       </v-col>
                     </v-row>
+                  </v-card-text>
+                </v-card> -->
+                <v-card>
+                  <v-card-title>排莊隊列</v-card-title>
+                  <v-card-subtitle>用戶識別碼</v-card-subtitle>
+                  <v-card-text>
+                    <v-textarea v-text="hostApplyListText" readonly></v-textarea>
                   </v-card-text>
                 </v-card>
               </v-col>
@@ -334,6 +341,17 @@ import { init, sendMessage } from '~/utils/ws'
   layout: 'admin'
 })
 export default class RecordIndex extends Vue {
+  private get hostApplyList(): any[] {
+    return sysStore.hostApplyList
+  }
+
+  private get hostApplyListText(): string {
+    if (this.hostApplyList.length > 0) {
+      return this.hostApplyList.join('\n')
+    }
+    return '尚無排莊玩家'
+  }
+
   private loading = {
     isCreateRound: false,
     isSendResult: false,

@@ -6,10 +6,14 @@ export function init() {
   // @ts-ignore
   ws.onmessage = async (ev) => {
     const parse = JSON.parse(ev.data)
-    console.log(parse)
+    // console.log(parse)
     const { message, data } = parse
 
     switch (message) {
+      case 'is-applied-host':
+      case 'host-apply-list':
+        sysStore.setHostApplyList(data.hostApplyList)
+        break
       case 'round-host-bet':
         await sysStore.getConfig()
         break

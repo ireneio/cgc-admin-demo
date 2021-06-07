@@ -27,6 +27,12 @@ export default class SysModule extends VuexModule {
     isEnded: false
   }
 
+  private _hostApplyList: any[] = []
+
+  public get hostApplyList() {
+    return this._hostApplyList
+  }
+
   public get gameInfo() {
     return this._gameInfo
   }
@@ -53,6 +59,11 @@ export default class SysModule extends VuexModule {
 
   public get config() {
     return this._config
+  }
+
+  @Mutation
+  setHostApplyList(payload: any) {
+    this._hostApplyList = payload.map((item: any) => item.id)
   }
 
   @Mutation
