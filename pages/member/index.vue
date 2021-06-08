@@ -198,15 +198,6 @@
                                 >
                                   {{ value }}
                                 </v-chip>
-                                <!-- <v-btn
-                                  color="primary"
-                                  @click="handleTerminate"
-                                  v-if="key === '狀態'"
-                                  text
-                                  small
-                                >
-                                  切換
-                                </v-btn> -->
                               </td>
                             </tr>
                           </tbody>
@@ -385,7 +376,7 @@ export default class MemberIndex extends Vue {
     return {
       識別碼: id,
       額度: balanceTotal,
-      狀態: status ? '啟用' : '停用'
+      // 狀態: status ? '啟用' : '停用'
     }
   }
 
@@ -431,7 +422,7 @@ export default class MemberIndex extends Vue {
       this.fundLoading = true
       const requestBody = {
         walletId: this.walletInfo.id,
-        amount: Number(this.fund),
+        amount: this.fund.includes(',') ? Number(this.fund.split(',').join('')) : Number(this.fund),
         direction: true
       }
       const result = await $api.post('/transaction', requestBody)
