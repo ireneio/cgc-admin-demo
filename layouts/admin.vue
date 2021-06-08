@@ -23,6 +23,7 @@
             v-model="item.model"
             :prepend-icon="item.model ? item.icon : item['icon-alt']"
             :color="isDarkMode ? '#aaa' : 'primary'"
+            v-show="isAllowAccess(item.allowAccess)"
           >
             <template v-slot:activator>
               <v-list-item-content>
@@ -38,6 +39,7 @@
                 link
                 @click="handleUpdateRoute(child)"
                 :color="isDarkMode ? '#fff' : 'primary'"
+                v-show="isAllowAccess(child.allowAccess)"
               >
                 <v-list-item-action v-if="child.icon">
                   <v-icon x-small class="ml-2">{{ child.icon }}</v-icon>
@@ -76,14 +78,6 @@
           {{ info.h1 }}
         </span>
       </v-toolbar-title>
-      <!-- <v-text-field
-        flat
-        solo-inverted
-        hide-details
-        prepend-inner-icon="mdi-magnify"
-        label="Search"
-        class="hidden-sm-and-down"
-      ></v-text-field> -->
       <v-spacer></v-spacer>
       <v-menu
         v-model="menuSetting.value"
@@ -297,16 +291,19 @@ export default class DefaultLayout extends Vue {
       'icon-alt': 'mdi-chart-areaspline-variant',
       text: '遊戲管理',
       model: false,
+      allowAccess: '5',
       children: [
         {
           text: '遊戲操作',
           icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'record'
+          route: 'record',
+          allowAccess: '5'
         },
         {
           text: '遊戲設定',
           icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'setting'
+          route: 'setting',
+          allowAccess: '6'
         }
       ]
     },
@@ -315,63 +312,58 @@ export default class DefaultLayout extends Vue {
       'icon-alt': 'mdi-calendar-text-outline',
       text: '注單管理',
       model: false,
+      allowAccess: '5',
       children: [
         {
           text: '注單紀錄',
           icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'orders'
+          route: 'orders',
+          allowAccess: '5'
         }
       ]
     },
-    // {
-    //   icon: 'mdi-database',
-    //   'icon-alt': 'mdi-database-outline',
-    //   text: '系統管理',
-    //   model: false,
-    //   children: [
-    //     {
-    //       text: '遊戲設定',
-    //       icon: 'mdi-checkbox-blank-circle-outline',
-    //       route: 'setting'
-    //     }
-    //   ]
-    // },
     {
       icon: 'mdi-account-box-multiple',
       'icon-alt': 'mdi-account-box-multiple-outline',
       text: '會員管理',
       model: false,
+      allowAccess: '5',
       children: [
         {
           text: '帳號管理',
           icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'member'
+          route: 'member',
+          allowAccess: '5'
         }
       ]
     },
-    {
-      icon: 'mdi-clipboard-text',
-      'icon-alt': 'mdi-clipboard-text-outline',
-      text: '規章管理',
-      model: false,
-      children: [
-        {
-          text: '條款設定',
-          icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'rules'
-        }
-      ]
-    },
+    // {
+    //   icon: 'mdi-clipboard-text',
+    //   'icon-alt': 'mdi-clipboard-text-outline',
+    //   text: '規章管理',
+    //   model: false,
+    //   allowAccess: '5',
+    //   children: [
+    //     {
+    //       text: '條款設定',
+    //       icon: 'mdi-checkbox-blank-circle-outline',
+    //       route: 'rules',
+    //       allowAccess: '5'
+    //     }
+    //   ]
+    // },
     {
       icon: 'mdi-cog',
       'icon-alt': 'mdi-cog-outline',
       text: '後台管理',
       model: false,
+      allowAccess: '6',
       children: [
         {
           text: '後台帳號',
           icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'sys'
+          route: 'sys',
+          allowAccess: '6'
         }
       ]
     }
@@ -414,6 +406,18 @@ export default class DefaultLayout extends Vue {
     } else {
       window.localStorage.setItem('tm', 'false')
     }
+  }
+
+  private get userInfo (): any {
+    return authStore.info
+  }
+
+  private get userAccessLevel(): string {
+    return this.userInfo.access_level
+  }
+
+  private isAllowAccess(val: string) {
+    return Number(this.userAccessLevel) >= Number(val)
   }
 
   private mounted() {

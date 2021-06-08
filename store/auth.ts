@@ -14,11 +14,12 @@ export default class AuthModule extends VuexModule {
 
   public info = {
     email: '',
-    id: '0'
+    id: '0',
+    access_level: '0'
   }
 
   @Mutation
-  public setInfo(payload: { email: string, id: string }) {
+  public setInfo(payload: { email: string, id: string, access_level: string }) {
     this.info = { ...payload }
   }
 
@@ -26,7 +27,7 @@ export default class AuthModule extends VuexModule {
   private setTokenLocal(payload: { t: string, email: string, id: string }) {
     const { t, email, id } = payload
     this.tokenLocal = t
-    this.info = { email, id }
+    this.info = { ...this.info, email, id }
     window.localStorage.setItem('t', t)
   }
 
