@@ -46,7 +46,7 @@
               <span>設置</span>
             </v-btn> -->
           </v-toolbar>
-          <v-card-subtitle class="d-flex align-center">
+          <v-card-text>
             <v-row>
               <v-col cols="12">
                 遊戲狀態:&nbsp;
@@ -58,106 +58,129 @@
                   {{ roundStatusText }}
                 </v-chip>
               </v-col>
-              <v-col cols="12">
-                <v-btn
-                  color="success"
-                  @click="handleHostWait"
-                  :disabled="!isRoundActive || loading.isHostWait || roundStatus !== 'round-init'"
-                >
-                  <v-progress-circular
-                    indeterminate
-                    :width="3"
-                    :size="20"
-                    color="white"
-                    v-show="loading.isHostWait"
-                  ></v-progress-circular>
-                  <span v-show="!loading.isHostWait">開放排莊</span>
-                </v-btn>
-                <v-btn
-                  class="ml-2"
-                  color="success"
-                  @click="handleHostSelect"
-                  :disabled="!isRoundActive || loading.isHostSelect || roundStatus !== 'round-host-wait'"
-                >
-                  <v-progress-circular
-                    indeterminate
-                    :width="3"
-                    :size="20"
-                    color="white"
-                    v-show="loading.isHostSelect"
-                  ></v-progress-circular>
-                  <span v-show="!loading.isHostSelect">
-                    設置上莊
-                    {{ roundStatus === 'round-host-bet' ? '(已下注)' : roundStatus === 'round-host-select' ? '(未下注)' : '' }}
-                  </span>
-                </v-btn>
+              <v-col cols="12" md="3">
+                <v-row>
+                  <v-col cols="6">
+                    <v-btn
+                      block
+                      color="success"
+                      @click="handleHostWait"
+                      :disabled="!isRoundActive || loading.isHostWait || roundStatus !== 'round-init'"
+                    >
+                      <v-progress-circular
+                        indeterminate
+                        :width="3"
+                        :size="20"
+                        color="white"
+                        v-show="loading.isHostWait"
+                      ></v-progress-circular>
+                      <span v-show="!loading.isHostWait">開放排莊</span>
+                    </v-btn>
+                  </v-col>
+                  <v-col cols="6">
+                    <v-btn
+                      block
+                      class="ml-2"
+                      color="success"
+                      @click="handleHostSelect"
+                      :disabled="!isRoundActive || loading.isHostSelect || roundStatus !== 'round-host-wait'"
+                    >
+                      <v-progress-circular
+                        indeterminate
+                        :width="3"
+                        :size="20"
+                        color="white"
+                        v-show="loading.isHostSelect"
+                      ></v-progress-circular>
+                      <span v-show="!loading.isHostSelect">
+                        設置上莊
+                        {{ roundStatus === 'round-host-bet' ? '(已下注)' : roundStatus === 'round-host-select' ? '(未下注)' : '' }}
+                      </span>
+                    </v-btn>
+                  </v-col>
+                  <v-col cols="6">
+                    <v-btn
+                      block
+                      color="success"
+                      @click="handleCohostWait"
+                      :disabled="!isRoundActive || loading.isCohostWait || roundStatus !== 'round-host-bet'"
+                    >
+                      <v-progress-circular
+                        indeterminate
+                        :width="3"
+                        :size="20"
+                        color="white"
+                        v-show="loading.isCohostWait"
+                      ></v-progress-circular>
+                      <span v-show="!loading.isCohostWait">開放配莊</span>
+                    </v-btn>
+                  </v-col>
+                  <v-col cols="6">
+                    <v-btn
+                      block
+                      class="ml-2"
+                      color="error"
+                      @click="handleCohostSelect"
+                      :disabled="!isRoundActive || loading.isCohostSelect || roundStatus !== 'round-cohost-wait'"
+                    >
+                      <v-progress-circular
+                        indeterminate
+                        :width="3"
+                        :size="20"
+                        color="white"
+                        v-show="loading.isCohostSelect"
+                      ></v-progress-circular>
+                      <span v-show="!loading.isCohostSelect">停止配莊</span>
+                    </v-btn>
+                  </v-col>
+                  <v-col cols="6">
+                    <v-btn
+                      block
+                      color="success"
+                      @click="handleAllowBet(true)"
+                      :disabled="!isRoundActive || loading.isPlayerBetAllow || roundStatus !== 'round-cohost-select'"
+                    >
+                      <v-progress-circular
+                        indeterminate
+                        :width="3"
+                        :size="20"
+                        color="white"
+                        v-show="loading.isPlayerBetAllow"
+                      ></v-progress-circular>
+                      <span v-show="!loading.isPlayerBetAllow">開放玩家下注</span>
+                    </v-btn>
+                  </v-col>
+                  <v-col cols="6">
+                    <v-btn
+                      block
+                      class="ml-2"
+                      color="error"
+                      @click="handleAllowBet(false)"
+                      :disabled="!isRoundActive || loading.isPlayerBetDisallow || roundStatus !== 'player-bet-allow'"
+                    >
+                      <v-progress-circular
+                        indeterminate
+                        :width="3"
+                        :size="20"
+                        color="white"
+                        v-show="loading.isPlayerBetDisallow"
+                        :disabled="!isRoundActive || loading.isPlayerBetDisallow"
+                      ></v-progress-circular>
+                      <span v-show="!loading.isPlayerBetDisallow">鎖盤</span>
+                    </v-btn>
+                  </v-col>
+                </v-row>
               </v-col>
-              <v-col cols="12">
-                <v-btn
-                  color="success"
-                  @click="handleCohostWait"
-                  :disabled="!isRoundActive || loading.isCohostWait || roundStatus !== 'round-host-bet'"
-                >
-                  <v-progress-circular
-                    indeterminate
-                    :width="3"
-                    :size="20"
-                    color="white"
-                    v-show="loading.isCohostWait"
-                  ></v-progress-circular>
-                  <span v-show="!loading.isCohostWait">開放配莊</span>
-                </v-btn>
-                <v-btn
-                  class="ml-2"
-                  color="error"
-                  @click="handleCohostSelect"
-                  :disabled="!isRoundActive || loading.isCohostSelect || roundStatus !== 'round-cohost-wait'"
-                >
-                  <v-progress-circular
-                    indeterminate
-                    :width="3"
-                    :size="20"
-                    color="white"
-                    v-show="loading.isCohostSelect"
-                  ></v-progress-circular>
-                  <span v-show="!loading.isCohostSelect">停止配莊</span>
-                </v-btn>
-              </v-col>
-              <v-col cols="12">
-                 <v-btn
-                  color="success"
-                  @click="handleAllowBet(true)"
-                  :disabled="!isRoundActive || loading.isPlayerBetAllow || roundStatus !== 'round-cohost-select'"
-                >
-                  <v-progress-circular
-                    indeterminate
-                    :width="3"
-                    :size="20"
-                    color="white"
-                    v-show="loading.isPlayerBetAllow"
-                  ></v-progress-circular>
-                  <span v-show="!loading.isPlayerBetAllow">開放玩家下注</span>
-                </v-btn>
-                <v-btn
-                  class="ml-2"
-                  color="error"
-                  @click="handleAllowBet(false)"
-                  :disabled="!isRoundActive || loading.isPlayerBetDisallow || roundStatus !== 'player-bet-allow'"
-                >
-                  <v-progress-circular
-                    indeterminate
-                    :width="3"
-                    :size="20"
-                    color="white"
-                    v-show="loading.isPlayerBetDisallow"
-                    :disabled="!isRoundActive || loading.isPlayerBetDisallow"
-                  ></v-progress-circular>
-                  <span v-show="!loading.isPlayerBetDisallow">鎖盤</span>
-                </v-btn>
+              <v-col cols="12" md="8" offset-md="1">
+                 <v-card>
+                  <v-card-title>排莊隊列</v-card-title>
+                  <v-card-subtitle>用戶識別碼</v-card-subtitle>
+                  <v-card-text>
+                    <v-textarea v-text="hostApplyListText" readonly></v-textarea>
+                  </v-card-text>
+                </v-card>
               </v-col>
             </v-row>
-          </v-card-subtitle>
-          <v-card-text>
             <v-row>
               <v-col cols="12" md="4">
                 <v-row>
@@ -239,10 +262,38 @@
                   </v-card-text>
                 </v-card> -->
                 <v-card>
-                  <v-card-title>排莊隊列</v-card-title>
-                  <v-card-subtitle>用戶識別碼</v-card-subtitle>
+                  <v-card-title>
+                    聊天室
+                    <v-btn class="ml-2" color="error" @click="handleClearChat">清空</v-btn>
+                  </v-card-title>
                   <v-card-text>
-                    <v-textarea v-text="hostApplyListText" readonly></v-textarea>
+                    <v-virtual-scroll
+                      :bench="0"
+                      :items="chatList"
+                      height="300"
+                      item-height="64"
+                    >
+                      <template v-slot:default="{ item }">
+                        <v-list-item :key="item.id">
+                          <v-list-item-content>
+                            <v-list-item-subtitle>
+                              {{ item.senderId === userId ? '自己' : `會員:&nbsp;${item.senderId}` }}
+                            </v-list-item-subtitle>
+                            <v-list-item-title>
+                              {{ item.value }}
+                            </v-list-item-title>
+                          </v-list-item-content>
+                        </v-list-item>
+                        <v-divider></v-divider>
+                      </template>
+                    </v-virtual-scroll>
+                    <v-text-field
+                      solo
+                      hide-details
+                      v-model="chatMessage"
+                      @keyup.enter="handleSendText"
+                      placeholder="輸入訊息..."
+                    ></v-text-field>
                   </v-card-text>
                 </v-card>
               </v-col>
@@ -332,15 +383,62 @@
 
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
-import { errorStore, sysStore } from '~/store'
+import { authStore, chatStore, errorStore, sysStore } from '~/store'
 import { $api } from '~/utils/api'
 import { httpResponseMapper } from '~/utils/http'
-import { init, sendMessage } from '~/utils/ws'
+import { init, initChat, sendMessage } from '~/utils/ws'
 
 @Component({
   layout: 'admin'
 })
 export default class RecordIndex extends Vue {
+  private get userId(): string {
+    return authStore.info.id
+  }
+
+  private get chatList(): any[] {
+    if (chatStore.messageList.length) {
+      return chatStore.messageList.map((item, index) => {
+        return {
+          id: index.toString(),
+          value: item.content,
+          senderId: item.userId,
+          timestamp: item.timestamp
+        }
+      })
+    } else {
+      return []
+    }
+  }
+
+  private chatMessage: string = ''
+
+  private handleSendText(): void {
+    if (this.chatMessage.length > 50) {
+      this.snackbar.text = '最多發送 50 字元'
+      this.snackbar.toggle = true
+    } else if (this.chatMessage !== '' && this.wsChat) {
+      sendMessage(this.wsChat, {
+        message: 'chat-push',
+        data: {
+          userId: this.userId,
+          content: this.chatMessage
+        }
+      })
+      this.chatMessage = ''
+    }
+  }
+
+  private handleClearChat(): void {
+    if (this.wsChat) {
+      sendMessage(this.wsChat, { message: 'chat-clear' })
+      this.snackbar.text = '清除成功'
+    } else {
+      this.snackbar.text = '清除失敗: 系統錯誤'
+    }
+    this.snackbar.toggle = true
+  }
+
   private get hostApplyList(): any[] {
     return sysStore.hostApplyList
   }
@@ -628,8 +726,11 @@ export default class RecordIndex extends Vue {
 
   private ws: WebSocket | null = null
 
+  private wsChat: WebSocket | null = null
+
   private wsInit() {
     this.ws = init()
+    this.wsChat = initChat()
   }
 
   private async created() {

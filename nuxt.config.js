@@ -71,7 +71,8 @@ export default {
   },
   env: {
     PROXY_URL: process.env.NUXT_ENV_PROXY_URL,
-    WS_GAME_URL: process.env.NUXT_ENV_WS_GAME_URL
+    WS_GAME_URL: process.env.NUXT_ENV_WS_GAME_URL,
+    WS_CHAT_URL: process.env.NUXT_ENV_WS_CHAT_URL
   },
   // loading: {
   //   color: '#fff',
