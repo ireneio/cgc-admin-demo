@@ -19,7 +19,7 @@
             <template v-slot:top>
               <v-text-field
                 v-model="tableSearch"
-                label="搜尋會員帳號"
+                label="搜尋帳號或 LINE 暱稱"
                 class="mx-4"
               ></v-text-field>
             </template>
@@ -53,6 +53,7 @@ import { numberWithCommas } from '~/utils/formatters'
 export default class OrdersIndex extends Vue {
   private headers: Array<any> = [
     { text: '識別碼', value: 'id', align: 'start', sortable: true, filterable: false },
+    { text: 'LINE暱稱', value: 'user_display', align: 'start', sortable: true },
     { text: '會員帳號', value: 'user_email', align: 'start', sortable: true },
     // { text: '會員帳號識別碼', value: 'user_id', align: 'start', sortable: true },
     { text: '異動日期', value: 'created_at', align: 'start', sortable: true, filterable: false },

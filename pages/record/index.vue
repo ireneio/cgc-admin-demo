@@ -277,7 +277,7 @@
                         <v-list-item :key="item.id">
                           <v-list-item-content>
                             <v-list-item-subtitle>
-                              {{ item.senderId === userId ? '自己' : `會員:&nbsp;${item.senderId}` }}
+                              {{ item.senderId === userId ? '自己' : `會員暱稱: ${item.senderDisplayName}, 會員ID:${item.senderId}` }}
                             </v-list-item-subtitle>
                             <v-list-item-title>
                               {{ item.value }}
@@ -403,6 +403,7 @@ export default class RecordIndex extends Vue {
           id: index.toString(),
           value: item.content,
           senderId: item.userId,
+          senderDisplayName: item.displayName,
           timestamp: item.timestamp
         }
       })
@@ -422,7 +423,9 @@ export default class RecordIndex extends Vue {
         message: 'chat-push',
         data: {
           userId: this.userId,
-          content: this.chatMessage
+          content: this.chatMessage,
+          picUrl: '',
+          displayName: '現場小幫手'
         }
       })
       this.chatMessage = ''

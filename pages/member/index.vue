@@ -31,7 +31,7 @@
               <template v-slot:top>
                 <v-text-field
                   v-model="tableSearch"
-                  label="搜尋帳號或識別碼"
+                  label="搜尋帳號或 LINE 暱稱"
                   class="mx-4"
                 ></v-text-field>
                 <v-dialog
@@ -252,12 +252,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'nuxt-property-decorator'
-import { errorStore, sysStore, userStore } from '~/store'
+import { Component, Vue } from 'nuxt-property-decorator'
+import { errorStore, userStore } from '~/store'
 import { $api } from '~/utils/api'
 import { numberWithCommas, numberWithDollarSign } from '~/utils/formatters'
 import { httpResponseMapper } from '~/utils/http'
-import { isPositiveInteger } from '~/utils/number'
 
 @Component({
   layout: 'admin'
@@ -271,7 +270,8 @@ export default class MemberIndex extends Vue {
   }
 
   private headers: Array<any> = [
-    { text: '識別碼', value: 'id', align: 'start', sortable: true },
+    // { text: '識別碼', value: 'id', align: 'start', sortable: true, filterable: false },
+    { text: 'LINE暱稱', value: 'username', align: 'start', sortable: true },
     { text: '帳號', value: 'email', align: 'start', sortable: true },
     { text: '權限等級', value: 'access_level', align: 'start', sortable: true, filterable: false },
     { text: '狀態', value: 'status', align: 'start', sortable: true, filterable: false },
