@@ -1,4 +1,4 @@
-# CMS Template
+# BET MASTER
 
 ## Specs
 
