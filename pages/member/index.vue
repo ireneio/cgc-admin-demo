@@ -2,8 +2,9 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12">
-        <h2 class="mb-4">會員帳號管理</h2>
+        <h2 class="mb-4">業主帳號管理</h2>
         <v-card outlined>
+          <v-card-subtitle>*註: 1 支 = 4 局</v-card-subtitle>
           <v-toolbar flat>
             <v-btn
               color="primary"
@@ -25,13 +26,11 @@
               :mobile-breakpoint="1023"
               class="elevation-1 mt-4"
               @click:row="handleRowClick"
-              @item-selected="handleSelectItem"
-              @toggle-select-all="handleSelectItemAll"
             >
               <template v-slot:top>
                 <v-text-field
                   v-model="tableSearch"
-                  label="搜尋帳號或 LINE 暱稱"
+                  label="搜尋帳號或暱稱"
                   class="mx-4"
                 ></v-text-field>
                 <v-dialog
@@ -53,7 +52,7 @@
                             <v-text-field
                               v-model="form.username"
                               label="帳號"
-                              counter="50"
+                              counter="12"
                             ></v-text-field>
                           </v-col>
                           <v-col
@@ -62,7 +61,16 @@
                             <v-text-field
                               v-model="form.password"
                               label="密碼"
-                              counter="50"
+                              counter="12"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col
+                            cols="12"
+                          >
+                            <v-text-field
+                              v-model="form.description"
+                              label="暱稱"
+                              counter="30"
                             ></v-text-field>
                           </v-col>
                         </v-row>
@@ -125,9 +133,59 @@
                 >
                   <v-card>
                     <v-card-title>
-                      <span class="headline">{{ dialog.detailTitle }}</span>
+                      <v-tabs
+                        v-model="tab.current"
+                      >
+                        <v-tabs-slider color="primary"></v-tabs-slider>
+                        <v-tab
+                          v-for="item in tab.items"
+                          :key="item.key"
+                        >
+                          {{ item.value }}
+                        </v-tab>
+                      </v-tabs>
                     </v-card-title>
-                    <v-card-subtitle class="mt-4" v-show="!fundLoading">
+                    <v-card-title>
+                      <span>{{ dialog.detailTitle }}</span>
+                    </v-card-title>
+                    <v-card-text v-show="tab.current === 0">
+                      <v-container>
+                        <v-row v-show="!isUpdateInfoLoading">
+                          <!-- <v-col
+                            cols="12"
+                          >
+                            <v-text-field
+                              v-model="form.password"
+                              label="密碼"
+                              counter="12"
+                            ></v-text-field>
+                          </v-col> -->
+                          <v-col
+                            cols="12"
+                          >
+                            <v-text-field
+                              v-model="form.description"
+                              label="暱稱"
+                              counter="30"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12">
+                            <v-btn color="primary" @click="handleUpdate">更新</v-btn>
+                          </v-col>
+                        </v-row>
+                        <v-row v-show="isUpdateInfoLoading">
+                          <v-col cols="12">
+                            <div class="d-flex justify-center w-100 align-center" style="height: 200px;">
+                              <v-progress-circular
+                                indeterminate
+                                color="primary"
+                              ></v-progress-circular>
+                            </div>
+                          </v-col>
+                        </v-row>
+                      </v-container>
+                    </v-card-text>
+                    <v-card-subtitle class="mt-4" v-show="!fundLoading && tab.current === 1">
                       <v-btn
                         color="success"
                         @click="handleAddFund"
@@ -138,7 +196,7 @@
                       <v-text-field
                         @input="handleFund"
                         :value="fund"
-                        label="充值額度"
+                        label="充值額度(支)"
                         hint="僅限 > 0 的整數"
                         :disabled="true"
                         :error="isFundInputError"
@@ -173,7 +231,7 @@
                         取消
                       </v-btn>
                     </v-card-subtitle>
-                    <v-card-subtitle v-show="fundLoading">
+                    <v-card-subtitle v-show="fundLoading && tab.current === 1">
                       <div class="d-flex justify-center w-100 mt-4">
                         <v-progress-circular
                           indeterminate
@@ -181,7 +239,7 @@
                         ></v-progress-circular>
                       </div>
                     </v-card-subtitle>
-                    <v-card-text v-show="!fundLoading">
+                    <v-card-text v-show="!fundLoading && tab.current === 1">
                       <v-simple-table>
                         <template v-slot:default>
                           <tbody>
@@ -191,13 +249,7 @@
                             >
                               <td>{{ key }}</td>
                               <td>
-                                <div v-if="key !== '狀態'">{{ value }}</div>
-                                <v-chip
-                                  :color="value ? 'primary' : 'error'"
-                                  v-if="key === '狀態'"
-                                >
-                                  {{ value }}
-                                </v-chip>
+                                <div>{{ value }}</div>
                               </td>
                             </tr>
                           </tbody>
@@ -252,7 +304,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator'
+import { Component, Vue, Watch } from 'nuxt-property-decorator'
 import { errorStore, userStore } from '~/store'
 import { $api } from '~/utils/api'
 import { numberWithCommas, numberWithDollarSign } from '~/utils/formatters'
@@ -262,6 +314,19 @@ import { httpResponseMapper } from '~/utils/http'
   layout: 'admin'
 })
 export default class MemberIndex extends Vue {
+  private tab = {
+    current: 0,
+    items: [
+      { key: '0', value: '基本資訊' },
+      { key: '1', value: '錢包資訊' }
+    ]
+  }
+
+  @Watch('tab.current', { immediate: true })
+  private onTabChange(newVal: number) {
+    this.dialog.detailTitle = this.tab.items[newVal].value
+  }
+
   private snackbar = {
     toggle: false,
     timeout: 5000,
@@ -271,12 +336,13 @@ export default class MemberIndex extends Vue {
 
   private headers: Array<any> = [
     // { text: '識別碼', value: 'id', align: 'start', sortable: true, filterable: false },
-    { text: 'LINE暱稱', value: 'username', align: 'start', sortable: true },
+    { text: '暱稱', value: 'description', align: 'start', sortable: true },
     { text: '帳號', value: 'email', align: 'start', sortable: true },
+    { text: '剩餘額度(支)', value: 'balance_total', align: 'start', sortable: true, filterable: false },
     { text: '權限等級', value: 'access_level', align: 'start', sortable: true, filterable: false },
     { text: '狀態', value: 'status', align: 'start', sortable: true, filterable: false },
-    { text: '建立日期', value: 'created_at', align: 'start', sortable: true, filterable: false },
     { text: '最後登入', value: 'last_login', align: 'start', sortable: true, filterable: false },
+    { text: '建立日期', value: 'created_at', align: 'start', sortable: true, filterable: false },
     { text: '', value: 'misc', align: 'start', sortable: false }
   ]
 
@@ -316,7 +382,8 @@ export default class MemberIndex extends Vue {
     id: '',
     username: '',
     perm: '',
-    password: ''
+    password: '',
+    description: ''
   }
 
   private dialog: any = {
@@ -337,29 +404,11 @@ export default class MemberIndex extends Vue {
     errorTitle: 'Server Error. Please try again later.'
   }
 
-  private handleSelectItem(obj: any): void {
-    const { value, item } = obj
-    if (value === true) {
-      this.selected = [...item]
-    } else {
-      this.selected = []
-    }
-  }
-
-  private handleSelectItemAll(obj: any): void {
-    const { value, items } = obj
-    if (value === true) {
-      this.selected = [...items]
-    } else {
-      this.selected = []
-    }
-  }
-
   private get walletInfo(): any {
     if (userStore.wallets.length) {
       const { balance_total: balanceTotal, id, status } = userStore.wallets[0]
       return {
-        balance_total: numberWithDollarSign(numberWithCommas(balanceTotal)),
+        balance_total: numberWithCommas(balanceTotal / 4),
         id,
         status
       }
@@ -375,7 +424,7 @@ export default class MemberIndex extends Vue {
     const { balance_total: balanceTotal, id, status } = this.walletInfo
     return {
       識別碼: id,
-      額度: balanceTotal,
+      '額度(支)': balanceTotal,
       // 狀態: status ? '啟用' : '停用'
     }
   }
@@ -384,6 +433,9 @@ export default class MemberIndex extends Vue {
 
   private get fundList(): any[] {
     return [
+      '10',
+      '20',
+      '50',
       '100',
       '200',
       '500',
@@ -412,7 +464,7 @@ export default class MemberIndex extends Vue {
   }
 
   private handleAddFundProceed() {
-    this.dialog.fundConfirmText = `確認儲值: ${this.fund}`
+    this.dialog.fundConfirmText = `確認儲值: ${this.fund} (支)`
     this.dialog.fundConfirm = true
   }
 
@@ -422,7 +474,7 @@ export default class MemberIndex extends Vue {
       this.fundLoading = true
       const requestBody = {
         walletId: this.walletInfo.id,
-        amount: this.fund.includes(',') ? Number(this.fund.split(',').join('')) : Number(this.fund),
+        amount: this.fund.includes(',') ? Number(this.fund.split(',').join('')) * 4 : Number(this.fund) * 4,
         direction: true
       }
       const result = await $api.post('/transaction', requestBody)
@@ -433,6 +485,7 @@ export default class MemberIndex extends Vue {
       this.dialog.detailInput = false
       this.snackbar.toggle = true
       this.snackbar.text = '充值成功'
+      await userStore.getUsers()
     }
   }
 
@@ -440,8 +493,6 @@ export default class MemberIndex extends Vue {
     this.fund = this.fundList[0]
     this.dialog.detailInput = false
   }
-
-  // private handleTerminate() {}
 
   private handleWalletInfoClose() {
     this.dialog.detail = false
@@ -453,10 +504,35 @@ export default class MemberIndex extends Vue {
   private currentUserId: string = ''
 
   private async handleRowClick(row: any, col: any): Promise<void> {
-    const { id } = row
+    const { id, description } = row
     this.dialog.detail = true
     await userStore.getWallets(id)
     this.currentUserId = id
+    this.form.description = description
+    this.form.id = id
+  }
+
+  private isUpdateInfoLoading: boolean = false
+
+  private async handleUpdate() {
+    const { id, description } = this.form
+    if (description.length > 30) {
+      this.snackbar.text = '大於字數限制'
+      this.snackbar.toggle = true
+      return
+    }
+    this.isUpdateInfoLoading = true
+    const result = await $api.post('/user', { id, description, action: 'update' })
+    httpResponseMapper(result)
+    if (errorStore.isActive) {
+      this.snackbar.text = `更新帳號失敗: ${errorStore.message}`
+      errorStore.clearError()
+    } else {
+      await userStore.getUsers()
+      this.snackbar.text = '更新帳號成功'
+    }
+    this.snackbar.toggle = true
+    this.isUpdateInfoLoading = false
   }
 
   private clearForm(): void {
@@ -464,7 +540,8 @@ export default class MemberIndex extends Vue {
       id: '',
       username: '',
       perm: '',
-      password: ''
+      password: '',
+      description: ''
     }
   }
 
@@ -487,6 +564,11 @@ export default class MemberIndex extends Vue {
   }
 
   private async handleCreateSave() {
+    if (this.form.description.length > 30) {
+      this.snackbar.text = '大於字數限制'
+      this.snackbar.toggle = true
+      return
+    }
     const result = await $api.post('/user', { ...this.form, perm: '2', action: 'create' })
     httpResponseMapper(result)
     if (errorStore.isActive) {

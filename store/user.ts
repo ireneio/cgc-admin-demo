@@ -23,7 +23,7 @@ export default class UserModule extends VuexModule {
       return {
         ...item,
         created_at: dateDisplayYYYYMMDDHHMMSS(item.created_at),
-        access_level: item.access_level === '6' ? '管理員' : '現場人員',
+        access_level: item.access_level === '6' ? '後台管理員' : '管理員',
         status: item.status ? '啟用' : '停用'
       }
     })
@@ -35,8 +35,9 @@ export default class UserModule extends VuexModule {
         ...item,
         created_at: dateDisplayYYYYMMDDHHMMSS(item.created_at),
         last_login: dateDisplayYYYYMMDDHHMMSS(item.last_login),
-        access_level: item.access_level === '2' ? '會員' : '訪客',
-        status: item.status ? '啟用' : '停用'
+        access_level: item.access_level === '3' ? '業主' : item.access_level === '2' ? '業主會員' : '',
+        status: item.status ? '啟用' : '停用',
+        balance_total: item.balance_total / 4
       }
     })
   }

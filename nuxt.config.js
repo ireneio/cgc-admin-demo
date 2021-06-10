@@ -4,11 +4,11 @@ export default {
 
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
-    title: 'Bet Bucket CMS',
+    title: 'Bet Bucket Master',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: 'Bet Bucket CMS' }
+      { hid: 'description', name: 'description', content: 'Bet Bucket Master' }
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
   },
@@ -41,8 +41,7 @@ export default {
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
     // https://go.nuxtjs.dev/axios
-    '@nuxtjs/axios',
-    'cookie-universal-nuxt'
+    '@nuxtjs/axios'
   ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
@@ -74,12 +73,12 @@ export default {
     WS_GAME_URL: process.env.NUXT_ENV_WS_GAME_URL,
     WS_CHAT_URL: process.env.NUXT_ENV_WS_CHAT_URL
   },
-  // loading: {
-  //   color: '#fff',
-  //   height: '2px'
-  // },
   loading: '~/components/DefaultLoading.vue',
   vuetify: {
     optionsPath: './vuetify.options.js'
+  },
+  server: {
+    port: 3002,
+    host: '0.0.0.0'
   }
 }

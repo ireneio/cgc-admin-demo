@@ -2,8 +2,9 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12">
-        <h2 class="mb-4">注單紀錄</h2>
+        <h2 class="mb-4">局數交易紀錄</h2>
         <v-card outlined>
+          <v-card-subtitle>*註: 1 支 = 4 局</v-card-subtitle>
           <v-card-text>
             <v-data-table
               :headers="headers"
@@ -19,7 +20,7 @@
             <template v-slot:top>
               <v-text-field
                 v-model="tableSearch"
-                label="搜尋帳號或 LINE 暱稱"
+                label="搜尋帳號或暱稱"
                 class="mx-4"
               ></v-text-field>
             </template>
@@ -52,14 +53,14 @@ import { numberWithCommas } from '~/utils/formatters'
 })
 export default class OrdersIndex extends Vue {
   private headers: Array<any> = [
-    { text: '識別碼', value: 'id', align: 'start', sortable: true, filterable: false },
-    { text: 'LINE暱稱', value: 'user_display', align: 'start', sortable: true },
+    // { text: '識別碼', value: 'id', align: 'start', sortable: true, filterable: false },
+    { text: '暱稱', value: 'user_display', align: 'start', sortable: true },
     { text: '會員帳號', value: 'user_email', align: 'start', sortable: true },
     // { text: '會員帳號識別碼', value: 'user_id', align: 'start', sortable: true },
     { text: '異動日期', value: 'created_at', align: 'start', sortable: true, filterable: false },
     { text: '異動類型', value: 'direction', align: 'start', sortable: true, filterable: false },
-    { text: '異動額度', value: 'balance_change', align: 'start', sortable: true, filterable: false },
-    { text: '剩餘額度', value: 'wallet_balance', align: 'start', sortable: true, filterable: false },
+    { text: '異動額度(支)', value: 'balance_change', align: 'start', sortable: true, filterable: false },
+    { text: '剩餘額度(支)', value: 'wallet_balance', align: 'start', sortable: true, filterable: false },
   ]
 
   private get tableData(): Array<any> {
@@ -67,8 +68,8 @@ export default class OrdersIndex extends Vue {
       return {
         ...item,
         direction: item.direction ? '新增' : '扣除',
-        balance_change: item.direction ? `+ ${numberWithCommas(item.balance_change)}` : `- ${numberWithCommas(item.balance_change)}`,
-        wallet_balance: numberWithCommas(item.wallet_balance)
+        balance_change: item.direction ? `+ ${numberWithCommas(item.balance_change / 4)}` : `- ${numberWithCommas(item.balance_change / 4)}`,
+        wallet_balance: numberWithCommas(item.wallet_balance / 4)
       }
     })
   }

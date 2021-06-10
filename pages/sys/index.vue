@@ -24,8 +24,6 @@
               :mobile-breakpoint="1023"
               class="elevation-1 mt-4"
               @click:row="handleRowClick"
-              @item-selected="handleSelectItem"
-              @toggle-select-all="handleSelectItemAll"
             >
               <template v-slot:top>
                 <v-dialog
@@ -147,7 +145,7 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'nuxt-property-decorator'
-import { errorStore, sysStore, userStore } from '~/store'
+import { errorStore, userStore } from '~/store'
 import { $api } from '~/utils/api'
 import { httpResponseMapper } from '~/utils/http'
 
@@ -191,11 +189,11 @@ export default class SysIndex extends Vue {
 
   private selectPerm: Array<any> = [
     {
-      text: '管理員',
+      text: '後台管理員',
       value: '6'
     },
     {
-      text: '現場人員',
+      text: '管理員',
       value: '5'
     }
   ]
@@ -218,24 +216,6 @@ export default class SysIndex extends Vue {
     newTitle: '建立帳號',
     error: false,
     errorTitle: 'Server Error. Please try again later.'
-  }
-
-  private handleSelectItem(obj: any): void {
-    const { value, item } = obj
-    if (value === true) {
-      this.selected = [...item]
-    } else {
-      this.selected = []
-    }
-  }
-
-  private handleSelectItemAll(obj: any): void {
-    const { value, items } = obj
-    if (value === true) {
-      this.selected = [...items]
-    } else {
-      this.selected = []
-    }
   }
 
   private handleRowClick(row: any, col: any): void {

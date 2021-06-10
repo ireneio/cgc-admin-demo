@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "cross-env NUXT_ENV_WS_CHAT_URL=ws://localhost:8081/ws/chat NUXT_ENV_WS_GAME_URL=ws://localhost:8081/ws/game NUXT_ENV_PROXY_URL=http://localhost:8081 nuxt-ts",
+    "dev": "cross-env NUXT_ENV_WS_CHAT_URL=ws://localhost:8082/ws/chat NUXT_ENV_WS_GAME_URL=ws://localhost:8082/ws/game NUXT_ENV_PROXY_URL=http://localhost:8082 nuxt-ts",
     "build:dev": "cross-env NODE_ENV=development NUXT_HOST=0.0.0.0 NUXT_PORT=3000 nuxt-ts build",
     "build": "cross-env NODE_ENV=production NUXT_HOST=0.0.0.0 NUXT_PORT=3000 nuxt-ts build",
     "start": "cross-env NODE_ENV=production NUXT_HOST=0.0.0.0 NUXT_PORT=3000 nuxt-ts start",
@@ -25,7 +25,6 @@
     "babel-eslint": "^10.1.0",
     "babel-jest": "^26.3.0",
     "chart.js": "^2.9.4",
-    "cookie-universal-nuxt": "^2.1.4",
     "core-js": "^2.6.5",
     "cross-env": "^7.0.2",
     "node-sass": "^4.14.1",

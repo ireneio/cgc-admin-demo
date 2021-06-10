@@ -241,7 +241,7 @@ export default class DefaultLayout extends Vue {
       username: '歡迎,',
       companyName: authStore.info.email ? authStore.info.email : 'username',
       dp: '',
-      h1: '業主管理後台',
+      h1: '總控管理後台',
       lastUpdated: new Date().toLocaleDateString('en',
       { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' }),
       version: '1.0.0',
@@ -287,45 +287,9 @@ export default class DefaultLayout extends Vue {
 
   private items: Array<any> = [
     {
-      icon: 'mdi-chart-areaspline',
-      'icon-alt': 'mdi-chart-areaspline-variant',
-      text: '遊戲管理',
-      model: false,
-      allowAccess: '5',
-      children: [
-        {
-          text: '遊戲操作',
-          icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'record',
-          allowAccess: '5'
-        },
-        {
-          text: '遊戲設定',
-          icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'setting',
-          allowAccess: '6'
-        }
-      ]
-    },
-    {
-      icon: 'mdi-calendar-text',
-      'icon-alt': 'mdi-calendar-text-outline',
-      text: '注單管理',
-      model: false,
-      allowAccess: '5',
-      children: [
-        {
-          text: '注單紀錄',
-          icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'orders',
-          allowAccess: '5'
-        }
-      ]
-    },
-    {
       icon: 'mdi-account-box-multiple',
       'icon-alt': 'mdi-account-box-multiple-outline',
-      text: '會員管理',
+      text: '業主管理',
       model: false,
       allowAccess: '5',
       children: [
@@ -333,6 +297,12 @@ export default class DefaultLayout extends Vue {
           text: '帳號管理',
           icon: 'mdi-checkbox-blank-circle-outline',
           route: 'member',
+          allowAccess: '5'
+        },
+        {
+          text: '交易紀錄',
+          icon: 'mdi-checkbox-blank-circle-outline',
+          route: 'orders',
           allowAccess: '5'
         }
       ]
