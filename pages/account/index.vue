@@ -77,7 +77,6 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
-import { User } from 'SignIn'
 import { authStore, errorStore } from '~/store'
 
 @Component({

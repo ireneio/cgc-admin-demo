@@ -1,5 +1,4 @@
 import { Module, VuexModule, Action, Mutation } from 'vuex-module-decorators'
-import { SignInForm, User } from 'SignIn'
 import { ResponseObject } from 'Http'
 import { $api } from '~/utils/api'
 import { httpResponseMapper } from '~/utils/http'

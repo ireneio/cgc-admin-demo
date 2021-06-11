@@ -1,6 +1,6 @@
 import { Context } from '@nuxt/types'
 import { ResponseObject } from 'Http'
-import { $api, $apiFe } from '~/utils/api'
+import { $api } from '~/utils/api'
 import { httpResponseMapper } from '~/utils/http'
 
 function isSignInPage(ctx: Context): boolean {
@@ -8,40 +8,23 @@ function isSignInPage(ctx: Context): boolean {
 }
 
 async function verification(type: string, token: string): Promise<any> {
-  if (type === 'admin') {
-    const result: ResponseObject = await $api.get('/auth/local/verify', { headers: { Authorization: `Bearer ${token}` } })
-    return httpResponseMapper(result)
-  } else {
-    const result: ResponseObject = await $apiFe.get('/auth/local/verify', { headers: { Authorization: `Bearer ${token}` } })
-    return httpResponseMapper(result)
-  }
+  const result: ResponseObject = await $api.get('/auth/local/verify', { headers: { Authorization: `Bearer ${token}`, area: 'm' } })
+  return httpResponseMapper(result)
 }
 
 async function tokenAcquisition(type: string, ctx: Context): Promise<any> {
   const { email, id } = ctx.store.state.auth.info
-  if (type === 'admin') {
-    const result = await $api.get(`/auth/local?email=${email}&id=${id}`)
-    return httpResponseMapper(result)
-  } else {
-    const result = await $apiFe.get(`/auth/local?email=${email}&id=${id}`)
-    return httpResponseMapper(result)
-  }
+  const result = await $api.get(`/auth/local?email=${email}&id=${id}`)
+  return httpResponseMapper(result)
 }
 
-async function profile(type: string, token: string): Promise<any> {
-  if (type === 'admin') {
-    const result: ResponseObject = await $api.get(
-      '/auth/local/info',
-      { headers: { Authorization: `Bearer ${token}` } }
-    )
-    return httpResponseMapper(result)
-  } else {
-    const result: ResponseObject = await $apiFe.get(
-      '/auth/local/info',
-      { headers: { Authorization: `Bearer ${token}` } }
-    )
-    return httpResponseMapper(result)
-  }
+async function profile(type: string, token: string, ctx: Context): Promise<any> {
+  const { email } = ctx.store.state.auth.info
+  const result: ResponseObject = await $api.get(
+    `/auth/local/info?email=${email}`,
+    { headers: { Authorization: `Bearer ${token}` } }
+  )
+  return httpResponseMapper(result)
 }
 
 export async function authHelper(failPath: string, successPath: string, ctx: Context, type: string) {
@@ -51,6 +34,7 @@ export async function authHelper(failPath: string, successPath: string, ctx: Con
   if (token !== 'undefined' && token !== undefined && token !== null) {
     try {
       const verificationResult = await verification(type, token)
+
       if (!verificationResult.t) {
         if (attempts >= 2) {
           attempts = 0
@@ -66,12 +50,11 @@ export async function authHelper(failPath: string, successPath: string, ctx: Con
       } else if (isSignInPage(ctx)) {
         redirect(successPath)
       } else {
-        const profileResult = await profile(type, token)
         store.commit('auth/setTokenLocal', verificationResult)
+        const profileResult = await profile(type, token, ctx)
         store.commit('auth/setInfo', profileResult)
       }
     } catch (e) {
-      console.log('reach error')
       // !isSignInPage(ctx) && redirect(failPath)
       redirect(failPath)
     }

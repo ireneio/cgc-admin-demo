@@ -1,7 +1,6 @@
 import { Module, VuexModule, Action, Mutation } from 'vuex-module-decorators'
-import { SignInForm, User } from 'SignIn'
 import { ResponseObject } from 'Http'
-import { $api, $apiFe } from '~/utils/api'
+import { $api } from '~/utils/api'
 import { httpResponseMapper } from '~/utils/http'
 
 @Module({
@@ -40,21 +39,6 @@ export default class AuthModule extends VuexModule {
 
     try {
       const result: ResponseObject = await $api.post('/auth/local/signIn', requestBody)
-      return httpResponseMapper(result)
-    } catch (e) {
-      throw new Error(e)
-    }
-  }
-
-  @Action({ commit: 'setTokenLocal' })
-  public async getTokenLocalUser({ email, password }: { email: string, password: string }) {
-    const requestBody = {
-      email,
-      password
-    }
-
-    try {
-      const result: ResponseObject = await $apiFe.post('/auth/local/signIn', requestBody)
       return httpResponseMapper(result)
     } catch (e) {
       throw new Error(e)
