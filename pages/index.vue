@@ -17,7 +17,7 @@ import { Component, Vue } from 'nuxt-property-decorator'
 export default class Index extends Vue {
   private beforeRouteEnter(to: any, from: any, next: Function) {
     next((vm: Vue) => {
-      // vm.$router.push('/account')
+      vm.$router.push('/account')
     })
   }
 }
