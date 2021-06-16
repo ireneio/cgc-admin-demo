@@ -30,7 +30,7 @@ export default class UserModule extends VuexModule {
   }
 
   public get users(): any[] {
-    return this._users.map((item: any) => {
+    return this._users.length > 0 ? this._users.map((item: any) => {
       return {
         ...item,
         created_at: dateDisplayYYYYMMDDHHMMSS(item.created_at),
@@ -39,7 +39,7 @@ export default class UserModule extends VuexModule {
         status: item.status ? '啟用' : '停用',
         balance_total: item.balance_total / 4
       }
-    })
+    }) : []
   }
 
   public get wallets(): any[] {
