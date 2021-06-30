@@ -35,6 +35,12 @@
                 {{ value }}
               </v-layout>
             </template>
+            <template v-slot:item.balance_change_raw="{ value }">
+              <v-layout justify-end>
+                <div class="success--text" v-if="value.includes('+')">{{ value }}</div>
+                <div class="error--text" v-if="value.includes('-')">{{ value }}</div>
+              </v-layout>
+            </template>
             </v-data-table>
           </v-card-text>
         </v-card>
