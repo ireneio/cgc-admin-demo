@@ -339,7 +339,8 @@ export default class MemberIndex extends Vue {
     { text: '暱稱', value: 'description', align: 'start', sortable: true },
     { text: '帳號', value: 'email', align: 'start', sortable: true },
     { text: '剩餘額度(支)', value: 'balance_total', align: 'start', sortable: true, filterable: false },
-    { text: '權限等級', value: 'access_level', align: 'start', sortable: true, filterable: false },
+    { text: '剩餘額度(局)', value: 'balance_total_raw', align: 'start', sortable: true, filterable: false },
+    // { text: '權限等級', value: 'access_level', align: 'start', sortable: true, filterable: false },
     { text: '狀態', value: 'status', align: 'start', sortable: true, filterable: false },
     { text: '最後登入', value: 'last_login', align: 'start', sortable: true, filterable: false },
     { text: '建立日期', value: 'created_at', align: 'start', sortable: true, filterable: false },
@@ -409,6 +410,7 @@ export default class MemberIndex extends Vue {
       const { balance_total: balanceTotal, id, status } = userStore.wallets[0]
       return {
         balance_total: numberWithCommas(balanceTotal / 4),
+        balance_total_raw: numberWithCommas(balanceTotal),
         id,
         status
       }
@@ -421,10 +423,11 @@ export default class MemberIndex extends Vue {
   }
 
   private get walletInfoMap() {
-    const { balance_total: balanceTotal, id, status } = this.walletInfo
+    const { balance_total: balanceTotal, id, status, balance_total_raw: balanceTotalRaw } = this.walletInfo
     return {
       識別碼: id,
       '額度(支)': balanceTotal,
+      '額度(局)': balanceTotalRaw
       // 狀態: status ? '啟用' : '停用'
     }
   }

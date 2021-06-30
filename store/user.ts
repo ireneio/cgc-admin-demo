@@ -37,7 +37,8 @@ export default class UserModule extends VuexModule {
         last_login: dateDisplayYYYYMMDDHHMMSS(item.last_login),
         access_level: item.access_level === '3' ? '業主' : item.access_level === '2' ? '業主會員' : '',
         status: item.status ? '啟用' : '停用',
-        balance_total: item.balance_total / 4
+        balance_total: item.balance_total / 4,
+        balance_total_raw: item.balance_total
       }
     }) : []
   }

@@ -60,7 +60,8 @@ export default class OrdersIndex extends Vue {
     { text: '異動日期', value: 'created_at', align: 'start', sortable: true, filterable: false },
     { text: '異動類型', value: 'direction', align: 'start', sortable: true, filterable: false },
     { text: '異動額度(支)', value: 'balance_change', align: 'start', sortable: true, filterable: false },
-    { text: '剩餘額度(支)', value: 'wallet_balance', align: 'start', sortable: true, filterable: false },
+    { text: '異動額度(局)', value: 'balance_change_raw', align: 'start', sortable: true, filterable: false },
+    { text: '剩餘總額度(支)', value: 'wallet_balance', align: 'start', sortable: true, filterable: false },
   ]
 
   private get tableData(): Array<any> {
@@ -69,6 +70,7 @@ export default class OrdersIndex extends Vue {
         ...item,
         direction: item.direction ? '新增' : '扣除',
         balance_change: item.direction ? `+ ${numberWithCommas(item.balance_change / 4)}` : `- ${numberWithCommas(item.balance_change / 4)}`,
+        balance_change_raw: item.direction ? `+ ${numberWithCommas(item.balance_change)}` : `- ${numberWithCommas(item.balance_change)}`,
         wallet_balance: numberWithCommas(item.wallet_balance / 4)
       }
     })
