@@ -4,7 +4,7 @@
       <v-col cols="12">
         <h2 class="mb-4">業主帳號管理</h2>
         <v-card outlined>
-          <v-card-subtitle>*註: 1 支 = 4 局</v-card-subtitle>
+          <!-- <v-card-subtitle>*註: 1 支 = 4 局</v-card-subtitle> -->
           <v-toolbar flat>
             <v-btn
               color="primary"
