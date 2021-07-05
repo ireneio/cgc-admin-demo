@@ -196,7 +196,7 @@
                       <v-text-field
                         @input="handleFund"
                         :value="fund"
-                        label="充值額度(支)"
+                        label="充值額度(局)"
                         hint="僅限 > 0 的整數"
                         :disabled="true"
                         :error="isFundInputError"
@@ -338,7 +338,7 @@ export default class MemberIndex extends Vue {
     // { text: '識別碼', value: 'id', align: 'start', sortable: true, filterable: false },
     { text: '暱稱', value: 'description', align: 'start', sortable: true },
     { text: '帳號', value: 'email', align: 'start', sortable: true },
-    { text: '剩餘額度(支)', value: 'balance_total', align: 'start', sortable: true, filterable: false },
+    // { text: '剩餘額度(支)', value: 'balance_total', align: 'start', sortable: true, filterable: false },
     { text: '剩餘額度(局)', value: 'balance_total_raw', align: 'start', sortable: true, filterable: false },
     // { text: '權限等級', value: 'access_level', align: 'start', sortable: true, filterable: false },
     { text: '狀態', value: 'status', align: 'start', sortable: true, filterable: false },
@@ -417,6 +417,7 @@ export default class MemberIndex extends Vue {
     }
     return {
       balance_total: '$0',
+      balance_total_raw: '$0',
       id: '',
       status: false
     }
@@ -426,7 +427,7 @@ export default class MemberIndex extends Vue {
     const { balance_total: balanceTotal, id, status, balance_total_raw: balanceTotalRaw } = this.walletInfo
     return {
       識別碼: id,
-      '額度(支)': balanceTotal,
+      // '額度(支)': balanceTotal,
       '額度(局)': balanceTotalRaw
       // 狀態: status ? '啟用' : '停用'
     }
@@ -467,7 +468,7 @@ export default class MemberIndex extends Vue {
   }
 
   private handleAddFundProceed() {
-    this.dialog.fundConfirmText = `確認儲值: ${this.fund} (支)`
+    this.dialog.fundConfirmText = `確認儲值: ${this.fund} (局)`
     this.dialog.fundConfirm = true
   }
 
@@ -477,7 +478,7 @@ export default class MemberIndex extends Vue {
       this.fundLoading = true
       const requestBody = {
         walletId: this.walletInfo.id,
-        amount: this.fund.includes(',') ? Number(this.fund.split(',').join('')) * 4 : Number(this.fund) * 4,
+        amount: this.fund.includes(',') ? Number(this.fund.split(',').join('')) : Number(this.fund),
         direction: true
       }
       const result = await $api.post('/transaction', requestBody)
