@@ -4,11 +4,11 @@ export default {
 
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
-    title: 'Bet Bucket Master',
+    title: '後台 | 總控',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: 'Bet Bucket Master' }
+      { hid: 'description', name: 'description', content: '總控後台' }
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
   },
@@ -20,7 +20,6 @@ export default {
   plugins: [
     '~/plugins/vee-validate.js',
     '~/plugins/axios'
-    // '~/plugins/tiptap-vuetify'
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
@@ -69,9 +68,7 @@ export default {
     analyze: process.env.NODE_ENV !== 'production'
   },
   env: {
-    PROXY_URL: process.env.NUXT_ENV_PROXY_URL,
-    WS_GAME_URL: process.env.NUXT_ENV_WS_GAME_URL,
-    WS_CHAT_URL: process.env.NUXT_ENV_WS_CHAT_URL
+    PROXY_URL: process.env.NUXT_ENV_PROXY_URL || 'http://localhost:8082'
   },
   loading: '~/components/DefaultLoading.vue',
   vuetify: {

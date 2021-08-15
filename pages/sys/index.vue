@@ -28,7 +28,7 @@
               <template v-slot:top>
                 <v-dialog
                   v-model="dialog.new"
-                  max-width="50vw"
+                  max-width="90vw"
                   max-height="70vh"
                   persistent
                 >
@@ -144,7 +144,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'nuxt-property-decorator'
+import { Component, Vue } from 'nuxt-property-decorator'
 import { errorStore, userStore } from '~/store'
 import { $api } from '~/utils/api'
 import { httpResponseMapper } from '~/utils/http'
@@ -155,7 +155,7 @@ import { httpResponseMapper } from '~/utils/http'
 export default class SysIndex extends Vue {
   private snackbar = {
     toggle: false,
-    timeout: 5000,
+    timeout: 2000,
     closeText: '關閉',
     text: ''
   }

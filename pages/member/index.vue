@@ -15,7 +15,6 @@
           </v-toolbar>
           <v-card-text>
             <v-data-table
-              v-model="selected"
               :headers="headers"
               :items="tableData"
               :single-select="false"
@@ -35,7 +34,7 @@
                 ></v-text-field>
                 <v-dialog
                   v-model="dialog.new"
-                  max-width="50vw"
+                  max-width="90vw"
                   max-height="70vh"
                   persistent
                 >
@@ -127,7 +126,7 @@
                 </v-dialog>
                 <v-dialog
                   v-model="dialog.detail"
-                  max-width="50vw"
+                  max-width="90vw"
                   max-height="70vh"
                   persistent
                 >
@@ -145,55 +144,61 @@
                         </v-tab>
                       </v-tabs>
                     </v-card-title>
-                    <v-card-title>
+                    <!-- <v-card-title>
                       <span>{{ dialog.detailTitle }}</span>
-                    </v-card-title>
+                    </v-card-title> -->
                     <v-card-text v-show="tab.current === 0">
-                      <v-container>
-                        <v-row v-show="!isUpdateInfoLoading">
-                          <!-- <v-col
-                            cols="12"
-                          >
-                            <v-text-field
-                              v-model="form.password"
-                              label="密碼"
-                              counter="12"
-                            ></v-text-field>
-                          </v-col> -->
-                          <v-col
-                            cols="12"
-                          >
-                            <v-text-field
-                              v-model="form.description"
-                              label="暱稱"
-                              counter="30"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12">
-                            <v-btn color="primary" @click="handleUpdate">更新</v-btn>
-                          </v-col>
-                        </v-row>
-                        <v-row v-show="isUpdateInfoLoading">
-                          <v-col cols="12">
-                            <div class="d-flex justify-center w-100 align-center" style="height: 200px;">
-                              <v-progress-circular
-                                indeterminate
-                                color="primary"
-                              ></v-progress-circular>
-                            </div>
-                          </v-col>
-                        </v-row>
-                      </v-container>
+                      <v-row v-show="!isUpdateInfoLoading">
+                        <!-- <v-col
+                          cols="12"
+                        >
+                          <v-text-field
+                            v-model="form.password"
+                            label="密碼"
+                            counter="12"
+                          ></v-text-field>
+                        </v-col> -->
+                        <v-col
+                          cols="12"
+                        >
+                          <v-text-field
+                            v-model="form.description"
+                            label="暱稱"
+                            counter="30"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12">
+                          <v-btn color="primary" @click="handleUpdate">更新</v-btn>
+                        </v-col>
+                      </v-row>
+                      <v-row v-show="isUpdateInfoLoading">
+                        <v-col cols="12">
+                          <div class="d-flex justify-center w-100 align-center" style="height: 200px;">
+                            <v-progress-circular
+                              indeterminate
+                              color="primary"
+                            ></v-progress-circular>
+                          </div>
+                        </v-col>
+                      </v-row>
                     </v-card-text>
                     <v-card-subtitle class="mt-4" v-show="!fundLoading && tab.current === 1">
                       <v-btn
                         color="success"
-                        @click="handleAddFund"
+                        @click="handleAddFund(true)"
                         v-show="!dialog.detailInput"
                       >
                         <v-icon>mdi-plus</v-icon> 充值
                       </v-btn>
-                      <v-text-field
+                      <v-btn
+                        class="ml-2"
+                        color="error"
+                        @click="handleAddFund(false)"
+                        v-show="!dialog.detailInput"
+                      >
+                        <v-icon>mdi-close</v-icon> 扣除
+                      </v-btn>
+                      <!-- <v-text-field
                         @input="handleFund"
                         :value="fund"
                         label="充值額度(局)"
@@ -201,8 +206,16 @@
                         :disabled="true"
                         :error="isFundInputError"
                         v-show="dialog.detailInput"
+                      ></v-text-field> -->
+                      <v-text-field
+                        @input="handleFund"
+                        :value="fund"
+                        label="充值額度"
+                        hint="僅限 > 0 的整數"
+                        :error="isFundInputError"
+                        v-show="dialog.detailInput"
                       ></v-text-field>
-                      <div v-show="dialog.detailInput">
+                      <!-- <div v-show="dialog.detailInput">
                         <v-chip
                           class="mb-2 mr-2"
                           v-for="(item, index) in fundList"
@@ -212,7 +225,7 @@
                         >
                           {{ item }}
                         </v-chip>
-                      </div>
+                      </div> -->
                       <v-btn
                         class="mt-2"
                         color="primary"
@@ -223,7 +236,7 @@
                         確認
                       </v-btn>
                       <v-btn
-                        class="mt-2"
+                        class="mt-2 ml-2"
                         color="default"
                         @click="handleAddFundCancel"
                         v-show="dialog.detailInput"
@@ -309,6 +322,7 @@ import { errorStore, userStore } from '~/store'
 import { $api } from '~/utils/api'
 import { numberWithCommas, numberWithDollarSign } from '~/utils/formatters'
 import { httpResponseMapper } from '~/utils/http'
+import { isPositiveInteger } from '~/utils/number'
 
 @Component({
   layout: 'admin'
@@ -329,7 +343,7 @@ export default class MemberIndex extends Vue {
 
   private snackbar = {
     toggle: false,
-    timeout: 5000,
+    timeout: 2000,
     closeText: '關閉',
     text: ''
   }
@@ -343,7 +357,6 @@ export default class MemberIndex extends Vue {
     // { text: '權限等級', value: 'access_level', align: 'start', sortable: true, filterable: false },
     { text: '狀態', value: 'status', align: 'start', sortable: true, filterable: false },
     { text: '最後登入', value: 'last_login', align: 'start', sortable: true, filterable: false },
-    { text: '建立日期', value: 'created_at', align: 'start', sortable: true, filterable: false },
     { text: '', value: 'misc', align: 'start', sortable: false }
   ]
 
@@ -363,21 +376,6 @@ export default class MemberIndex extends Vue {
       multiSort: true,
       mustSort: false
   }
-
-  private selected: Array<any> = []
-
-  private singleSelect: boolean = false
-
-  private selectPerm: Array<any> = [
-    {
-      text: '管理員',
-      value: '6'
-    },
-    {
-      text: '現場人員',
-      value: '5'
-    }
-  ]
 
   private form: any = {
     id: '',
@@ -409,14 +407,14 @@ export default class MemberIndex extends Vue {
     if (userStore.wallets.length) {
       const { balance_total: balanceTotal, id, status } = userStore.wallets[0]
       return {
-        balance_total: numberWithCommas(balanceTotal / 4),
         balance_total_raw: numberWithCommas(balanceTotal),
+        balance_total: Number(balanceTotal),
         id,
         status
       }
     }
     return {
-      balance_total: '$0',
+      balance_total: 0,
       balance_total_raw: '$0',
       id: '',
       status: false
@@ -426,7 +424,7 @@ export default class MemberIndex extends Vue {
   private get walletInfoMap() {
     const { balance_total: balanceTotal, id, status, balance_total_raw: balanceTotalRaw } = this.walletInfo
     return {
-      識別碼: id,
+      // 識別碼: id,
       // '額度(支)': balanceTotal,
       '額度(局)': balanceTotalRaw
       // 狀態: status ? '啟用' : '停用'
@@ -455,31 +453,49 @@ export default class MemberIndex extends Vue {
   private fundLoading: boolean = false
 
   private get isFundInputError(): boolean {
-    // return isPositiveInteger(this.fund)
-    return this.fundList.find((item) => this.fund.split(',').join('') === item) === undefined
+    const _serialized = this.fund.split(',').join('')
+    return isPositiveInteger(_serialized)
+  }
+
+  private get isInsufficientFundError(): boolean {
+    const input = Number(this.fund.split(',').join(''))
+    return !this.fundType && input > this.walletInfo.balance_total
   }
 
   private handleFund(val: string) {
-    this.fund = isNaN(Number(val)) ? val : numberWithCommas(Number(val))
+    const _serialized = val.split(',').join('')
+    this.fund = isNaN(Number(_serialized)) ? val : numberWithCommas(Number(_serialized))
   }
 
-  private handleAddFund() {
+  private fundType: boolean = true
+
+  private handleAddFund(type: boolean) {
+    this.fundType = type
     this.dialog.detailInput = true
   }
 
   private handleAddFundProceed() {
-    this.dialog.fundConfirmText = `確認儲值: ${this.fund} (局)`
+    if (this.fundType) {
+      this.dialog.fundConfirmText = `確認儲值: ${this.fund} (局)`
+    } else {
+      this.dialog.fundConfirmText = `確認扣除: ${this.fund} (局)`
+    }
     this.dialog.fundConfirm = true
   }
 
   private async handleAddFundConfirm() {
+    if (this.isInsufficientFundError) {
+      this.snackbar.text = '無法調降額度至 0 以下'
+      this.snackbar.toggle = true
+      return
+    }
     if (!this.isFundInputError) {
       this.dialog.fundConfirm = false
       this.fundLoading = true
       const requestBody = {
         walletId: this.walletInfo.id,
         amount: this.fund.includes(',') ? Number(this.fund.split(',').join('')) : Number(this.fund),
-        direction: true
+        direction: this.fundType
       }
       const result = await $api.post('/transaction', requestBody)
       httpResponseMapper(result)
@@ -487,8 +503,12 @@ export default class MemberIndex extends Vue {
       this.fundLoading = false
       this.fund = this.fundList[0]
       this.dialog.detailInput = false
+      if (this.fundType) {
+        this.snackbar.text = '充值成功'
+      } else if (!this.fundType) {
+        this.snackbar.text = '扣除成功'
+      }
       this.snackbar.toggle = true
-      this.snackbar.text = '充值成功'
       await userStore.getUsers()
     }
   }

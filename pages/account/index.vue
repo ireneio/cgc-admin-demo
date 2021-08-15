@@ -90,7 +90,7 @@ import { authStore, errorStore } from '~/store'
 export default class AccountIndex extends Vue {
   private snackbar = {
     toggle: false,
-    timeout: 5000,
+    timeout: 2000,
     closeText: '關閉',
     text: ''
   }
