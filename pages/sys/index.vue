@@ -12,7 +12,7 @@
               <v-icon>mdi-plus</v-icon> 新增
             </v-btn>
           </v-toolbar>
-          <v-card-text>
+          <v-card-text class="pt-0">
             <v-data-table
               v-model="selected"
               :headers="headers"

@@ -4,7 +4,6 @@
       <v-col cols="12">
         <h2 class="mb-4">業主帳號管理</h2>
         <v-card outlined>
-          <!-- <v-card-subtitle>*註: 1 支 = 4 局</v-card-subtitle> -->
           <v-toolbar flat>
             <v-btn
               color="primary"
@@ -13,7 +12,7 @@
               <v-icon>mdi-plus</v-icon> 新增
             </v-btn>
           </v-toolbar>
-          <v-card-text>
+          <v-card-text class="pt-0">
             <v-data-table
               :headers="headers"
               :items="tableData"
@@ -198,15 +197,6 @@
                       >
                         <v-icon>mdi-close</v-icon> 扣除
                       </v-btn>
-                      <!-- <v-text-field
-                        @input="handleFund"
-                        :value="fund"
-                        label="充值額度(局)"
-                        hint="僅限 > 0 的整數"
-                        :disabled="true"
-                        :error="isFundInputError"
-                        v-show="dialog.detailInput"
-                      ></v-text-field> -->
                       <v-text-field
                         @input="handleFund"
                         :value="fund"
