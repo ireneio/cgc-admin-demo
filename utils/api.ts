@@ -3,7 +3,7 @@ import { AxiosInstance } from 'axios'
 
 let $nuxtAxiosInstance: NuxtAxiosInstance
 // eslint-disable-next-line import/no-mutable-exports
-let $api: AxiosInstance
+let $api: NuxtAxiosInstance
 
 export function initializeAxios(axiosInstance: NuxtAxiosInstance) {
   $nuxtAxiosInstance = axiosInstance
