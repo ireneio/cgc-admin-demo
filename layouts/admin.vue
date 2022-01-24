@@ -166,7 +166,7 @@
     <v-main>
       <v-container fluid class="pt-0">
         <v-row align="center" justify="center">
-          <v-col cols="12" class="mt-n4">
+          <v-col cols="12">
             <nuxt />
           </v-col>
         </v-row>
