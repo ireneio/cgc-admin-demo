@@ -77,7 +77,7 @@ export default class UserModule extends VuexModule {
     try {
       const result: ResponseObject = await $api.get('/user/admin')
       return httpResponseMapper(result)
-    } catch (e) {
+    } catch (e: any) {
       throw new Error(e)
     }
   }
@@ -87,7 +87,7 @@ export default class UserModule extends VuexModule {
     try {
       const result: ResponseObject = await $api.get('/user')
       return httpResponseMapper(result)
-    } catch (e) {
+    } catch (e: any) {
       throw new Error(e)
     }
   }
@@ -97,7 +97,7 @@ export default class UserModule extends VuexModule {
     try {
       const result: ResponseObject = await $api.get(`/wallet?userId=${userId}`)
       return httpResponseMapper(result)
-    } catch (e) {
+    } catch (e: any) {
       throw new Error(e)
     }
   }

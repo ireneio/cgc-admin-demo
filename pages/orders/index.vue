@@ -99,7 +99,7 @@ export default class OrdersIndex extends Vue {
   }
 
   private async created() {
-    await transactionStore.getTransaction()
+    // await transactionStore.getTransaction()
   }
 }
 </script>

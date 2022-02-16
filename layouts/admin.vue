@@ -97,38 +97,41 @@
         <v-list>
           <v-list-item>
             <v-card flat>
-              <v-btn color="primary" x-small fab @click="handleToggleTheme" style="position:absolute;right: 3rem;top:.6rem;">
+            <div class="d-flex align-center mt-2">
+              <v-btn class="ml-auto" color="primary" x-small fab @click="handleToggleTheme">
                 <v-icon v-if="$vuetify.theme.dark">mdi-white-balance-sunny</v-icon>
                 <v-icon v-if="!$vuetify.theme.dark">mdi-moon-waning-crescent</v-icon>
               </v-btn>
-              <v-btn color="primary" text x-small @click="dialog.version = !dialog.version" style="position:absolute;right: 0;top:1rem;">
+              <v-btn color="secondary" text x-small @click="dialog.version = !dialog.version">
                 <v-icon>mdi-xml</v-icon>
               </v-btn>
+            </div>
               <v-card-title>
                 <v-container>
                   <v-row>
-                    <v-col cols="4" class="px-0">
+                    <v-col cols="4" class="px-0 d-flex align-center">
                       <!-- <v-img :src="info.dP" height="60" width="60"></v-img> -->
-                      <v-icon x-large class="mt-7 ml-4">mdi-account-circle</v-icon>
+                      <v-icon x-large class="ml-4">mdi-account-circle</v-icon>
                     </v-col>
-                    <v-col cols="8" class="px-0 pl-4 pt-8">
-                      <span>{{ info.username }}</span>
-                      <br />
-                      <span>{{ info.companyName }}</span>
+                    <v-col cols="8" class="px-0 pl-4 d-flex align-center">
+                      <div>
+                        <div>{{ info.username }}</div>
+                        <div>{{ info.companyName }}</div>
+                      </div>
                     </v-col>
                   </v-row>
                 </v-container>
               </v-card-title>
-              <v-card-actions>
-                <v-btn
+              <v-card-actions class="d-flex">
+                <!-- <v-btn
                   v-if="isAllowPasswordUpdate"
                   class="primary"
                   @click="$router.push('/account/updatePassword')"
                 >
                   <span>Update Password</span>
-                </v-btn>
-                <div style="width: 100px;"></div>
-                <v-btn class="warning" @click="handleLogout">登出</v-btn>
+                </v-btn> -->
+                <!-- <div style="width: 100px;"></div> -->
+                <v-btn class="warning ml-auto" @click="handleLogout">登出</v-btn>
               </v-card-actions>
             </v-card>
           </v-list-item>
@@ -225,7 +228,7 @@ import { Component, Vue } from 'nuxt-property-decorator'
 import { authStore } from '~/store'
 
 @Component({
-  middleware: ['auth']
+  // middleware: ['auth']
 })
 export default class DefaultLayout extends Vue {
   private get isAllowPasswordUpdate(): boolean {
@@ -238,10 +241,10 @@ export default class DefaultLayout extends Vue {
 
   private get info(): any {
     return {
-      username: '歡迎,',
-      companyName: authStore.info.email ? authStore.info.email : 'username',
+      username: 'Welcome,',
+      companyName: authStore.info.email ? authStore.info.email : 'user',
       dp: '',
-      h1: '總控管理後台',
+      h1: 'DFON Management',
       lastUpdated: new Date().toLocaleDateString('en',
       { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' }),
       version: '1.0.0',
@@ -287,22 +290,58 @@ export default class DefaultLayout extends Vue {
 
   private items: Array<any> = [
     {
-      icon: 'mdi-account-box-multiple',
-      'icon-alt': 'mdi-account-box-multiple-outline',
-      text: '業主管理',
+      icon: 'mdi-cart',
+      'icon-alt': 'mdi-cart',
+      text: 'Orders',
       model: false,
       allowAccess: '5',
       children: [
         {
-          text: '帳號管理',
+          text: 'Fresh',
           icon: 'mdi-checkbox-blank-circle-outline',
           route: 'member',
           allowAccess: '5'
         },
         {
-          text: '交易紀錄',
+          text: 'Stale',
           icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'orders',
+          route: 'member',
+          allowAccess: '5'
+        }
+      ]
+    },
+    {
+      icon: 'mdi-archive',
+      'icon-alt': 'mdi-archive',
+      text: 'Products',
+      model: false,
+      allowAccess: '5',
+      children: [
+        {
+          text: 'Categories',
+          icon: 'mdi-checkbox-blank-circle-outline',
+          route: 'member',
+          allowAccess: '5'
+        },
+        {
+          text: 'Items',
+          icon: 'mdi-checkbox-blank-circle-outline',
+          route: 'member',
+          allowAccess: '5'
+        }
+      ]
+    },
+    {
+      icon: 'mdi-account-box-multiple',
+      'icon-alt': 'mdi-account-box-multiple-outline',
+      text: 'Users',
+      model: false,
+      allowAccess: '5',
+      children: [
+        {
+          text: 'Accounts',
+          icon: 'mdi-checkbox-blank-circle-outline',
+          route: 'member',
           allowAccess: '5'
         }
       ]
@@ -325,12 +364,12 @@ export default class DefaultLayout extends Vue {
     {
       icon: 'mdi-cog',
       'icon-alt': 'mdi-cog-outline',
-      text: '後台管理',
+      text: 'Admin',
       model: false,
       allowAccess: '6',
       children: [
         {
-          text: '後台帳號',
+          text: 'Accounts',
           icon: 'mdi-checkbox-blank-circle-outline',
           route: 'sys',
           allowAccess: '6'
@@ -387,7 +426,9 @@ export default class DefaultLayout extends Vue {
   }
 
   private isAllowAccess(val: string) {
-    return Number(this.userAccessLevel) >= Number(val)
+    // TODO permission
+    // return Number(this.userAccessLevel) >= Number(val)
+    return true
   }
 
   private mounted() {

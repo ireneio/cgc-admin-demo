@@ -2,14 +2,14 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12">
-        <h2 class="mb-4">業主帳號管理</h2>
+        <h2 class="mb-4">User Accounts</h2>
         <v-card outlined>
           <v-toolbar flat>
             <v-btn
               color="primary"
               @click="handleCreateItem"
             >
-              <v-icon>mdi-plus</v-icon> 新增
+              <v-icon>mdi-plus</v-icon> Add
             </v-btn>
           </v-toolbar>
           <v-card-text class="pt-0">
@@ -621,7 +621,7 @@ export default class MemberIndex extends Vue {
   }
 
   private async created() {
-    await userStore.getUsers()
+    // await userStore.getUsers()
   }
 }
 </script>

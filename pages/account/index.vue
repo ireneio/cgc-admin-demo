@@ -81,7 +81,7 @@ import { authStore, errorStore } from '~/store'
 
 @Component({
   layout: 'login',
-  middleware: ['auth'],
+  // middleware: ['auth'],
   components: {
     ValidationObserver,
     ValidationProvider

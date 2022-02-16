@@ -1,6 +1,6 @@
 {
-  "name": "cms",
-  "version": "1.0.0",
+  "name": "dfon-cms",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "nuxt-ts",

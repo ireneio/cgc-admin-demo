@@ -8,8 +8,8 @@ export default {
   theme: {
     themes: {
       light: {
-        primary: '#3abdb6',
-        secondary: '#222d32',
+        primary: '#d49063',
+        secondary: '#004e82',
         error: '#ff3e30',
         warning: '#f7b529',
         success: '#179c52',

@@ -1,7 +1,7 @@
 <template>
   <div v-if="loading" class="loading">
     <div class="loading__text">
-      <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+      <!-- <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div> -->
     </div>
   </div>
 </template>
@@ -38,7 +38,7 @@ export default class BaseLoading extends Vue {
   height: 100%;
   z-index: 100;
   overflow: hidden;
-  background-color: rgba(255, 255, 255, .75);
+  background-color: rgba(255, 255, 255, .33);
   &__text {
     position: absolute;
     top: 50%;
