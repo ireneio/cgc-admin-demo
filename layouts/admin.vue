@@ -228,7 +228,7 @@ import { Component, Vue } from 'nuxt-property-decorator'
 import { authStore } from '~/store'
 
 @Component({
-  // middleware: ['auth']
+  middleware: ['auth']
 })
 export default class DefaultLayout extends Vue {
   private get isAllowPasswordUpdate(): boolean {
@@ -373,6 +373,12 @@ export default class DefaultLayout extends Vue {
           icon: 'mdi-checkbox-blank-circle-outline',
           route: 'sys',
           allowAccess: '6'
+        },
+        {
+          text: 'Whitelist',
+          icon: 'mdi-checkbox-blank-circle-outline',
+          route: 'sys-whitelist',
+          allowAccess: '6'
         }
       ]
     }
@@ -381,7 +387,7 @@ export default class DefaultLayout extends Vue {
   private handleLogout(): void {
     try {
       // this.$nuxt.$loading.start()
-      window.localStorage.removeItem('t')
+      window.localStorage.removeItem('tkn')
       this.$router.push('/account')
     } catch (e) {
       this.dialog.error = true

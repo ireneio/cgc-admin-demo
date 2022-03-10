@@ -68,7 +68,12 @@ export default {
     analyze: process.env.NODE_ENV !== 'production'
   },
   env: {
-    PROXY_URL: process.env.NUXT_ENV_PROXY_URL || 'http://localhost:8082'
+    PROXY_URL: process.env.NUXT_ENV_PROXY_URL || 'http://localhost:9001',
+    FB_APIKEY: process.env.NUXT_ENV_FB_APIKEY || 'AIzaSyBnB4nY6EjwtRClA7J75Ztz4bMUOEumrV0',
+    FB_AUTHDOMAIN: process.env.NUXT_ENV_FB_AUTHDOMAIN || 'dfon-web.firebaseapp.com',
+    FB_DBURL: process.env.NUXT_ENV_FB_DBURL || '',
+    FB_PROJECTID: process.env.NUXT_ENV_FB_PROJECTID || 'dfon-web',
+    FB_APPID: process.env.NUXT_ENV_FB_APPID || '1:844281271792:web:fb1cde23ccf78faac07935'
   },
   loading: '~/components/DefaultLoading.vue',
   vuetify: {

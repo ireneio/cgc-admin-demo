@@ -2,7 +2,8 @@
   <div>
     <v-toolbar flat class="banner">
       <h1>
-        <strong class="primary--text">載入中...</strong>
+        <strong class="primary--text">Welcome to DFON</strong>
+        <h6>select a functionality from the menu</h6>
       </h1>
     </v-toolbar>
   </div>
@@ -17,7 +18,7 @@ import { Component, Vue } from 'nuxt-property-decorator'
 export default class Index extends Vue {
   private beforeRouteEnter(to: any, from: any, next: Function) {
     next((vm: Vue) => {
-      vm.$router.push('/account')
+      // vm.$router.push('/account')
     })
   }
 }

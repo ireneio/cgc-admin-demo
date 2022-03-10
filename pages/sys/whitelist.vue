@@ -2,16 +2,16 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12">
-        <h2 class="mb-4">Admin Accounts</h2>
+        <h2 class="mb-4">Email Whitelist</h2>
         <v-card outlined>
-          <!-- <v-toolbar flat>
+          <v-toolbar flat>
             <v-btn
               color="primary"
               @click="handleCreateItem"
             >
               <v-icon>mdi-plus</v-icon> Add
             </v-btn>
-          </v-toolbar> -->
+          </v-toolbar>
           <v-card-text class="pt-0">
             <v-data-table
               v-model="selected"
@@ -139,12 +139,11 @@ import { Component, Vue } from 'nuxt-property-decorator'
 import { errorStore, userStore } from '~/store'
 import { $api } from '~/utils/api'
 import { httpResponseMapper } from '~/utils/http'
-import Token from '~/utils/token'
 
 @Component({
   layout: 'admin'
 })
-export default class SysIndex extends Vue {
+export default class SysWhitelist extends Vue {
   private snackbar = {
     toggle: false,
     timeout: 2000,
@@ -281,18 +280,18 @@ export default class SysIndex extends Vue {
     this.clearForm()
   }
 
-  private async getAccounts() {
-    const _result = await $api.get('/admin', { headers: { authorization: `Bearer ${Token.getValue()}` } })
+  private async getWhitelist() {
+    const _result = await $api.get('/admin/whitelist')
     return httpResponseMapper(_result).data
   }
 
-  private async init() {
-    const rows = await this.getAccounts()
+  private async initWhiteList() {
+    const rows = await this.getWhitelist()
     this.tableData = [...rows]
   }
 
   private async created() {
-    await this.init()
+    await this.initWhiteList()
   }
 }
 </script>
