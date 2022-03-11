@@ -8,6 +8,18 @@ export function dateFromNow(time: string): string {
   return moment(time).local().fromNow()
 }
 
+export function dateToISO(time: string): string {
+  return moment(time).toISOString(false)
+}
+
+export function dateToISOStartOfDay(time: string): string {
+  return moment(time).startOf('day').toISOString()
+}
+
+export function dateToISOEndOfDay(time: string): string {
+  return moment(time).endOf('day').toISOString()
+}
+
 export function dateDisplayTimeRemaining(endTime: string): string {
   const isPast = dateIsPast(endTime)
   if (isPast) {

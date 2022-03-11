@@ -56,7 +56,7 @@
             <template v-slot:top>
               <v-text-field
                 v-model="tableSearch"
-                label="Search ID, User, Status"
+                label="Search ID, User, Status, Amount, Tag"
                 class="mx-4"
               ></v-text-field>
             </template>
@@ -70,8 +70,9 @@
 
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
-import { transactionStore } from '~/store'
-import { numberWithCommas } from '~/utils/formatters'
+import { $apiUser } from '~/utils/api'
+import { dateToISOEndOfDay, dateToISOStartOfDay } from '~/utils/date'
+import { httpResponseMapper } from '~/utils/http'
 
 @Component({
   layout: 'admin'
@@ -81,7 +82,9 @@ export default class OrdersIndex extends Vue {
     return this.form.dateRange.length !== 2
   }
 
-  private async handleSearch() {}
+  private async handleSearch() {
+    await this.setOrders()
+  }
 
   private form: any = {
     dateRange: []
@@ -94,8 +97,11 @@ export default class OrdersIndex extends Vue {
   private headers: Array<any> = [
     { text: 'ID', value: 'id', align: 'start', sortable: true },
     { text: 'Created At', value: 'created_at', align: 'start', sortable: true, filterable: false },
-    { text: 'User', value: 'email', align: 'start', sortable: true },
     { text: 'Status', value: 'status', align: 'start', sortable: true },
+    { text: 'User', value: 'email', align: 'start', sortable: true },
+    { text: 'Amount', value: 'amount', align: 'start', sortable: true },
+    { text: 'Type', value: 'direction', align: 'start', sortable: true, filterable: false },
+    { text: 'Tag', value: 'tag', align: 'start', sortable: true },
     { text: 'Misc', value: 'misc', align: 'start', sortable: true, filterable: false },
   ]
 
@@ -118,11 +124,20 @@ export default class OrdersIndex extends Vue {
   }
 
   private async getOrders() {
-
+    const [startDate, endDate] = this.form.dateRange
+    const _startDate = dateToISOStartOfDay(startDate)
+    const _endDate = dateToISOEndOfDay(endDate)
+    const _req = await $apiUser.get(`/transaction?startDate=${_startDate}&endDate=${_endDate}&info=true`)
+    return httpResponseMapper(_req)?.data
   }
 
-  private async init() {
-
+  private async setOrders() {
+    const _rows = await this.getOrders()
+    if (_rows && _rows.length) {
+      this.tableData = [..._rows]
+    } else {
+      this.tableData = []
+    }
   }
 
   private async created() {
