@@ -100,6 +100,9 @@
                   </v-card>
                 </v-dialog>
               </template>
+              <template v-slot:item.access_level="{ item }">
+                {{ item.access_level === '6' ? 'Root' : 'Admin' }}
+              </template>
               <template v-slot:item.misc="{ item }">
                 <v-icon
                   small
