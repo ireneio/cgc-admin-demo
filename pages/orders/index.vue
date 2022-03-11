@@ -2,10 +2,46 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12">
-        <h2 class="mb-4">局數交易紀錄</h2>
+        <h2 class="mb-4">Search Orders</h2>
         <v-card outlined>
-          <!-- <v-card-subtitle>*註: 1 支 = 4 局</v-card-subtitle> -->
           <v-card-text>
+            <v-row>
+              <v-col cols="6" sm="4" md="4">
+                <v-menu
+                  v-model="dialog.date"
+                  :nudge-right="40"
+                  :close-on-content-click="false"
+                  transition="scale-transition"
+                  offset-y
+                  min-width="auto"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      v-model="form.dateRange"
+                      label="Select Date Range"
+                      prepend-icon="mdi-calendar"
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker
+                    range
+                    v-model="form.dateRange"
+                  ></v-date-picker>
+                </v-menu>
+              </v-col>
+              <v-col cols="6" md="4">
+                <v-btn
+                  color="info"
+                  class="mt-4"
+                  @click="handleSearch"
+                  :disabled="isSearchBtnDisabled"
+                >
+                  Search
+                </v-btn>
+              </v-col>
+            </v-row>
             <v-data-table
               :headers="headers"
               :items="tableData"
@@ -20,26 +56,9 @@
             <template v-slot:top>
               <v-text-field
                 v-model="tableSearch"
-                label="搜尋帳號或暱稱"
+                label="Search ID, User, Status"
                 class="mx-4"
               ></v-text-field>
-            </template>
-            <template v-slot:item.balance_change="{ value }">
-              <v-layout justify-end>
-                <div class="success--text" v-if="value.includes('+')">{{ value }}</div>
-                <div class="error--text" v-if="value.includes('-')">{{ value }}</div>
-              </v-layout>
-            </template>
-            <template v-slot:item.wallet_balance="{ value }">
-              <v-layout justify-end>
-                {{ value }}
-              </v-layout>
-            </template>
-            <template v-slot:item.balance_change_raw="{ value }">
-              <v-layout justify-end>
-                <div class="success--text" v-if="value.includes('+')">{{ value }}</div>
-                <div class="error--text" v-if="value.includes('-')">{{ value }}</div>
-              </v-layout>
             </template>
             </v-data-table>
           </v-card-text>
@@ -58,29 +77,29 @@ import { numberWithCommas } from '~/utils/formatters'
   layout: 'admin'
 })
 export default class OrdersIndex extends Vue {
+  private get isSearchBtnDisabled() {
+    return this.form.dateRange.length !== 2
+  }
+
+  private async handleSearch() {}
+
+  private form: any = {
+    dateRange: []
+  }
+
+  private dialog: any = {
+    date: false
+  }
+
   private headers: Array<any> = [
-    // { text: '識別碼', value: 'id', align: 'start', sortable: true, filterable: false },
-    { text: '暱稱', value: 'user_display', align: 'start', sortable: true },
-    { text: '會員帳號', value: 'user_email', align: 'start', sortable: true },
-    // { text: '會員帳號識別碼', value: 'user_id', align: 'start', sortable: true },
-    { text: '異動日期', value: 'created_at', align: 'start', sortable: true, filterable: false },
-    { text: '異動類型', value: 'direction', align: 'start', sortable: true, filterable: false },
-    // { text: '異動額度(支)', value: 'balance_change', align: 'start', sortable: true, filterable: false },
-    { text: '異動額度(局)', value: 'balance_change_raw', align: 'start', sortable: true, filterable: false },
-    { text: '剩餘總額度(局)', value: 'wallet_balance', align: 'start', sortable: true, filterable: false },
+    { text: 'ID', value: 'id', align: 'start', sortable: true },
+    { text: 'Created At', value: 'created_at', align: 'start', sortable: true, filterable: false },
+    { text: 'User', value: 'email', align: 'start', sortable: true },
+    { text: 'Status', value: 'status', align: 'start', sortable: true },
+    { text: 'Misc', value: 'misc', align: 'start', sortable: true, filterable: false },
   ]
 
-  private get tableData(): Array<any> {
-    return transactionStore.transaction.map((item) => {
-      return {
-        ...item,
-        direction: item.direction ? '新增' : '扣除',
-        // balance_change: item.direction ? `+ ${numberWithCommas(item.balance_change / 4)}` : `- ${numberWithCommas(item.balance_change / 4)}`,
-        balance_change_raw: item.direction ? `+ ${numberWithCommas(item.balance_change)}` : `- ${numberWithCommas(item.balance_change)}`,
-        wallet_balance: numberWithCommas(item.wallet_balance)
-      }
-    })
-  }
+  private tableData: any[] = []
 
   private tableSearch = ''
 
@@ -98,8 +117,15 @@ export default class OrdersIndex extends Vue {
   private handleRowClick(row: any, col: any): void {
   }
 
+  private async getOrders() {
+
+  }
+
+  private async init() {
+
+  }
+
   private async created() {
-    // await transactionStore.getTransaction()
   }
 }
 </script>

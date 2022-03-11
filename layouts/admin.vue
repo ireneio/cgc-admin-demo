@@ -299,7 +299,7 @@ export default class DefaultLayout extends Vue {
         {
           text: 'Fresh',
           icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'member',
+          route: 'orders',
           allowAccess: '5'
         },
         {
