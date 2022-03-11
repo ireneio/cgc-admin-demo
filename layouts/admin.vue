@@ -297,15 +297,9 @@ export default class DefaultLayout extends Vue {
       allowAccess: '5',
       children: [
         {
-          text: 'Fresh',
+          text: 'Search',
           icon: 'mdi-checkbox-blank-circle-outline',
           route: 'orders',
-          allowAccess: '5'
-        },
-        {
-          text: 'Stale',
-          icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'member',
           allowAccess: '5'
         }
       ]
