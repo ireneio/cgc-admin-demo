@@ -2,10 +2,11 @@
 import { errorStore } from '~/store/'
 
 export function httpResponseMapper(result: any, next?: Function, nextArgs?: any[]) {
-  const { data: { statusCode, statusMsg, data } } = result  
+  const { data: { statusCode, statusMsg, data } } = result
   try {
     switch (statusCode) {
       case 200:
+        errorStore.clearError()
         return data
       default:
         throw new Error(`${statusCode}~${statusMsg}`)

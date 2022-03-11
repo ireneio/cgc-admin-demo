@@ -1,6 +1,6 @@
 import { Module, VuexModule, Action, Mutation } from 'vuex-module-decorators'
 import { ResponseObject } from 'Http'
-import { $api } from '~/utils/api'
+import { $apiUser } from '~/utils/api'
 import { httpResponseMapper } from '~/utils/http'
 
 @Module({
@@ -22,7 +22,7 @@ export default class SysModule extends VuexModule {
 
   @Action({ commit: 'setConfig' })
   public async getConfig() {
-    const result: ResponseObject = await $api.get('/config')
+    const result: ResponseObject = await $apiUser.get('/config')
     return httpResponseMapper(result)
   }
 }

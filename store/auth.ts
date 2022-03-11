@@ -1,6 +1,6 @@
 import { Module, VuexModule, Action, Mutation } from 'vuex-module-decorators'
 import { ResponseObject } from 'Http'
-import { $api } from '~/utils/api'
+import { $apiUser } from '~/utils/api'
 import { httpResponseMapper } from '~/utils/http'
 
 @Module({
@@ -38,7 +38,7 @@ export default class AuthModule extends VuexModule {
     }
 
     try {
-      const result: ResponseObject = await $api.post('/auth/local/signIn', requestBody)
+      const result: ResponseObject = await $apiUser.post('/auth/local/signIn', requestBody)
       return httpResponseMapper(result)
     } catch (e) {
       throw new Error(e)

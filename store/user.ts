@@ -1,6 +1,6 @@
 import { Module, VuexModule, Action, Mutation } from 'vuex-module-decorators'
 import { ResponseObject } from 'Http'
-import { $api } from '~/utils/api'
+import { $apiUser } from '~/utils/api'
 import { httpResponseMapper } from '~/utils/http'
 import { dateDisplayYYYYMMDD, dateDisplayYYYYMMDDHHMMSS } from '~/utils/date'
 import { numberWithCommas } from '~/utils/formatters'
@@ -75,7 +75,7 @@ export default class UserModule extends VuexModule {
   @Action({ commit: 'setAdminUsers' })
   public async getAdminUsers() {
     try {
-      const result: ResponseObject = await $api.get('/user/admin')
+      const result: ResponseObject = await $apiUser.get('/user/admin')
       return httpResponseMapper(result)
     } catch (e: any) {
       throw new Error(e)
@@ -85,7 +85,7 @@ export default class UserModule extends VuexModule {
   @Action({ commit: 'setUsers' })
   public async getUsers() {
     try {
-      const result: ResponseObject = await $api.get('/user')
+      const result: ResponseObject = await $apiUser.get('/user')
       return httpResponseMapper(result)
     } catch (e: any) {
       throw new Error(e)
@@ -95,7 +95,7 @@ export default class UserModule extends VuexModule {
   @Action({ commit: 'setWallets' })
   public async getWallets(userId: string) {
     try {
-      const result: ResponseObject = await $api.get(`/wallet?userId=${userId}`)
+      const result: ResponseObject = await $apiUser.get(`/wallet?userId=${userId}`)
       return httpResponseMapper(result)
     } catch (e: any) {
       throw new Error(e)

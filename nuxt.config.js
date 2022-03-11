@@ -18,7 +18,7 @@ export default {
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [
-    '~/plugins/vee-validate.js',
+    // '~/plugins/vee-validate.js',
     '~/plugins/axios'
   ],
 
@@ -65,10 +65,12 @@ export default {
     },
     extractCSS: true,
     transpile: ['vee-validate/dist/rules'],
-    analyze: process.env.NODE_ENV !== 'production'
+    // analyze: process.env.NODE_ENV !== 'production'
+    analyze: false
   },
   env: {
-    PROXY_URL: process.env.NUXT_ENV_PROXY_URL || 'http://localhost:9001',
+    API_USER_URL: process.env.NUXT_ENV_API_USER_URL || 'http://localhost:9001',
+    API_PLATFORM_URL: process.env.NUXT_ENV_API_PLATFORM_URL || 'http://localhost:9000',
     FB_APIKEY: process.env.NUXT_ENV_FB_APIKEY || 'AIzaSyBnB4nY6EjwtRClA7J75Ztz4bMUOEumrV0',
     FB_AUTHDOMAIN: process.env.NUXT_ENV_FB_AUTHDOMAIN || 'dfon-web.firebaseapp.com',
     FB_DBURL: process.env.NUXT_ENV_FB_DBURL || '',

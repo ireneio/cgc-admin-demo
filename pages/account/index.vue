@@ -87,7 +87,7 @@
 import { Component, Vue } from 'nuxt-property-decorator'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import { authStore, errorStore } from '~/store'
-import { $api } from '~/utils/api'
+import { $apiUser } from '~/utils/api'
 import { Firebase } from '~/utils/firebase'
 import { httpResponseMapper } from '~/utils/http'
 import Token from '~/utils/token'
@@ -133,7 +133,7 @@ export default class AccountIndex extends Vue {
     const token = await Firebase.signIn({ email: '', password: '' }, 'google')
     try {
       if (token) {
-        const _signIn = await $api.post('/admin/creation', {}, { headers: { authorization: `Bearer ${token}` } })
+        const _signIn = await $apiUser.post('/admin/creation', {}, { headers: { authorization: `Bearer ${token}` } })
         const _signInResult = httpResponseMapper(_signIn)
         if (_signInResult?.error) {
           this.snackbar.text = 'invalid credentials'

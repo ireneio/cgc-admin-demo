@@ -3,7 +3,7 @@
     <v-toolbar flat class="banner">
       <h1>
         <strong class="primary--text">Welcome to DFON</strong>
-        <h6>select a functionality from the menu</h6>
+        <h6>Kindly select a functionality from the menu</h6>
       </h1>
     </v-toolbar>
   </div>

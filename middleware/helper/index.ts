@@ -1,6 +1,6 @@
 import { Context } from '@nuxt/types'
 import { ResponseObject } from 'Http'
-import { $api } from '~/utils/api'
+import { $apiUser } from '~/utils/api'
 import { httpResponseMapper } from '~/utils/http'
 
 function isSignInPage(ctx: Context): boolean {
@@ -8,7 +8,7 @@ function isSignInPage(ctx: Context): boolean {
 }
 
 async function verification(type: string, token: string): Promise<any> {
-  const result: ResponseObject = await $api.post('/admin/verification', {}, { headers: { authorization: `Bearer ${token}` } })
+  const result: ResponseObject = await $apiUser.post('/admin/verification', {}, { headers: { authorization: `Bearer ${token}` } })
   return httpResponseMapper(result)
 }
 

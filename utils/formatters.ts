@@ -1,5 +1,5 @@
 export function numberWithCommas(val: number): string {
-  return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }
 
 export function numberWithDollarSign(val: number | string): string {
@@ -12,4 +12,8 @@ export function numberTrimmed(val: number, decimals: number): number {
 
 export function numberFormatDefault(val: number): string {
   return numberWithDollarSign(numberWithCommas(numberTrimmed(val, 2)))
+}
+
+export function textFormatDb(val: string) {
+  return val.toString().toLowerCase().replaceAll(' ', '_')
 }

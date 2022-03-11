@@ -96,16 +96,16 @@
         </template>
         <v-list>
           <v-list-item>
-            <v-card flat>
-            <div class="d-flex align-center mt-2">
-              <v-btn class="ml-auto" color="primary" x-small fab @click="handleToggleTheme">
-                <v-icon v-if="$vuetify.theme.dark">mdi-white-balance-sunny</v-icon>
-                <v-icon v-if="!$vuetify.theme.dark">mdi-moon-waning-crescent</v-icon>
-              </v-btn>
-              <v-btn color="secondary" text x-small @click="dialog.version = !dialog.version">
-                <v-icon>mdi-xml</v-icon>
-              </v-btn>
-            </div>
+            <v-card flat min-width="200px">
+              <div class="d-flex align-center mt-2">
+                <v-btn class="ml-auto" color="primary" x-small fab @click="handleToggleTheme">
+                  <v-icon v-if="$vuetify.theme.dark">mdi-white-balance-sunny</v-icon>
+                  <v-icon v-if="!$vuetify.theme.dark">mdi-moon-waning-crescent</v-icon>
+                </v-btn>
+                <v-btn color="secondary" text x-small @click="dialog.version = !dialog.version">
+                  <v-icon>mdi-xml</v-icon>
+                </v-btn>
+              </div>
               <v-card-title>
                 <v-container>
                   <v-row>
@@ -131,7 +131,7 @@
                   <span>Update Password</span>
                 </v-btn> -->
                 <!-- <div style="width: 100px;"></div> -->
-                <v-btn class="warning ml-auto" @click="handleLogout">登出</v-btn>
+                <v-btn class="warning ml-auto" @click="handleLogout">sign out</v-btn>
               </v-card-actions>
             </v-card>
           </v-list-item>
@@ -320,13 +320,19 @@ export default class DefaultLayout extends Vue {
         {
           text: 'Categories',
           icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'member',
+          route: 'product',
           allowAccess: '5'
         },
         {
-          text: 'Items',
+          text: 'Sku',
           icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'member',
+          route: 'product-sku',
+          allowAccess: '5'
+        },
+        {
+          text: 'Labels',
+          icon: 'mdi-checkbox-blank-circle-outline',
+          route: 'product-items',
           allowAccess: '5'
         }
       ]
@@ -386,13 +392,10 @@ export default class DefaultLayout extends Vue {
 
   private handleLogout(): void {
     try {
-      // this.$nuxt.$loading.start()
       window.localStorage.removeItem('tkn')
       this.$router.push('/account')
-    } catch (e) {
+    } catch (e: unknown) {
       this.dialog.error = true
-    } finally {
-      // this.$nuxt.$loading.finish()
     }
   }
 

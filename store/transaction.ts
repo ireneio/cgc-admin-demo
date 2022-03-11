@@ -1,6 +1,6 @@
 import { Module, VuexModule, Action, Mutation } from 'vuex-module-decorators'
 import { ResponseObject } from 'Http'
-import { $api } from '~/utils/api'
+import { $apiUser } from '~/utils/api'
 import { httpResponseMapper } from '~/utils/http'
 import { dateDisplayYYYYMMDDHHMMSS } from '~/utils/date'
 
@@ -29,7 +29,7 @@ export default class TransactionModule extends VuexModule {
   @Action({ commit: 'setTransaction' })
   public async getTransaction() {
     try {
-      const result: ResponseObject = await $api.get('/transaction')
+      const result: ResponseObject = await $apiUser.get('/transaction')
       return httpResponseMapper(result)
     } catch (e) {
       throw new Error(e)

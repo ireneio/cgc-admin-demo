@@ -1,6 +1,6 @@
 import { Module, VuexModule, Action, Mutation } from 'vuex-module-decorators'
 import { ResponseObject } from 'Http'
-import { $api } from '~/utils/api'
+import { $apiUser } from '~/utils/api'
 import { httpResponseMapper } from '~/utils/http'
 
 interface Error {

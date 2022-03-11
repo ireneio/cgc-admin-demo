@@ -25,80 +25,8 @@
               class="elevation-1 mt-4"
               @click:row="handleRowClick"
             >
-              <template v-slot:top>
-                <v-dialog
-                  v-model="dialog.new"
-                  max-width="700px"
-                  max-height="70vh"
-                  persistent
-                >
-                  <v-card>
-                    <v-card-title>
-                      <span class="headline">{{ form.id === '' ? dialog.newTitle : dialog.editTitle }}</span>
-                    </v-card-title>
-                    <v-card-text>
-                      <v-container>
-                        <v-row>
-                          <v-col
-                            cols="12"
-                          >
-                            <v-text-field
-                              v-model="form.email"
-                              label="Email"
-                              counter="50"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col
-                            cols="12"
-                          >
-                            <v-select
-                              v-model="form.accessLevel"
-                              :items="selectPerm"
-                              label="Permission"
-                            ></v-select>
-                          </v-col>
-                        </v-row>
-                      </v-container>
-                    </v-card-text>
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn
-                        color="blue darken-1"
-                        text
-                        @click="handleCreateCancel"
-                      >
-                        Cancel
-                      </v-btn>
-                      <v-btn
-                        color="blue darken-1"
-                        text
-                        @click="handleCreateSave"
-                      >
-                        Save
-                      </v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
-                <v-dialog v-model="dialog.delete" max-width="50vw">
-                  <v-card>
-                    <v-card-title class="headline">{{ dialog.deleteConfimationText }}</v-card-title>
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn color="blue darken-1" text @click="handleDeleteCancel">Cancel</v-btn>
-                      <v-btn color="blue darken-1" text @click="handleDeleteConfirm(false)">Confirm</v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
-                <v-dialog v-model="dialog.activate" max-width="50vw">
-                  <v-card>
-                    <v-card-title class="headline">{{ dialog.activateConfimationText }}</v-card-title>
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn color="blue darken-1" text @click="handleDeleteCancel">Cancel</v-btn>
-                      <v-btn color="blue darken-1" text @click="handleDeleteConfirm(true)">Confirm</v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
+              <template v-slot:item.access_level="{ item }">
+                {{ item.access_level === '6' ? 'Root' : 'Admin' }}
               </template>
               <template v-slot:item.misc="{ item }">
                 <v-icon
@@ -137,7 +65,7 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
 import { errorStore, userStore } from '~/store'
-import { $api } from '~/utils/api'
+import { $apiUser } from '~/utils/api'
 import { httpResponseMapper } from '~/utils/http'
 import Token from '~/utils/token'
 
@@ -156,8 +84,8 @@ export default class SysIndex extends Vue {
     { text: 'Email', value: 'email', align: 'start', sortable: true },
     { text: 'Access Level', value: 'access_level', align: 'start', sortable: true },
     { text: 'Created At', value: 'created_at', align: 'start', sortable: true },
-    { text: 'Status', value: 'status', align: 'start', sortable: true },
-    { text: '', value: 'misc', align: 'start', sortable: false }
+    // { text: 'Status', value: 'status', align: 'start', sortable: true },
+    // { text: '', value: 'misc', align: 'start', sortable: false }
   ]
 
   private tableData: any[] = []
@@ -169,7 +97,7 @@ export default class SysIndex extends Vue {
   private tableOptions: any = {
       page: 1,
       itemsPerPage: 10,
-      sortBy: ['status'],
+      sortBy: ['created_at'],
       sortDesc: [true],
       // groupBy: string[],
       // groupDesc: boolean[],
@@ -241,23 +169,8 @@ export default class SysIndex extends Vue {
     this.clearForm()
   }
 
-  private async handleCreateSave() {
-    const result = await $api.post('/admin/whitelist', { ...this.form })
-    httpResponseMapper(result)
-    if (errorStore.isActive) {
-      this.snackbar.text = `Account creation failure: ${errorStore.message}`
-      errorStore.clearError()
-    } else {
-      await this.initWhiteList()
-      this.snackbar.text = 'Account creation success'
-      this.dialog.new = false
-      this.clearForm()
-    }
-    this.snackbar.toggle = true
-  }
-
   private async handleDeleteConfirm(flag: boolean) {
-    // const result = await $api.post('/user/admin', { id: this.form.id, action: flag ? 'activate' : 'delete' })
+    // const result = await $apiUser.post('/user/admin', { id: this.form.id, action: flag ? 'activate' : 'delete' })
     // httpResponseMapper(result)
     // if (errorStore.isActive) {
     //   this.snackbar.text = 'error'
@@ -282,7 +195,7 @@ export default class SysIndex extends Vue {
   }
 
   private async getAccounts() {
-    const _result = await $api.get('/admin', { headers: { authorization: `Bearer ${Token.getValue()}` } })
+    const _result = await $apiUser.get('/admin', { headers: { authorization: `Bearer ${Token.getValue()}` } })
     return httpResponseMapper(_result).data
   }
 

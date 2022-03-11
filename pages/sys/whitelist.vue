@@ -4,12 +4,12 @@
       <v-col cols="12">
         <h2 class="mb-4">Email Whitelist</h2>
         <v-card outlined>
-          <v-toolbar flat>
+          <v-toolbar flat class="mb-n4">
             <v-btn
-              color="primary"
+              color="info"
               @click="handleCreateItem"
             >
-              <v-icon>mdi-plus</v-icon> Add
+              <v-icon>mdi-plus</v-icon> Create
             </v-btn>
           </v-toolbar>
           <v-card-text class="pt-0">
@@ -137,7 +137,7 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
 import { errorStore, userStore } from '~/store'
-import { $api } from '~/utils/api'
+import { $apiUser } from '~/utils/api'
 import { httpResponseMapper } from '~/utils/http'
 
 @Component({
@@ -241,7 +241,7 @@ export default class SysWhitelist extends Vue {
   }
 
   private async handleCreateSave() {
-    const result = await $api.post('/admin/whitelist', { ...this.form })
+    const result = await $apiUser.post('/admin/whitelist', { ...this.form })
     httpResponseMapper(result)
     if (errorStore.isActive) {
       this.snackbar.text = `Account creation failure: ${errorStore.message}`
@@ -256,7 +256,7 @@ export default class SysWhitelist extends Vue {
   }
 
   private async handleDeleteConfirm(flag: boolean) {
-    // const result = await $api.post('/user/admin', { id: this.form.id, action: flag ? 'activate' : 'delete' })
+    // const result = await $apiUser.post('/user/admin', { id: this.form.id, action: flag ? 'activate' : 'delete' })
     // httpResponseMapper(result)
     // if (errorStore.isActive) {
     //   this.snackbar.text = 'error'
@@ -281,7 +281,7 @@ export default class SysWhitelist extends Vue {
   }
 
   private async getWhitelist() {
-    const _result = await $api.get('/admin/whitelist')
+    const _result = await $apiUser.get('/admin/whitelist')
     return httpResponseMapper(_result).data
   }
 
