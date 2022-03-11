@@ -8,8 +8,9 @@
             <v-tabs
               v-model="tab.current"
               height="48px"
+              color="info"
             >
-              <v-tabs-slider color="primary"></v-tabs-slider>
+              <v-tabs-slider color="info"></v-tabs-slider>
               <v-tab
                 v-for="item in tab.items"
                 :key="item.key"

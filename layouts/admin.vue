@@ -175,19 +175,23 @@
         </v-row>
       </v-container>
     </v-main>
-    <v-dialog v-model="dialog.version" width="800px">
+    <v-dialog
+      v-model="dialog.version"
+      max-width="700px"
+      persistent
+    >
       <v-card>
         <v-card-title class="primary white--text">
           Version
         </v-card-title>
         <v-card-text class="mt-4">
           v{{ info.version }} <br />
-          <strong class="primary--text">Last Updated: </strong>
+          <strong class="info--text">Last Updated: </strong>
           {{ info.lastUpdated }} <br />
           <div class="mt-7">
             Copyright © {{ info.crDate }}
             <a
-              class="primary--text text-decoration-none"
+              class="info--text text-decoration-none"
               href=""
               target="_blank"
             >
@@ -198,8 +202,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn text color="primary" @click="dialog.version = false" large>
-            <strong>Close</strong>
+          <v-btn text color="info" @click="dialog.version = false" large>
+            <strong>close</strong>
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -249,7 +253,7 @@ export default class DefaultLayout extends Vue {
       { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' }),
       version: '1.0.0',
       crDate: '2021',
-      crSource: 'Ire'
+      crSource: 'DFON'
     }
   }
 
