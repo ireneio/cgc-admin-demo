@@ -99,10 +99,10 @@ export default class MemberIndex extends Vue {
   private headers: Array<any> = [
     { text: 'ID', value: 'id', align: 'start', sortable: true },
     { text: 'Email', value: 'email', align: 'start', sortable: true },
-    { text: 'Active', value: 'allowed_login_status', align: 'start', sortable: true, filterable: false },
     { text: 'Permission', value: 'access_level', align: 'start', sortable: true, filterable: false },
-    { text: 'Created At', value: 'created_at', align: 'start', sortable: true, filterable: false },
     { text: 'Last Login', value: 'last_login', align: 'start', sortable: true, filterable: false },
+    { text: 'Created At', value: 'created_at', align: 'start', sortable: true, filterable: false },
+    { text: 'Active', value: 'allowed_login_status', align: 'start', sortable: true, filterable: false },
     { text: 'Misc', value: 'misc', align: 'start', sortable: false, filterable: false }
   ]
 
