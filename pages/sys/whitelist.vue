@@ -257,7 +257,7 @@ export default class SysWhitelist extends Vue {
       this.snackbar.text = `Account creation failure: ${errorStore.message}`
       errorStore.clearError()
     } else {
-      await this.initWhiteList()
+      await this.init()
       this.snackbar.text = 'Account creation success'
       this.dialog.new = false
       this.clearForm()
