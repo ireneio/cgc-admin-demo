@@ -250,10 +250,16 @@ export default class ProductIndex extends Vue {
     }
   }
 
+  private createImageBlob(file: any) {
+    const binaryData = []
+    binaryData.push(file)
+    return window.URL.createObjectURL(new Blob(binaryData, { type: 'application/zip' }))
+  }
+
   @Watch('form.upload.imgCover')
   onImgCoverChange(newVal: any) {
     if (newVal) {
-      this.form.display.imgCover = URL.createObjectURL(this.form.upload.imgCover)
+      this.form.display.imgCover = this.createImageBlob(this.form.upload.imgCover)
     } else {
       this.form.display.imgCover = this.form.selected.imgCover
     }
@@ -262,7 +268,7 @@ export default class ProductIndex extends Vue {
   @Watch('form.upload.imgSubOne')
   onImgSubOneChange(newVal: any) {
     if (newVal) {
-      this.form.display.imgSubOne = URL.createObjectURL(this.form.upload.imgSubOne)
+      this.form.display.imgSubOne = this.createImageBlob(this.form.upload.imgSubOne)
     } else {
       this.form.display.imgSubOne = this.form.selected.imgSubOne
     }
@@ -271,7 +277,7 @@ export default class ProductIndex extends Vue {
   @Watch('form.upload.imgSubTwo')
   onImgSubTwoChange(newVal: any) {
     if (newVal) {
-      this.form.display.imgSubTwo = URL.createObjectURL(this.form.upload.imgSubTwo)
+      this.form.display.imgSubTwo = this.createImageBlob(this.form.upload.imgSubTwo)
     } else {
       this.form.display.imgSubTwo = this.form.selected.imgSubTwo
     }
