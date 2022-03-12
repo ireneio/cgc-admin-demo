@@ -332,6 +332,12 @@ export default class DefaultLayout extends Vue {
           icon: 'mdi-checkbox-blank-circle-outline',
           route: 'product-items',
           allowAccess: '5'
+        },
+        {
+          text: 'Images',
+          icon: 'mdi-checkbox-blank-circle-outline',
+          route: 'product-images',
+          allowAccess: '5'
         }
       ]
     },
