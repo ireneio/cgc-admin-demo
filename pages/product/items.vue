@@ -796,32 +796,32 @@ export default class MemberIndex extends Vue {
       this.snackbar.toggle = true
       return
     }
-    if (this.form.skuColor === '' && this.skuLabels.sku_color.length > 0) {
+    if (this.form.skuColor === '' && this.skuLabels.sku_color.length > 0 && !this.dialog.isEditMode) {
       this.snackbar.text = 'Sku Color is required'
       this.snackbar.toggle = true
       return
     }
-     if (this.form.skuAuthor === '' && this.skuLabels.sku_author.length > 0) {
+     if (this.form.skuAuthor === '' && this.skuLabels.sku_author.length > 0 && !this.dialog.isEditMode) {
       this.snackbar.text = 'Sku Author is required'
       this.snackbar.toggle = true
       return
     }
-     if (this.form.skuCategory === '' && this.skuLabels.sku_painting_category.length > 0) {
+     if (this.form.skuCategory === '' && this.skuLabels.sku_painting_category.length > 0 && !this.dialog.isEditMode) {
       this.snackbar.text = 'Sku Category is required'
       this.snackbar.toggle = true
       return
     }
-     if (this.form.skuCountry === '' && this.skuLabels.sku_painting_country.length > 0) {
+     if (this.form.skuCountry === '' && this.skuLabels.sku_painting_country.length > 0 && !this.dialog.isEditMode) {
       this.snackbar.text = 'Sku Country is required'
       this.snackbar.toggle = true
       return
     }
-    if (this.form.skuSize === '' && this.skuLabels.sku_painting_size.length > 0) {
+    if (this.form.skuSize === '' && this.skuLabels.sku_painting_size.length > 0 && !this.dialog.isEditMode) {
       this.snackbar.text = 'Sku Size is required'
       this.snackbar.toggle = true
       return
     }
-    if (this.form.skuStyle === '' && this.skuLabels.sku_painting_style.length > 0) {
+    if (this.form.skuStyle === '' && this.skuLabels.sku_painting_style.length > 0 && !this.dialog.isEditMode) {
       this.snackbar.text = 'Sku Style is required'
       this.snackbar.toggle = true
       return
