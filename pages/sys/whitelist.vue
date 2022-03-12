@@ -103,12 +103,19 @@
               <template v-slot:item.access_level="{ item }">
                 {{ item.access_level === '6' ? 'Root' : 'Admin' }}
               </template>
+              <template v-slot:item.status="{ item }">
+                <v-chip
+                  :color="item.status? 'success': 'warning'"
+                >
+                  {{ item.status ? 'Enabled' : 'Disabled' }}
+                </v-chip>
+              </template>
               <template v-slot:item.misc="{ item }">
                 <v-icon
                   small
                   @click.stop="handleDeleteItem(item)"
                 >
-                {{ item.status === '啟用' ? 'mdi-stop' : 'mdi-play' }}
+                {{ item.status ? 'mdi-stop' : 'mdi-play' }}
                 </v-icon>
               </template>
             </v-data-table>
@@ -195,6 +202,7 @@ export default class SysWhitelist extends Vue {
   ]
 
   private form: any = {
+    id: '',
     email: '',
     accessLevel: ''
   }
@@ -219,9 +227,8 @@ export default class SysWhitelist extends Vue {
   private clearForm(): void {
     this.form = {
       id: '',
-      username: '',
-      perm: '',
-      password: ''
+      email: '',
+      accessLevel: ''
     }
   }
 
@@ -231,7 +238,7 @@ export default class SysWhitelist extends Vue {
 
   private handleDeleteItem({ id, status }: { id: string, status: string }): void {
     this.form.id = id
-    if (status === '啟用') {
+    if (status) {
       this.dialog.delete = true
     } else {
       this.dialog.activate = true
@@ -259,22 +266,23 @@ export default class SysWhitelist extends Vue {
   }
 
   private async handleDeleteConfirm(flag: boolean) {
-    // const result = await $apiUser.post('/user/admin', { id: this.form.id, action: flag ? 'activate' : 'delete' })
-    // httpResponseMapper(result)
-    // if (errorStore.isActive) {
-    //   this.snackbar.text = 'error'
-    //   errorStore.clearError()
-    // } else {
-    //   await userStore.getAdminUsers()
-    //   if (flag) {
-    //     this.dialog.activate = false
-    //   } else {
-    //     this.dialog.delete = false
-    //   }
-    //   this.clearForm()
-    //   this.snackbar.text = 'success'
-    // }
-    // this.snackbar.toggle = true
+    const result = await $apiUser.post('/admin/whitelist', {
+      action: 'status',
+      id: this.form.id,
+      value: flag
+    })
+    httpResponseMapper(result)
+    if (errorStore.isActive) {
+      this.snackbar.text = 'Disable Account Failure.'
+      errorStore.clearError()
+    } else {
+      await this.init()
+      this.clearForm()
+      this.dialog.activate = false
+      this.dialog.delete = false
+      this.snackbar.text = 'Disable Account Success.'
+    }
+    this.snackbar.toggle = true
   }
 
   private handleDeleteCancel(): void {
@@ -288,13 +296,13 @@ export default class SysWhitelist extends Vue {
     return httpResponseMapper(_result).data
   }
 
-  private async initWhiteList() {
+  private async init() {
     const rows = await this.getWhitelist()
     this.tableData = [...rows]
   }
 
   private async created() {
-    await this.initWhiteList()
+    await this.init()
   }
 }
 </script>
