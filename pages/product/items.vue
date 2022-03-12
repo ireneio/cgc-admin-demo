@@ -87,6 +87,42 @@
                   class="mx-4"
                 ></v-text-field>
               </template>
+              <template v-slot:item.auction="{ item }">
+                <v-chip small :color="getAuctionChipColor(item.auction)">
+                  {{ getAuctionChipValue(item.auction) }}
+                </v-chip>
+              </template>
+              <template v-slot:item.price="{ item }">
+                <v-layout justify-end>{{ formattedQuantityRows(item.price) }}</v-layout>
+              </template>
+              <template v-slot:item.stock="{ item }">
+                <v-layout justify-end>{{ formattedQuantityRows(item.stock) }}</v-layout>
+              </template>
+              <template v-slot:item.is_shelf="{ item }">
+                <v-chip small :color="item.is_shelf ? 'success' : 'warning'">
+                  {{ item.is_shelf ? 'Y' : 'N' }}
+                </v-chip>
+              </template>
+              <template v-slot:item.is_featured="{ item }">
+                <v-chip small :color="item.is_featured ? 'success' : 'warning'">
+                  {{ item.is_featured ? 'Y' : 'N' }}
+                </v-chip>
+              </template>
+              <template v-slot:item.is_recommended="{ item }">
+                <v-chip small :color="item.is_recommended ? 'success' : 'warning'">
+                  {{ item.is_recommended ? 'Y' : 'N' }}
+                </v-chip>
+              </template>
+              <template v-slot:item.is_purchase_allowed="{ item }">
+                <v-chip small :color="item.is_purchase_allowed ? 'success' : 'warning'">
+                  {{ item.is_purchase_allowed ? 'Y' : 'N' }}
+                </v-chip>
+              </template>
+              <template v-slot:item.is_main="{ item }">
+                <v-chip small :color="item.is_main ? 'success' : 'warning'">
+                  {{ item.is_main ? 'Y' : 'N' }}
+                </v-chip>
+              </template>
             </v-data-table>
           </v-card-text>
         </v-card>
@@ -413,6 +449,7 @@ import { Component, Vue, Watch } from 'nuxt-property-decorator'
 import { errorStore } from '~/store'
 import { $apiPlatform } from '~/utils/api'
 import DataParser from '~/utils/data'
+import { numberWithCommas } from '~/utils/formatters'
 import { httpResponseMapper } from '~/utils/http'
 import { isNatural, isNaturalInteger } from '~/utils/number'
 import Token from '~/utils/token'
@@ -421,6 +458,27 @@ import Token from '~/utils/token'
   layout: 'admin'
 })
 export default class MemberIndex extends Vue {
+  private getAuctionChipColor(val: '0' | '1' | '2') {
+    switch (val) {
+      case '0':
+      case '1':
+        return 'default'
+      case '2':
+        return 'info'
+    }
+  }
+
+  private getAuctionChipValue(val: '0' | '1' | '2') {
+    switch (val) {
+      case '0':
+        return 'NONE'
+      case '1':
+        return 'ENDED'
+      case '2':
+        return 'ONGOING'
+    }
+  }
+
   // private tab = {
   //   current: 0,
   //   items: [
@@ -889,6 +947,10 @@ export default class MemberIndex extends Vue {
       `/product?in_stock=${inStockOnly}&shelf=${displayOnly}&recommended=${recommendedOnly}&main=${landingOnly}&featured=${featuredOnly}&allow_purchase=${allowPurchaseOnly}`
     )
     return httpResponseMapper(_req).data
+  }
+
+  private formattedQuantityRows(val: number) {
+    return numberWithCommas(val)
   }
 
   private async init() {
