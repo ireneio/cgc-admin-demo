@@ -253,7 +253,10 @@
                 ></v-select>
               </v-col>
               <v-col cols="12" class="mb-n6"><h4>Sku Labels</h4></v-col>
-              <v-col cols="3">
+              <v-col cols="12">
+                <div class="mt-2">SKU is not editable</div>
+              </v-col>
+              <v-col cols="3" v-show="!dialog.isEditMode">
                 <v-select
                   :items="skuLabels.sku_color"
                   label="Sku Color"
@@ -261,7 +264,7 @@
                   :disabled="skuLabels.sku_color.length === 0"
                 ></v-select>
               </v-col>
-              <v-col cols="3">
+              <v-col cols="3" v-show="!dialog.isEditMode">
                 <v-select
                   :items="skuLabels.sku_author"
                   label="Sku Author"
@@ -269,7 +272,7 @@
                   :disabled="skuLabels.sku_author.length === 0"
                 ></v-select>
               </v-col>
-              <v-col cols="3">
+              <v-col cols="3" v-show="!dialog.isEditMode">
                 <v-select
                   :items="skuLabels.sku_painting_category"
                   label="Sku Category"
@@ -277,7 +280,7 @@
                   :disabled="skuLabels.sku_painting_category.length === 0"
                 ></v-select>
               </v-col>
-              <v-col cols="3">
+              <v-col cols="3" v-show="!dialog.isEditMode">
                 <v-select
                   :items="skuLabels.sku_painting_country"
                   label="Sku Country"
@@ -285,7 +288,7 @@
                   :disabled="skuLabels.sku_painting_country.length === 0"
                 ></v-select>
               </v-col>
-              <v-col cols="3">
+              <v-col cols="3" v-show="!dialog.isEditMode">
                 <v-select
                   :items="skuLabels.sku_painting_size"
                   label="Sku Size"
@@ -293,7 +296,7 @@
                   :disabled="skuLabels.sku_painting_size.length === 0"
                 ></v-select>
               </v-col>
-              <v-col cols="3">
+              <v-col cols="3" v-show="!dialog.isEditMode">
                 <v-select
                   :items="skuLabels.sku_painting_style"
                   label="Sku Style"
@@ -301,7 +304,7 @@
                   :disabled="skuLabels.sku_painting_style.length === 0"
                 ></v-select>
               </v-col>
-              <v-col cols="3">
+              <v-col cols="3" v-show="!dialog.isEditMode">
                 <v-select
                   :items="skuLabels.sku_painting_tech"
                   label="Sku Technique"
@@ -309,7 +312,7 @@
                   :disabled="skuLabels.sku_painting_tech.length === 0"
                 ></v-select>
               </v-col>
-              <v-col cols="3">
+              <v-col cols="3" v-show="!dialog.isEditMode">
                 <v-select
                   :items="skuLabels.sku_painting_year"
                   label="Sku Year"
@@ -588,6 +591,7 @@ export default class MemberIndex extends Vue {
   }
 
   private form: any = {
+    id: '',
     inStockOnly: false,
     displayOnly: false,
     featuredOnly: false,
@@ -640,17 +644,72 @@ export default class MemberIndex extends Vue {
     endTime: false
   }
 
-  private async handleRowClick(row: any, col: any): Promise<void> {
-    const { id, description } = row
-    this.dialog.detail = true
-    this.form.description = description
-    this.form.id = id
+  private handleRowClick(row: any, col: any) {
+    const {
+      id,
+      category_main,
+      category_sub,
+      description_main,
+      description_sub,
+      price,
+      price_deduction,
+      sku,
+      is_featured,
+      is_main,
+      is_shelf,
+      is_recommended,
+      is_purchase_allowed,
+      stock,
+      auction,
+      // auctionDates,
+      access_level,
+      img_main,
+      img_sub,
+      img_sub_second,
+      img_sub_third,
+      // auctionStartTime,
+      // auctionEndTime
+    } = row
+    const _priceRaw = Number(price.replaceAll(',', ''))
+    const _categoryMain = category_main.split(',')
+    const _categorySub = category_sub.split(',')
+    this.form = {
+      ...this.form,
+      id,
+      categoryMain: _categoryMain,
+      categorySub: _categorySub,
+      descriptionMain: description_main,
+      descriptionSub: description_sub,
+      price,
+      priceRaw: _priceRaw,
+      priceDeduction: price_deduction,
+      sku,
+      isFeatured: is_featured,
+      isMain: is_main,
+      isShelf: is_shelf,
+      isRecommended: is_recommended,
+      isPurchaseAllowed: is_purchase_allowed,
+      stock,
+      auction,
+      // auctionDates,
+      accessLevel: access_level,
+      imgCover: img_main,
+      imgSub: img_sub,
+      imgSubSecond: img_sub_second,
+      imgSubThird: img_sub_third,
+      // auctionStartTime,
+      // auctionEndTime
+    }
+    this.dialog.title = this.dialog.editTitle
+    this.dialog.isEditMode = true
+    this.dialog.new = true
   }
 
   private clearForm(): void {
     this.form = {
-      categoryMain: '',
-      categorySub: '',
+      id: '',
+      categoryMain: [],
+      categorySub: [],
       descriptionMain: '',
       descriptionSub: '',
       price: 0,
@@ -686,6 +745,8 @@ export default class MemberIndex extends Vue {
 
   private handleCreateCancel(): void {
     this.dialog.new = false
+    this.dialog.isEditMode = false
+    this.dialog.title = this.dialog.newTitle
     this.clearForm()
   }
 
@@ -783,6 +844,7 @@ export default class MemberIndex extends Vue {
       return
     }
     const {
+      id,
       categoryMain,
       categorySub,
       descriptionMain,
@@ -808,8 +870,9 @@ export default class MemberIndex extends Vue {
     } = this.form
     const _sku = `${skuColor}${skuAuthor}${skuCategory}${skuCountry}${skuSize}${skuStyle}${skuTechnique}${skuYear}`.toUpperCase()
     const _categoryMain = categoryMain.join(',')
+    const _action = this.dialog.isEditMode ? 'update' : 'create'
 
-    //  TODO categorySub, imgCover, imgSub
+    //  TODO categorySub
     const _payload = {
       details: {
         categoryMain: _categoryMain,
@@ -834,9 +897,8 @@ export default class MemberIndex extends Vue {
         auction,
         accessLevel
       },
-      // credentials: {
-      //   userId: ''
-      // }
+      id,
+      action: _action
     }
     const result = await $apiPlatform.post(
       '/product',
