@@ -8,11 +8,66 @@
             <v-btn
               color="info"
               @click="handleCreateItem"
+              :disabled="
+                skuLabels.sku_color.length === 0 &&
+                skuLabels.sku_author.length === 0 &&
+                skuLabels.sku_painting_category.length === 0 &&
+                skuLabels.sku_painting_country.length === 0 &&
+                skuLabels.sku_painting_size.length === 0 &&
+                skuLabels.sku_painting_style.length === 0 &&
+                skuLabels.sku_painting_tech.length === 0 &&
+                skuLabels.sku_painting_year.length === 0
+              "
             >
               <v-icon>mdi-plus</v-icon> Add
             </v-btn>
           </v-toolbar>
           <v-card-text class="pt-0">
+            <v-row class="mb-n8">
+              <!-- <v-col cols="6" sm="4" md="4">
+                <v-menu
+                  v-model="dialog.date"
+                  :nudge-right="40"
+                  :close-on-content-click="false"
+                  transition="scale-transition"
+                  offset-y
+                  min-width="auto"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      v-model="form.dateRange"
+                      label="Select Date Range"
+                      prepend-icon="mdi-calendar"
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker
+                    range
+                    v-model="form.dateRange"
+                  ></v-date-picker>
+                </v-menu>
+              </v-col> -->
+              <v-col cols="6" md="3" lg="3" class="">
+                <v-checkbox label="Only In-Stock" v-model="form.inStockOnly"></v-checkbox>
+              </v-col>
+              <!-- <v-col cols="6" md="3" lg="3" class="">
+                <v-checkbox label="Only Display" v-model="form.displayOnly"></v-checkbox>
+              </v-col>
+              <v-col cols="6" md="3" lg="3" class="">
+                <v-checkbox label="Only Featured" v-model="form.featuredOnly"></v-checkbox>
+              </v-col>
+              <v-col cols="6" md="3" lg="3" class="">
+                <v-checkbox label="Only Recommended" v-model="form.recommendedOnly"></v-checkbox>
+              </v-col>
+              <v-col cols="6" md="3" lg="3" class="">
+                <v-checkbox label="Only Allow Purchase" v-model="form.allowPurchaseOnly"></v-checkbox>
+              </v-col>
+              <v-col cols="6" md="3" lg="3" class="">
+                <v-checkbox label="Only On Landing Page" v-model="form.landingOnly"></v-checkbox>
+              </v-col> -->
+            </v-row>
             <v-data-table
               :headers="headers"
               :items="tableData"
@@ -167,6 +222,7 @@
                   :items="skuLabels.sku_color"
                   label="Sku Color"
                   v-model="form.skuColor"
+                  :disabled="skuLabels.sku_color.length === 0"
                 ></v-select>
               </v-col>
               <v-col cols="3">
@@ -174,6 +230,7 @@
                   :items="skuLabels.sku_author"
                   label="Sku Author"
                   v-model="form.skuAuthor"
+                  :disabled="skuLabels.sku_author.length === 0"
                 ></v-select>
               </v-col>
               <v-col cols="3">
@@ -181,6 +238,7 @@
                   :items="skuLabels.sku_painting_category"
                   label="Sku Category"
                   v-model="form.skuCategory"
+                  :disabled="skuLabels.sku_painting_category.length === 0"
                 ></v-select>
               </v-col>
               <v-col cols="3">
@@ -188,6 +246,7 @@
                   :items="skuLabels.sku_painting_country"
                   label="Sku Country"
                   v-model="form.skuCountry"
+                  :disabled="skuLabels.sku_painting_country.length === 0"
                 ></v-select>
               </v-col>
               <v-col cols="3">
@@ -195,6 +254,7 @@
                   :items="skuLabels.sku_painting_size"
                   label="Sku Size"
                   v-model="form.skuSize"
+                  :disabled="skuLabels.sku_painting_size.length === 0"
                 ></v-select>
               </v-col>
               <v-col cols="3">
@@ -202,6 +262,7 @@
                   :items="skuLabels.sku_painting_style"
                   label="Sku Style"
                   v-model="form.skuStyle"
+                  :disabled="skuLabels.sku_painting_style.length === 0"
                 ></v-select>
               </v-col>
               <v-col cols="3">
@@ -209,6 +270,7 @@
                   :items="skuLabels.sku_painting_tech"
                   label="Sku Technique"
                   v-model="form.skuTechnique"
+                  :disabled="skuLabels.sku_painting_tech.length === 0"
                 ></v-select>
               </v-col>
               <v-col cols="3">
@@ -216,6 +278,7 @@
                   :items="skuLabels.sku_painting_year"
                   label="Sku Year"
                   v-model="form.skuYear"
+                  :disabled="skuLabels.sku_painting_year.length === 0"
                 ></v-select>
               </v-col>
               <v-col cols="12" class="mb-n6"><h4>Website Logic</h4></v-col>
@@ -346,15 +409,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator'
-import { errorStore, userStore } from '~/store'
-import { $apiPlatform, $apiUser } from '~/utils/api'
+import { Component, Vue, Watch } from 'nuxt-property-decorator'
+import { errorStore } from '~/store'
+import { $apiPlatform } from '~/utils/api'
 import DataParser from '~/utils/data'
-import { numberWithCommas } from '~/utils/formatters'
 import { httpResponseMapper } from '~/utils/http'
 import { isNatural, isNaturalInteger } from '~/utils/number'
 import Token from '~/utils/token'
-import Validators from '~/utils/validators'
 
 @Component({
   layout: 'admin'
@@ -456,7 +517,25 @@ export default class MemberIndex extends Vue {
     }
   }
 
+  @Watch('form.inStockOnly')
+  async onInStockOnlyChange(newVal: boolean) {
+    // await this.init()
+    if (!newVal) {
+      await this.init()
+    } else {
+      const _req = await $apiPlatform.get('/product?in_stock=true')
+      const _data = httpResponseMapper(_req)?.data
+      this.tableData = _data
+    }
+  }
+
   private form: any = {
+    inStockOnly: false,
+    displayOnly: false,
+    featuredOnly: false,
+    recommendedOnly: false,
+    allowPurchaseOnly: false,
+    landingOnly: false,
     categoryMain: [],
     categorySub: [],
     descriptionMain: '',
@@ -506,8 +585,6 @@ export default class MemberIndex extends Vue {
   private async handleRowClick(row: any, col: any): Promise<void> {
     const { id, description } = row
     this.dialog.detail = true
-    await userStore.getWallets(id)
-    this.currentUserId = id
     this.form.description = description
     this.form.id = id
   }
@@ -807,7 +884,10 @@ export default class MemberIndex extends Vue {
   }
 
   private async getProducts() {
-    const _req = await $apiPlatform.get('/product')
+    const { inStockOnly, displayOnly, recommendedOnly, landingOnly, featuredOnly, allowPurchaseOnly } = this.form
+    const _req = await $apiPlatform.get(
+      `/product?in_stock=${inStockOnly}&shelf=${displayOnly}&recommended=${recommendedOnly}&main=${landingOnly}&featured=${featuredOnly}&allow_purchase=${allowPurchaseOnly}`
+    )
     return httpResponseMapper(_req).data
   }
 

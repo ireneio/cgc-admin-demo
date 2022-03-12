@@ -130,7 +130,7 @@ function updatePasswordHelper(password: string): Promise<void> {
 function authHelper(): Promise<{ displayName: string | null, email: string | null }> {
   return new Promise((resolve, reject) => {
     firebase.auth().onAuthStateChanged(user => {
-      if (user && user.hasOwnProperty('displayName') && user.hasOwnProperty('email')) {
+      if (user && Object.keys(user).length && user.email) {
         const { displayName, email } = user
         resolve({ displayName, email })
       }
@@ -157,24 +157,24 @@ export namespace Firebase {
       let idToken: string = ''
       if (authState) {
         idToken = await getTokenHelper()
-        console.log('[Firebase] SignIn Success')
-        // console.log('[Firebase] Token: ', idToken)
+        // console.log('[Firebase] SignIn Success')
+        // // console.log('[Firebase] Token: ', idToken)
         return idToken
       } else {
         throw new Error('Token Not Provided')
       }
     } catch (e: unknown) {
-      console.log('[Firebase] SignIn Error: ', String(e))
+      // console.log('[Firebase] SignIn Error: ', String(e))
     }
   }
 
   export async function register(signInForm: { email: string, password: string }): Promise<boolean> {
     try {
         await registerHelper({ email: signInForm.email, password: signInForm.password })
-        console.log('[Firebase] Register Success (Auto Signed In)')
+        // console.log('[Firebase] Register Success (Auto Signed In)')
         return true
       } catch (e: unknown) {
-        console.log('[Firebase] Register Error: ', String(e))
+        // console.log('[Firebase] Register Error: ', String(e))
         return false
       }
   }
@@ -182,18 +182,18 @@ export namespace Firebase {
   export async function updatePw(signInForm: { email: string, password: string }): Promise<void> {
     try {
       await updatePasswordHelper(signInForm.password)
-      console.log('[Firebase] Update Password Success')
+      // console.log('[Firebase] Update Password Success')
     } catch (e: unknown) {
-      console.log('[Firebase] Update Password Error: ', String(e))
+      // console.log('[Firebase] Update Password Error: ', String(e))
     }
   }
 
   export async function signOut(): Promise<void> {
     try {
       await signOutHelper()
-      console.log('[Firebase] SignOut Success')
+      // console.log('[Firebase] SignOut Success')
     } catch (e: unknown) {
-      console.log('[Firebase] SignOut Error: ', String(e))
+      // console.log('[Firebase] SignOut Error: ', String(e))
     }
   }
 }
