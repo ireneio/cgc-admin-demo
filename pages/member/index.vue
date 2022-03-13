@@ -157,11 +157,58 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog
+      v-model="dialog.detail"
+      fullscreen
+      hide-overlay
+      transition="dialog-bottom-transition"
+    >
+      <v-card>
+        <v-toolbar
+          dark
+          color="info"
+        >
+          <v-btn
+            icon
+            dark
+            @click="handleDetailCancel"
+          >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+          <v-toolbar-title>{{ dialog.titleDetail }}</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-toolbar-items>
+            <!-- <v-btn
+              dark
+              text
+              @click="handleDetail"
+            >
+              Save
+            </v-btn> -->
+          </v-toolbar-items>
+        </v-toolbar>
+        <v-card-text>
+          <v-tabs
+            v-model="tab.current"
+            height="48px"
+            color="info"
+          >
+            <v-tabs-slider color="info"></v-tabs-slider>
+            <v-tab
+              v-for="item in tab.items"
+              :key="item.key"
+            >
+              {{ item.value }}
+            </v-tab>
+          </v-tabs>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator'
+import { Component, Vue, Watch } from 'nuxt-property-decorator'
 import { errorStore } from '~/store'
 import { $apiUser } from '~/utils/api'
 import DataParser from '~/utils/data'
@@ -173,6 +220,19 @@ import Token from '~/utils/token'
   layout: 'admin'
 })
 export default class MemberIndex extends Vue {
+  private tab = {
+    current: 0,
+    items: [
+      { key: 0, value: 'basic information', query: 'basic_information' },
+      { key: 1, value: 'transaction history', query: 'transaction_history' },
+    ]
+  }
+
+  @Watch('tab.current', { immediate: true })
+  private async onTabChange(newVal: number) {
+    // TODO
+  }
+
   private getDateText(val: string) {
     return dateDisplayYYYYMMDDHHMMSS(val)
   }
@@ -233,7 +293,14 @@ export default class MemberIndex extends Vue {
     delete: false,
     error: false,
     errorTitle: 'Server Error. Please try again later.',
-    new: false
+    new: false,
+    detail: false,
+    titleDetail: 'User Information'
+  }
+
+  private handleDetailCancel() {
+    this.dialog.detail = false
+    this.clearForm()
   }
 
   private handleRowClick(row: any, col: any) {
@@ -241,6 +308,8 @@ export default class MemberIndex extends Vue {
     this.form.id = id
     this.form.accessLevel = access_level
     this.form.email = email
+    this.dialog.detail = true
+    this.dialog.titleDetail = `User Information - ${email}`
   }
 
   private handleDeleteItem({ id, allowed_login_status }: { id: string, allowed_login_status: string }): void {

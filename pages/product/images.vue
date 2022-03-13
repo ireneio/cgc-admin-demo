@@ -222,7 +222,7 @@ import { httpResponseMapper } from '~/utils/http'
 @Component({
   layout: 'admin'
 })
-export default class ProductIndex extends Vue {
+export default class ProductImages extends Vue {
   private async handleSubmit(field: string) {
     const fieldMap: Record<string, string> = {
       img_main: 'imgCover',

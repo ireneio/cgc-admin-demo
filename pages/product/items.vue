@@ -155,7 +155,7 @@
       <v-card>
         <v-toolbar
           dark
-          color="primary"
+          color="info"
         >
           <v-btn
             icon
@@ -460,7 +460,7 @@ import Token from '~/utils/token'
 @Component({
   layout: 'admin'
 })
-export default class MemberIndex extends Vue {
+export default class ProductItems extends Vue {
   private getAuctionChipColor(val: '0' | '1' | '2') {
     switch (val) {
       case '0':
@@ -963,11 +963,6 @@ export default class MemberIndex extends Vue {
     }
   }
 
-  private async getSkuLabels() {
-    const _req = await $apiPlatform.get('/sku/all')
-    return httpResponseMapper(_req)?.data
-  }
-
   private skuLabels: any = {
     sku_author: [],
     sku_color: [],
@@ -977,6 +972,11 @@ export default class MemberIndex extends Vue {
     sku_painting_style: [],
     sku_painting_tech: [],
     sku_painting_year: []
+  }
+
+  private async getSkuLabels() {
+    const _req = await $apiPlatform.get('/sku/all')
+    return httpResponseMapper(_req)?.data
   }
 
   private async setSkuLabels() {
@@ -1024,7 +1024,7 @@ export default class MemberIndex extends Vue {
     }
   }
 
-  private async created() {
+  private async mounted() {
     await Promise.all([
       this.init(),
       this.setCategory(),

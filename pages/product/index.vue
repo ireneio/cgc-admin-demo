@@ -278,7 +278,7 @@ export default class ProductIndex extends Vue {
     errorTitle: 'Server Error. Please try again later.'
   }
 
-  private async handleRowClick(row: any, col: any): Promise<void> {
+  private handleRowClick(row: any, col: any) {
     const {
       id,
       access_level,
