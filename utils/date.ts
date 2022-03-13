@@ -1,11 +1,11 @@
-import moment from 'moment'
+import moment from 'moment-timezone'
 
 export function dateIsPast(time: string): boolean {
   return moment(time).isBefore(moment())
 }
 
 export function dateFromNow(time: string): string {
-  return moment(time).local().fromNow()
+  return moment(time).tz('Asia/Taipei').fromNow()
 }
 
 export function dateToISO(time: string): string {
@@ -29,11 +29,11 @@ export function dateDisplayTimeRemaining(endTime: string): string {
 }
 
 export function dateDisplayYYYYMMDD(time: string): string {
-  return moment(time).local().format('YYYY-MM-DD')
+  return moment(time).tz('Asia/Taipei').format('YYYY-MM-DD')
 }
 
 export function dateDisplayYYYYMMDDHHMMSS(time: string): string {
-  return moment(time).local().format('YYYY-MM-DD HH:mm:ss')
+  return moment(time).tz('Asia/Taipei').format('YYYY-MM-DD HH:mm:ss')
 }
 
 export function dateDisplayFromNow(time: string): string {

@@ -25,81 +25,6 @@
               class="elevation-1 mt-4"
               @click:row="handleRowClick"
             >
-              <template v-slot:top>
-                <v-dialog
-                  v-model="dialog.new"
-                  max-width="700px"
-                  max-height="70vh"
-                  persistent
-                >
-                  <v-card>
-                    <v-card-title>
-                      <span class="headline">{{ form.id === '' ? dialog.newTitle : dialog.editTitle }}</span>
-                    </v-card-title>
-                    <v-card-text>
-                      <v-container>
-                        <v-row>
-                          <v-col
-                            cols="12"
-                          >
-                            <v-text-field
-                              v-model="form.email"
-                              label="Email"
-                              counter="50"
-                            ></v-text-field>
-                          </v-col>
-                          <v-col
-                            cols="12"
-                          >
-                            <v-select
-                              v-model="form.accessLevel"
-                              :items="selectPerm"
-                              label="Permission"
-                            ></v-select>
-                          </v-col>
-                        </v-row>
-                      </v-container>
-                    </v-card-text>
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn
-                        color="blue darken-1"
-                        text
-                        @click="handleCreateCancel"
-                      >
-                        Cancel
-                      </v-btn>
-                      <v-btn
-                        color="blue darken-1"
-                        text
-                        @click="handleCreateSave"
-                      >
-                        Save
-                      </v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
-                <v-dialog v-model="dialog.delete" max-width="50vw">
-                  <v-card>
-                    <v-card-title class="headline">{{ dialog.deleteConfimationText }}</v-card-title>
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn color="blue darken-1" text @click="handleDeleteCancel">Cancel</v-btn>
-                      <v-btn color="blue darken-1" text @click="handleDeleteConfirm(false)">Confirm</v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
-                <v-dialog v-model="dialog.activate" max-width="50vw">
-                  <v-card>
-                    <v-card-title class="headline">{{ dialog.activateConfimationText }}</v-card-title>
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn color="blue darken-1" text @click="handleDeleteCancel">Cancel</v-btn>
-                      <v-btn color="blue darken-1" text @click="handleDeleteConfirm(true)">Confirm</v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
-              </template>
               <template v-slot:item.access_level="{ item }">
                 {{ item.access_level === '6' ? 'Root' : 'Admin' }}
               </template>
@@ -115,7 +40,7 @@
                   small
                   @click.stop="handleDeleteItem(item)"
                 >
-                {{ item.status ? 'mdi-stop' : 'mdi-play' }}
+                  {{ item.status ? 'mdi-stop' : 'mdi-play' }}
                 </v-icon>
               </template>
             </v-data-table>
@@ -141,6 +66,79 @@
         </v-btn>
       </template>
     </v-snackbar>
+    <v-dialog
+      v-model="dialog.new"
+      max-width="700px"
+      max-height="70vh"
+      persistent
+    >
+      <v-card>
+        <v-card-title>
+          <span class="headline">{{ form.id === '' ? dialog.newTitle : dialog.editTitle }}</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container>
+            <v-row>
+              <v-col
+                cols="12"
+              >
+                <v-text-field
+                  v-model="form.email"
+                  label="Email"
+                  counter="50"
+                ></v-text-field>
+              </v-col>
+              <v-col
+                cols="12"
+              >
+                <v-select
+                  v-model="form.accessLevel"
+                  :items="selectPerm"
+                  label="Permission"
+                ></v-select>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="handleCreateCancel"
+          >
+            Cancel
+          </v-btn>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="handleCreateSave"
+          >
+            Save
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="dialog.delete" max-width="50vw">
+      <v-card>
+        <v-card-title class="headline">{{ dialog.deleteConfimationText }}</v-card-title>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="handleDeleteCancel">Cancel</v-btn>
+          <v-btn color="blue darken-1" text @click="handleDeleteConfirm(false)">Confirm</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="dialog.activate" max-width="50vw">
+      <v-card>
+        <v-card-title class="headline">{{ dialog.activateConfimationText }}</v-card-title>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="handleDeleteCancel">Cancel</v-btn>
+          <v-btn color="blue darken-1" text @click="handleDeleteConfirm(true)">Confirm</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -148,6 +146,7 @@
 import { Component, Vue } from 'nuxt-property-decorator'
 import { errorStore, userStore } from '~/store'
 import { $apiUser } from '~/utils/api'
+import DataParser from '~/utils/data'
 import { httpResponseMapper } from '~/utils/http'
 
 @Component({
@@ -171,10 +170,6 @@ export default class SysWhitelist extends Vue {
 
   private tableData: any[] = []
 
-  // private get tableData(): any[] {
-  //   return this._tableData
-  // }
-
   private tableOptions: any = {
       page: 1,
       itemsPerPage: 10,
@@ -190,16 +185,7 @@ export default class SysWhitelist extends Vue {
 
   private singleSelect: boolean = false
 
-  private selectPerm: Array<any> = [
-    {
-      text: 'Root',
-      value: '6'
-    },
-    {
-      text: 'Admin',
-      value: '5'
-    }
-  ]
+  private selectPerm: Array<any> = DataParser.accessLevelListAdmin
 
   private form: any = {
     id: '',
@@ -272,15 +258,16 @@ export default class SysWhitelist extends Vue {
       value: flag
     })
     httpResponseMapper(result)
+    const _snackbarText = this.dialog.delete ? 'Deactivate' : 'Activate'
     if (errorStore.isActive) {
-      this.snackbar.text = 'Disable Account Failure.'
+      this.snackbar.text = `${_snackbarText} Account Failure.`
       errorStore.clearError()
     } else {
       await this.init()
       this.clearForm()
       this.dialog.activate = false
       this.dialog.delete = false
-      this.snackbar.text = 'Disable Account Success.'
+      this.snackbar.text = `${_snackbarText} Account Success.`
     }
     this.snackbar.toggle = true
   }
@@ -288,6 +275,7 @@ export default class SysWhitelist extends Vue {
   private handleDeleteCancel(): void {
     this.dialog.delete = false
     this.dialog.activate = false
+    this.dialog.isEditMode = false
     this.clearForm()
   }
 

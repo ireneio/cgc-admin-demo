@@ -1,9 +1,16 @@
 namespace DataParser {
-  export const accessLevelList: Array<any> = [
+  export const accessLevelListAdmin: Array<any> = [
     {
-      text: 'Fully Verified User',
-      value: '5'
+      text: 'Root',
+      value: '6'
     },
+    {
+      text: 'Admin',
+      value: '5'
+    }
+  ]
+
+  export const accessLevelList: Array<any> = [
     {
       text: 'Identity Verified User',
       value: '4'
