@@ -295,7 +295,7 @@ export default class DefaultLayout extends Vue {
   private items: Array<any> = [
     {
       icon: 'mdi-cart',
-      'icon-alt': 'mdi-cart',
+      'icon-alt': 'mdi-cart-outline',
       text: 'Orders',
       model: false,
       allowAccess: '5',
@@ -310,17 +310,11 @@ export default class DefaultLayout extends Vue {
     },
     {
       icon: 'mdi-archive',
-      'icon-alt': 'mdi-archive',
+      'icon-alt': 'mdi-archive-outline',
       text: 'Products',
       model: false,
       allowAccess: '5',
       children: [
-        {
-          text: 'Categories',
-          icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'product',
-          allowAccess: '5'
-        },
         {
           text: 'Sku',
           icon: 'mdi-checkbox-blank-circle-outline',
@@ -337,6 +331,27 @@ export default class DefaultLayout extends Vue {
           text: 'Images',
           icon: 'mdi-checkbox-blank-circle-outline',
           route: 'product-images',
+          allowAccess: '5'
+        }
+      ]
+    },
+    {
+      icon: 'mdi-sitemap',
+      'icon-alt': 'mdi-sitemap-outline',
+      text: 'Site',
+      model: false,
+      allowAccess: '5',
+      children: [
+        {
+          text: 'Auctions',
+          icon: 'mdi-checkbox-blank-circle-outline',
+          route: 'product-auctions',
+          allowAccess: '5'
+        },
+        {
+          text: 'Categories',
+          icon: 'mdi-checkbox-blank-circle-outline',
+          route: 'product',
           allowAccess: '5'
         }
       ]
