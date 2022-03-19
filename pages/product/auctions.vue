@@ -250,7 +250,7 @@
 import { Component, Vue } from 'nuxt-property-decorator'
 import { errorStore } from '~/store'
 import { $apiPlatform } from '~/utils/api'
-import { numberWithDollarSign } from '~/utils/formatters'
+import { numberWithCommas, numberWithDollarSign } from '~/utils/formatters'
 import { httpResponseMapper } from '~/utils/http'
 import DataParser from '~/utils/data'
 import { isNatural } from '~/utils/number'
@@ -261,7 +261,7 @@ import { dateToISOEndOfDay, dateToISOStartOfDay } from '~/utils/date'
 })
 export default class ProductAuctions extends Vue {
   private formattedPriceRows(val: number) {
-    return numberWithDollarSign(val)
+    return numberWithCommas(val)
   }
 
   // private product = {

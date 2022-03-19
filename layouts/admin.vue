@@ -65,7 +65,6 @@
         </template>
       </v-list>
     </v-navigation-drawer>
-
     <v-app-bar
       :clipped-left="$vuetify.breakpoint.lgAndUp"
       app
@@ -96,7 +95,7 @@
         </template>
         <v-list>
           <v-list-item>
-            <v-card flat min-width="200px">
+            <v-card flat width="250px">
               <div class="d-flex align-center mt-2">
                 <v-btn class="ml-auto" color="primary" x-small fab @click="handleToggleTheme">
                   <v-icon v-if="$vuetify.theme.dark">mdi-white-balance-sunny</v-icon>
@@ -109,14 +108,14 @@
               <v-card-title>
                 <v-container>
                   <v-row>
-                    <v-col cols="4" class="px-0 d-flex align-center">
-                      <!-- <v-img :src="info.dP" height="60" width="60"></v-img> -->
+                    <!-- <v-col cols="4" class="px-0 d-flex align-center">
+                      <v-img :src="info.dP" height="60" width="60"></v-img>
                       <v-icon x-large class="ml-4">mdi-account-circle</v-icon>
-                    </v-col>
-                    <v-col cols="8" class="px-0 pl-4 d-flex align-center">
+                    </v-col> -->
+                    <v-col cols="12" class="px-0 pl-4 d-flex align-center">
                       <div>
-                        <div>{{ info.username }}</div>
-                        <div>{{ info.companyName }}</div>
+                        <!-- <div>{{ info.username }}</div> -->
+                        <div :style="{ 'font-size': '14px' }">{{ info.companyName }}</div>
                       </div>
                     </v-col>
                   </v-row>
@@ -298,13 +297,13 @@ export default class DefaultLayout extends Vue {
       'icon-alt': 'mdi-cart-outline',
       text: 'Orders',
       model: false,
-      allowAccess: '5',
+      allowAccess: '6',
       children: [
         {
           text: 'Search',
           icon: 'mdi-checkbox-blank-circle-outline',
           route: 'orders',
-          allowAccess: '5'
+          allowAccess: '6'
         }
       ]
     },
@@ -319,7 +318,7 @@ export default class DefaultLayout extends Vue {
           text: 'Sku',
           icon: 'mdi-checkbox-blank-circle-outline',
           route: 'product-sku',
-          allowAccess: '5'
+          allowAccess: '6'
         },
         {
           text: 'Labels',
@@ -352,7 +351,7 @@ export default class DefaultLayout extends Vue {
           text: 'Categories',
           icon: 'mdi-checkbox-blank-circle-outline',
           route: 'product',
-          allowAccess: '5'
+          allowAccess: '6'
         }
       ]
     },
@@ -361,13 +360,13 @@ export default class DefaultLayout extends Vue {
       'icon-alt': 'mdi-account-box-multiple-outline',
       text: 'Users',
       model: false,
-      allowAccess: '5',
+      allowAccess: '6',
       children: [
         {
           text: 'Accounts',
           icon: 'mdi-checkbox-blank-circle-outline',
           route: 'member',
-          allowAccess: '5'
+          allowAccess: '6'
         }
       ]
     },
@@ -455,8 +454,7 @@ export default class DefaultLayout extends Vue {
 
   private isAllowAccess(val: string) {
     // TODO permission
-    // return Number(this.userAccessLevel) >= Number(val)
-    return true
+    return Number(this.userAccessLevel) >= Number(val)
   }
 
   private mounted() {

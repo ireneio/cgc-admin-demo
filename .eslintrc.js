@@ -2,12 +2,12 @@ module.exports = {
   root: true,
   env: {
     browser: true,
-    node: true
+    // node: true
   },
   extends: [
-    '@nuxtjs/eslint-config-typescript',
-    'plugin:nuxt/recommended',
-    'standard'
+    // '@nuxtjs/eslint-config-typescript',
+    // 'plugin:nuxt/recommended',
+    // 'standard'
   ],
   // add your custom rules here
   rules: {
@@ -30,6 +30,7 @@ module.exports = {
     'unicorn/prefer-includes': 'off',
     'nuxt/no-cjs-in-config': 'off',
     'vue/max-attributes-per-line': 'off',
-    'no-tabs': 'off'
+    'no-tabs': 'off',
+    camelcase: 'off'
   }
 }

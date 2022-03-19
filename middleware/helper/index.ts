@@ -1,5 +1,6 @@
 import { Context } from '@nuxt/types'
 import { ResponseObject } from 'Http'
+import { authStore } from '~/store'
 import { $apiUser } from '~/utils/api'
 import { httpResponseMapper } from '~/utils/http'
 
@@ -12,6 +13,11 @@ async function verification(type: string, token: string): Promise<any> {
   return httpResponseMapper(result)
 }
 
+function setInfoInStore(data: any[]) {
+  const { access_level, email, id } = data[0]
+  authStore.setInfo({ access_level, email, id })
+}
+
 export async function authHelper(failPath: string, successPath: string, ctx: Context, type: string) {
   const { store, redirect } = ctx
   const token = window.localStorage.getItem('tkn')
@@ -20,9 +26,12 @@ export async function authHelper(failPath: string, successPath: string, ctx: Con
     try {
       const verificationResult = await verification(type, token)
       if (verificationResult?.data?.length && isSignInPage(ctx)) {
+        setInfoInStore(verificationResult.data)
         redirect(successPath)
       } else if (verificationResult?.error) {
         throw new Error('401')
+      } else if (verificationResult?.data?.length) {
+        setInfoInStore(verificationResult.data)
       }
     } catch (e: unknown) {
       redirect(failPath)
