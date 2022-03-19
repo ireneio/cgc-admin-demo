@@ -216,6 +216,7 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'nuxt-property-decorator'
+import { authStore } from '~/store'
 import { $apiPlatform } from '~/utils/api'
 import { httpResponseMapper } from '~/utils/http'
 
@@ -368,13 +369,13 @@ export default class ProductImages extends Vue {
   private tableData: any[] = []
 
   private async getProducts() {
-    const _req = await $apiPlatform.get(`/product/sku?value=${this.form.search}`)
+    const _req = await $apiPlatform.get(`/product/sku?value=${this.form.search}&userId=${authStore.id}`)
     return httpResponseMapper(_req)?.data
   }
 
   private async setProducts() {
     try {
-      const _rows = await this.getProducts()
+      let _rows = await this.getProducts()
       if (_rows && _rows.length) {
         this.tableData = [..._rows]
       }

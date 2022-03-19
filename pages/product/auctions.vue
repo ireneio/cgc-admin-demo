@@ -248,7 +248,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
-import { errorStore } from '~/store'
+import { authStore, errorStore } from '~/store'
 import { $apiPlatform } from '~/utils/api'
 import { numberWithCommas, numberWithDollarSign } from '~/utils/formatters'
 import { httpResponseMapper } from '~/utils/http'
@@ -477,7 +477,7 @@ export default class ProductAuctions extends Vue {
   }
 
   private async getAuctions() {
-    const _req = await $apiPlatform.get('/auction')
+    const _req = await $apiPlatform.get(`/auction?userId=${authStore.id}`)
     return httpResponseMapper(_req).data
   }
 
@@ -509,8 +509,11 @@ export default class ProductAuctions extends Vue {
 
   private async init() {
     try {
-      const _rows = await this.getAuctions()
+      let _rows = await this.getAuctions()
       if (_rows && _rows.length) {
+        if (authStore.access_level !== '6') {
+          _rows = _rows.filter((item: any) => item.user_id_creation === authStore.id)
+        }
         this.tableData = [..._rows]
       }
     } catch (e: unknown) {

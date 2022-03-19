@@ -17,6 +17,14 @@ export default class AuthModule extends VuexModule {
     access_level: '0'
   }
 
+  public get access_level() {
+    return this.info.access_level
+  }
+
+  public get id() {
+    return this.info.id
+  }
+
   @Mutation
   public setInfo(payload: { email: string, id: string, access_level: string }) {
     this.info = { ...payload }
