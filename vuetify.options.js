@@ -8,7 +8,7 @@ export default {
   theme: {
     themes: {
       light: {
-        primary: '#d49063',
+        // primary: '#d49063',
         secondary: '#004e82',
         error: '#ff3e30',
         warning: '#f7b529',
