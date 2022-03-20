@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12">
-        <h2 class="mb-4">User Accounts</h2>
+        <h2 class="mb-4">Artist Accounts</h2>
         <v-card outlined>
           <v-toolbar flat class="mb-n4">
             <v-btn
@@ -35,6 +35,16 @@
               <template v-slot:item.id="{ item }">
                 <v-layout justify-end>
                   {{ item.id }}
+                </v-layout>
+              </template>
+              <template v-slot:item.balance_total_display="{ item }">
+                <v-layout justify-end>
+                  {{ item.balance_total_display }}
+                </v-layout>
+              </template>
+               <template v-slot:item.cumulative_earnings_display="{ item }">
+                <v-layout justify-end>
+                  {{ item.cumulative_earnings_display }}
                 </v-layout>
               </template>
               <template v-slot:item.access_level="{ item }">
@@ -91,7 +101,7 @@
     >
       <v-card>
         <v-card-title>
-          <span class="headline">{{ form.id === '' ? dialog.newTitle : dialog.editTitle }}</span>
+          <span class="headline">{{ dialog.title }}</span>
         </v-card-title>
         <v-card-text>
           <v-container>
@@ -103,6 +113,17 @@
                   v-model="form.email"
                   label="Email"
                   counter="50"
+                  v-show="!dialog.isEditMode"
+                ></v-text-field>
+              </v-col>
+              <v-col
+                cols="12"
+              >
+                <v-text-field
+                  v-model="form.wallet_address"
+                  label="Wallet Address"
+                  counter="50"
+                  v-show="dialog.isEditMode"
                 ></v-text-field>
               </v-col>
               <v-col
@@ -112,6 +133,8 @@
                   v-model="form.accessLevel"
                   :items="selectPerm"
                   label="Permission"
+                  readonly
+                  disabled
                 ></v-select>
               </v-col>
             </v-row>
@@ -156,53 +179,6 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog
-      v-model="dialog.detail"
-      fullscreen
-      hide-overlay
-      transition="dialog-bottom-transition"
-    >
-      <v-card>
-        <v-toolbar
-          dark
-          color="info"
-        >
-          <v-btn
-            icon
-            dark
-            @click="handleDetailCancel"
-          >
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-          <v-toolbar-title>{{ dialog.titleDetail }}</v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-toolbar-items>
-            <!-- <v-btn
-              dark
-              text
-              @click="handleDetail"
-            >
-              Save
-            </v-btn> -->
-          </v-toolbar-items>
-        </v-toolbar>
-        <v-card-text>
-          <v-tabs
-            v-model="tab.current"
-            height="48px"
-            color="info"
-          >
-            <v-tabs-slider color="info"></v-tabs-slider>
-            <v-tab
-              v-for="item in tab.items"
-              :key="item.key"
-            >
-              {{ item.value }}
-            </v-tab>
-          </v-tabs>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
   </v-container>
 </template>
 
@@ -212,26 +188,15 @@ import { errorStore } from '~/store'
 import { $apiUser } from '~/utils/api'
 import DataParser from '~/utils/data'
 import { dateDisplayYYYYMMDDHHMMSS } from '~/utils/date'
+import { numberWithCommas } from '~/utils/formatters'
 import { httpResponseMapper } from '~/utils/http'
 import Token from '~/utils/token'
+import { getTrimmedAddressEllipsisMiddle } from '~/utils/wallet'
 
 @Component({
   layout: 'admin'
 })
 export default class MemberIndex extends Vue {
-  private tab = {
-    current: 0,
-    items: [
-      { key: 0, value: 'basic information', query: 'basic_information' },
-      { key: 1, value: 'transaction history', query: 'transaction_history' },
-    ]
-  }
-
-  @Watch('tab.current', { immediate: true })
-  private async onTabChange(newVal: number) {
-    // TODO
-  }
-
   private getDateText(val: string) {
     return dateDisplayYYYYMMDDHHMMSS(val)
   }
@@ -244,7 +209,12 @@ export default class MemberIndex extends Vue {
     return 'N/A'
   }
 
-  private selectPerm: Array<any> = DataParser.accessLevelList
+  private selectPerm: Array<any> = [
+    {
+      text: 'Artist',
+      value: '5'
+    },
+  ]
 
   private snackbar = {
     toggle: false,
@@ -256,9 +226,12 @@ export default class MemberIndex extends Vue {
   private headers: Array<any> = [
     // { text: 'ID', value: 'id', align: 'start', sortable: true },
     { text: 'Email', value: 'email', align: 'start', sortable: true },
-    { text: 'Permission', value: 'access_level', align: 'start', sortable: true, filterable: false },
+    // { text: 'Permission', value: 'access_level', align: 'start', sortable: true, filterable: false },
     { text: 'Last Login', value: 'last_login', align: 'start', sortable: true, filterable: false },
     { text: 'Created At', value: 'created_at', align: 'start', sortable: true, filterable: false },
+    { text: 'Wallet Address (ETH)', value: 'wallet_address_display', align: 'start', sortable: true, filterable: false },
+    { text: 'Payable', value: 'balance_total_display', align: 'start', sortable: true, filterable: false },
+    { text: 'Cumulative Earnings', value: 'cumulative_earnings_display', align: 'start', sortable: true, filterable: false },
     { text: 'Active', value: 'allowed_login_status', align: 'start', sortable: true, filterable: false },
     { text: 'Misc', value: 'misc', align: 'start', sortable: false, filterable: false }
   ]
@@ -270,7 +243,7 @@ export default class MemberIndex extends Vue {
   private tableOptions: any = {
       page: 1,
       itemsPerPage: 10,
-      sortBy: ['email', 'permission', 'last_login'],
+      sortBy: ['email', 'last_login'],
       sortDesc: [true],
       // groupBy: string[],
       // groupDesc: boolean[],
@@ -280,8 +253,9 @@ export default class MemberIndex extends Vue {
 
   private form: any = {
     email: '',
-    accessLevel: '',
-    id: ''
+    accessLevel: '5',
+    id: '',
+    wallet_address: ''
   }
 
   private dialog: any = {
@@ -293,22 +267,18 @@ export default class MemberIndex extends Vue {
     error: false,
     errorTitle: 'Server Error. Please try again later.',
     new: false,
-    detail: false,
-    titleDetail: 'User Information'
-  }
-
-  private handleDetailCancel() {
-    this.dialog.detail = false
-    this.clearForm()
+    title: 'Edit Artist Account'
   }
 
   private handleRowClick(row: any, col: any) {
-    const { id, email, access_level } = row
+    const { id, email, access_level, wallet_address } = row
     this.form.id = id
     this.form.accessLevel = access_level
     this.form.email = email
-    this.dialog.detail = true
-    this.dialog.titleDetail = `User Information - ${email}`
+    this.form.wallet_address = wallet_address
+    this.dialog.isEditMode = true
+    this.dialog.new = true
+    this.dialog.title = 'Edit Artist Account'
   }
 
   private handleDeleteItem({ id, allowed_login_status }: { id: string, allowed_login_status: string }): void {
@@ -324,12 +294,15 @@ export default class MemberIndex extends Vue {
     this.form = {
       email: '',
       accessLevel: '',
-      id: ''
+      id: '',
+      wallet_address: ''
     }
   }
 
   private handleCreateItem(): void {
     this.dialog.new = true
+    this.dialog.isEditMode = false
+    this.dialog.title = 'Create Artist Account'
   }
 
   private handleCreateCancel(): void {
@@ -339,13 +312,22 @@ export default class MemberIndex extends Vue {
   }
 
   private async handleCreateSave() {
-    const { accessLevel, email } = this.form
-    const _payload = {
-      email,
-      accessLevel
+    const { email, wallet_address, id } = this.form
+    if (this.dialog.isEditMode) {
+      const _payload = {
+        user_id: id,
+        wallet_address
+      }
+      const result = await $apiUser.post('/member/artists', _payload, { headers: { authorization: `Bearer ${Token.getValue()}` } })
+      httpResponseMapper(result)
+    } else {
+      const _payload = {
+        email,
+        accessLevel: '5'
+      }
+      const result = await $apiUser.post('/admin/member', _payload, { headers: { authorization: `Bearer ${Token.getValue()}` } })
+      httpResponseMapper(result)
     }
-    const result = await $apiUser.post('/admin/member', _payload)
-    httpResponseMapper(result)
     if (errorStore.isActive) {
       this.snackbar.text = `Account creation failure: ${errorStore.message}`
       errorStore.clearError()
@@ -353,6 +335,7 @@ export default class MemberIndex extends Vue {
       await this.init()
       this.snackbar.text = 'Account creation success'
       this.dialog.new = false
+      this.dialog.isEditMode = false
       this.clearForm()
     }
     this.snackbar.toggle = true
@@ -387,7 +370,7 @@ export default class MemberIndex extends Vue {
   }
 
   private async getUsers() {
-    const _req = await $apiUser.get('/member', {
+    const _req = await $apiUser.get('/member/artists', {
       headers: {
         authorization: `Bearer ${Token.getValue()}`
       }
@@ -398,7 +381,12 @@ export default class MemberIndex extends Vue {
   private async init() {
     const _rows = await this.getUsers()
     if (_rows && _rows.length) {
-      this.tableData = [..._rows]
+      this.tableData = [..._rows].map((item) => ({ 
+        ...item,
+        balance_total_display: numberWithCommas(item.balance_total),
+        cumulative_earnings_display: numberWithCommas(item.cumulative_earnings),
+        wallet_address_display: getTrimmedAddressEllipsisMiddle(item.wallet_address)
+      }))
     } else {
       this.tableData = []
     }

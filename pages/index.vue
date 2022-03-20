@@ -1,9 +1,9 @@
 <template>
   <div>
     <v-toolbar flat class="banner">
-      <h1>
-        <strong class="primary--text">Welcome to DFON</strong>
-        <h6>Kindly select a functionality from the menu</h6>
+      <h1 class="d-flex justify-center flex-wrap text-left">
+        <strong class="primary--text text-left" :style="{ flex: '0 0 100%' }">Welcome to DFON</strong>
+        <h6 class="text-left" :style="{ flex: '0 0 100%' }">Kindly select a functionality from the menu</h6>
       </h1>
     </v-toolbar>
   </div>

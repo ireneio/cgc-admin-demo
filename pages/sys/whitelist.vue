@@ -36,12 +36,11 @@
                 </v-chip>
               </template>
               <template v-slot:item.misc="{ item }">
-                <v-icon
-                  small
-                  @click.stop="handleDeleteItem(item)"
-                >
-                  {{ item.status ? 'mdi-stop' : 'mdi-play' }}
-                </v-icon>
+                <v-chip @click.stop="handleDeleteItem(item)">
+                  <v-icon small>
+                    {{ item.status ? 'mdi-stop' : 'mdi-play' }}
+                  </v-icon>
+                </v-chip>
               </template>
             </v-data-table>
           </v-card-text>
@@ -95,6 +94,7 @@
                   v-model="form.accessLevel"
                   :items="selectPerm"
                   label="Permission"
+                  disabled
                 ></v-select>
               </v-col>
             </v-row>
@@ -162,7 +162,7 @@ export default class SysWhitelist extends Vue {
 
   private headers: Array<any> = [
     { text: 'Email', value: 'email', align: 'start', sortable: true },
-    { text: 'Access Level', value: 'access_level', align: 'start', sortable: true },
+    // { text: 'Access Level', value: 'access_level', align: 'start', sortable: true },
     { text: 'Created At', value: 'created_at', align: 'start', sortable: true },
     { text: 'Status', value: 'status', align: 'start', sortable: true },
     { text: '', value: 'misc', align: 'start', sortable: false }
@@ -190,7 +190,7 @@ export default class SysWhitelist extends Vue {
   private form: any = {
     id: '',
     email: '',
-    accessLevel: ''
+    accessLevel: '6'
   }
 
   private dialog: any = {
@@ -214,7 +214,7 @@ export default class SysWhitelist extends Vue {
     this.form = {
       id: '',
       email: '',
-      accessLevel: ''
+      accessLevel: '6'
     }
   }
 

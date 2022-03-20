@@ -92,6 +92,9 @@
           <v-btn color="default" text v-bind="attrs" v-on="on" large>
             <v-icon>mdi-cog</v-icon>
           </v-btn>
+          <v-btn large :text="wallet.connected" @click="handleWalletConn">
+            {{ wallet.btnText }}
+          </v-btn>
         </template>
         <v-list>
           <v-list-item>
@@ -229,11 +232,18 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
 import { authStore } from '~/store'
+import { addWalletListener, connect, getTrimmedAddressEllipsisMiddle, isConnected } from '~/utils/wallet.js'
 
 @Component({
   middleware: ['auth']
 })
 export default class DefaultLayout extends Vue {
+  private wallet = {
+    connected: false,
+    address: '',
+    btnText: 'connect wallet'
+  }
+
   private get isAllowPasswordUpdate(): boolean {
     return false
   }
@@ -363,6 +373,12 @@ export default class DefaultLayout extends Vue {
       allowAccess: '6',
       children: [
         {
+          text: 'Artists',
+          icon: 'mdi-checkbox-blank-circle-outline',
+          route: 'member-artists',
+          allowAccess: '6'
+        },
+        {
           text: 'Accounts',
           icon: 'mdi-checkbox-blank-circle-outline',
           route: 'member',
@@ -457,9 +473,25 @@ export default class DefaultLayout extends Vue {
     return Number(this.userAccessLevel) >= Number(val)
   }
 
+  private async handleWalletConn() {
+    const { address, status } = await isConnected()
+    if (!address) {
+      const { address, status } = await connect()
+      this.wallet.address = address
+      this.wallet.connected = true
+      this.wallet.btnText = getTrimmedAddressEllipsisMiddle(address)
+    } else {
+      this.wallet.address = address
+      this.wallet.connected = true
+      this.wallet.btnText = getTrimmedAddressEllipsisMiddle(address)
+    }
+  }
+
   private mounted() {
     this.getThemeFromLs()
     this.getLangFromLs()
+    addWalletListener(this)
+    this.handleWalletConn()
   }
 }
 </script>
