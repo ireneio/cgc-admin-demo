@@ -63,6 +63,7 @@
 </template>
 
 <script lang="ts">
+import moment from 'moment'
 import { Component, Vue } from 'nuxt-property-decorator'
 import { errorStore, userStore } from '~/store'
 import { $apiUser } from '~/utils/api'
@@ -201,7 +202,10 @@ export default class SysIndex extends Vue {
 
   private async init() {
     const rows = await this.getAccounts()
-    this.tableData = [...rows]
+    this.tableData = [...rows].map((item) => ({
+      ...item,
+      created_at: moment(item.created_at).toLocaleString()
+    }))
   }
 
   private async created() {

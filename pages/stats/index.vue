@@ -99,6 +99,7 @@
 </template>
 
 <script lang="ts">
+import moment from 'moment'
 import { Component, Vue, Watch } from 'nuxt-property-decorator'
 import { $apiUser } from '~/utils/api'
 import { dateToISOEndOfDay, dateToISOStartOfDay } from '~/utils/date'
@@ -203,7 +204,8 @@ export default class OrdersIndex extends Vue {
     if (_rows && _rows.length) {
       this.tableData = [..._rows].map((item) => ({
           ...item,
-          amount_display: `${!item.direction ? '-' : ''}${numberWithCommas(Number(item.amount))}`
+          amount_display: `${!item.direction ? '-' : ''}${numberWithCommas(Number(item.amount))}`,
+          created_at: moment(item.created_at).toLocaleString()
         }))
     } else {
       this.tableData = []

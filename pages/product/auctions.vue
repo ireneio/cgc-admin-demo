@@ -255,6 +255,7 @@ import { httpResponseMapper } from '~/utils/http'
 import DataParser from '~/utils/data'
 import { isNatural } from '~/utils/number'
 import { dateToISOEndOfDay, dateToISOStartOfDay } from '~/utils/date'
+import moment from 'moment'
 
 @Component({
   layout: 'admin'
@@ -514,7 +515,11 @@ export default class ProductAuctions extends Vue {
         if (authStore.access_level !== '6') {
           _rows = _rows.filter((item: any) => item.user_id_creation === authStore.id)
         }
-        this.tableData = [..._rows]
+        this.tableData = [..._rows].map((item) => ({
+          ...item,
+          date_start: moment(item.date_start).toLocaleString(),
+          date_end: moment(item.date_end).toLocaleString()
+        }))
       }
     } catch (e: unknown) {
 
