@@ -69,6 +69,11 @@
                     {{ item.allowed_login_status ? 'mdi-stop' : 'mdi-play' }}
                   </v-icon>
                 </v-chip>
+                <v-chip @click.stop="handleSendEth(item)" :disabled="!item.wallet_address">
+                  <v-icon small>
+                    mdi-currency-usd
+                  </v-icon>
+                </v-chip>
               </template>
             </v-data-table>
           </v-card-text>
@@ -191,12 +196,41 @@ import { dateDisplayYYYYMMDDHHMMSS } from '~/utils/date'
 import { numberWithCommas } from '~/utils/formatters'
 import { httpResponseMapper } from '~/utils/http'
 import Token from '~/utils/token'
-import { getTrimmedAddressEllipsisMiddle } from '~/utils/wallet'
+import { getTrimmedAddressEllipsisMiddle, isConnected } from '~/utils/wallet'
 
 @Component({
   layout: 'admin'
 })
 export default class MemberIndex extends Vue {
+  private async handleSendEth(item: any) {
+    console.log(item);
+    const { wallet_address: to } = item
+    const { address: from } = await isConnected()
+    const transactionParameters = {
+      // nonce: '0x00', // ignored by MetaMask
+      gasPrice: '0x09184e72a000', // customizable by user during MetaMask confirmation.
+      gas: '0x2710', // customizable by user during MetaMask confirmation.
+      to, // Required except during contract publications.
+      from, // must match user's active address.
+      value: '0x00', // Only required to send ether to the recipient from the initiating external account.
+      // data:
+      //   '0x7f7465737432000000000000000000000000000000000000000000000000000000600057', // Optional, but used for defining smart contract creation and interaction.
+      // chainId: '0x3', // Used to prevent transaction reuse across blockchains. Auto-filled by MetaMask.
+    }
+
+    try {
+      // txHash is a hex string
+      // As with any RPC call, it may throw an error
+      // @ts-ignore
+      const txHash = await window.ethereum.request({
+        method: 'eth_sendTransaction',
+        params: [transactionParameters],
+      })
+    } catch {
+
+    }
+  }
+
   private getDateText(val: string) {
     return dateDisplayYYYYMMDDHHMMSS(val)
   }
