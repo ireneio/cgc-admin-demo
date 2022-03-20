@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12">
-        <h2 class="mb-4">Search Orders</h2>
+        <h2 class="mb-4">Search Transactions</h2>
         <v-card outlined>
           <v-card-text>
             <v-row class="mb-n8">
@@ -42,6 +42,15 @@
                 </v-btn>
               </v-col>
             </v-row>
+            <v-row>
+              <v-col>
+                <v-checkbox
+                  label="Artist Payout"
+                  v-model="form.artistPayout"
+                  :disabled="form.dateRange.length !== 2"
+                ></v-checkbox>
+              </v-col>
+            </v-row>
             <v-data-table
               :headers="headers"
               :items="tableData"
@@ -70,15 +79,16 @@
                 {{ item.direction ? 'Addition' : 'Deduction' }}
               </v-chip>
             </template>
-            <template v-slot:item.status="{ item }">
-              <v-chip :color="item.status ? 'success' : 'error'" small>
-                {{ item.status ? 'Completed' : 'Incomplete' }}
-              </v-chip>
-            </template>
             <template v-slot:item.amount_display="{ item }">
               <v-layout justify-end>
                 {{ item.amount_display }}
               </v-layout>
+            </template>
+            <template slot="footer">
+              <div class="d-flex pl-4 pb-4 pt-4" :style="{ borderTop: '1px solid #aaa' }">
+                <div><strong>Total Amount</strong></div>
+                <div class="text-xs-right ml-8">{{ totals.amount }}</div>
+              </div>
             </template>
             </v-data-table>
           </v-card-text>
@@ -89,7 +99,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator'
+import { Component, Vue, Watch } from 'nuxt-property-decorator'
 import { $apiUser } from '~/utils/api'
 import { dateToISOEndOfDay, dateToISOStartOfDay } from '~/utils/date'
 import { numberWithCommas } from '~/utils/formatters'
@@ -99,6 +109,30 @@ import { httpResponseMapper } from '~/utils/http'
   layout: 'admin'
 })
 export default class OrdersIndex extends Vue {
+  private get totals() {
+    if (!this.tableData.length) {
+      return {
+        amount: 0
+      }
+    }
+    return {
+      amount: numberWithCommas(this.tableData.reduce((acc, curr) => {
+        if (this.form.artistPayout) {
+          if (!curr.direction) {
+            acc += Number(curr.amount)
+          }
+        } else {
+          if (!curr.direction) {
+            acc -= Number(curr.amount)
+          } else {
+            acc += Number(curr.amount)
+          }
+        }
+        return acc
+      }, 0))
+    }
+  }
+
   private get isSearchBtnDisabled() {
     return this.form.dateRange.length !== 2
   }
@@ -108,7 +142,17 @@ export default class OrdersIndex extends Vue {
   }
 
   private form: any = {
-    dateRange: []
+    dateRange: [],
+    artistPayout: false
+  }
+
+  @Watch('form.artistPayout')
+  onFormArtistPayoutChange(newVal: boolean) {
+    if (newVal) {
+      this.tableData = this.tableData.filter((item) => item.tag === 'system_payable_admin_to_artist')
+    } else {
+      this.setOrders()
+    }
   }
 
   private dialog: any = {
@@ -118,7 +162,7 @@ export default class OrdersIndex extends Vue {
   private headers: Array<any> = [
     { text: 'ID', value: 'id', align: 'start', sortable: true },
     { text: 'Created At', value: 'created_at', align: 'start', sortable: true, filterable: false },
-    { text: 'Payment Status', value: 'status', align: 'start', sortable: true, filterable: false },
+    // { text: 'Status', value: 'status', align: 'start', sortable: true },
     { text: 'User', value: 'user_email', align: 'start', sortable: true },
     { text: 'Amount', value: 'amount_display', align: 'start', sortable: true },
     { text: 'Type', value: 'direction', align: 'start', sortable: true, filterable: false },
@@ -157,14 +201,9 @@ export default class OrdersIndex extends Vue {
   private async setOrders() {
     const _rows = await this.getOrders()
     if (_rows && _rows.length) {
-      this.tableData = [..._rows]
-      .filter((item) => {
-        return item.tag !== 'system_payable_admin_to_artist' && item.tag !== 'system_payable_admin_to_artist_bc'
-      })
-      .map((item) => ({
+      this.tableData = [..._rows].map((item) => ({
           ...item,
-          amount_display: `${!item.direction ? '-' : ''}${numberWithCommas(Number(item.amount))}`,
-          status: item.tag === 'system_payable_admin_to_artist'
+          amount_display: `${!item.direction ? '-' : ''}${numberWithCommas(Number(item.amount))}`
         }))
     } else {
       this.tableData = []

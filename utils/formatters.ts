@@ -1,7 +1,10 @@
-export function numberWithCommas(val: number) {
+export function numberWithCommas(val: number | string) {
+  if (!val) {
+    return ''
+  }
   // return val.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
-  // return val.toLocaleString()
-  return val
+  return Number(val).toLocaleString()
+  // return val
 }
 
 export function numberWithDollarSign(val: number | string): string {

@@ -42,7 +42,7 @@
                   {{ item.balance_total_display }}
                 </v-layout>
               </template>
-               <template v-slot:item.cumulative_earnings_display="{ item }">
+              <template v-slot:item.cumulative_earnings_display="{ item }">
                 <v-layout justify-end>
                   {{ item.cumulative_earnings_display }}
                 </v-layout>

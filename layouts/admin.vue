@@ -318,6 +318,21 @@ export default class DefaultLayout extends Vue {
       ]
     },
     {
+      icon: 'mdi-ab-testing',
+      'icon-alt': 'mdi-ab-testing',
+      text: 'Statistics',
+      model: false,
+      allowAccess: '6',
+      children: [
+        {
+          text: 'Transactions',
+          icon: 'mdi-checkbox-blank-circle-outline',
+          route: 'stats',
+          allowAccess: '6'
+        }
+      ]
+    },
+    {
       icon: 'mdi-archive',
       'icon-alt': 'mdi-archive-outline',
       text: 'Products',
