@@ -102,6 +102,8 @@ export default class OrdersIndex extends Vue {
     { text: 'Amount', value: 'amount', align: 'start', sortable: true },
     { text: 'Type', value: 'direction', align: 'start', sortable: true, filterable: false },
     { text: 'Tag', value: 'tag', align: 'start', sortable: true },
+    { text: 'Description', value: 'description', align: 'start', sortable: false, filterable: false },
+    { text: 'Description 2', value: 'gas', align: 'start', sortable: false, filterable: false },
     { text: 'Misc', value: 'misc', align: 'start', sortable: true, filterable: false },
   ]
 
