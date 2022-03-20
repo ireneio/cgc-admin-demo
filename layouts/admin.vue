@@ -92,7 +92,7 @@
           <v-btn color="default" text v-bind="attrs" v-on="on" large>
             <v-icon>mdi-cog</v-icon>
           </v-btn>
-          <v-btn large :text="wallet.connected" @click="handleWalletConn">
+          <v-btn large :text="wallet.connected" @click="handleWalletConn" v-if="userAccessLevel === '6'">
             {{ wallet.btnText }}
           </v-btn>
         </template>
@@ -490,8 +490,10 @@ export default class DefaultLayout extends Vue {
   private mounted() {
     this.getThemeFromLs()
     this.getLangFromLs()
-    addWalletListener(this)
-    this.handleWalletConn()
+    if (this.userAccessLevel === '6') {
+      addWalletListener(this)
+      this.handleWalletConn()
+    }
   }
 }
 </script>
