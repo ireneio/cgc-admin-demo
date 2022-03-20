@@ -327,7 +327,7 @@ export default class MemberIndex extends Vue {
   private clearForm(): void {
     this.form = {
       email: '',
-      accessLevel: '',
+      accessLevel: '5',
       id: '',
       wallet_address: ''
     }
