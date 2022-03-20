@@ -1,5 +1,7 @@
-export function numberWithCommas(val: number): string {
-  return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+export function numberWithCommas(val: number) {
+  // return val.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
+  // return val.toLocaleString()
+  return val
 }
 
 export function numberWithDollarSign(val: number | string): string {

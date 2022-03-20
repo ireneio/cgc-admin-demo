@@ -69,7 +69,7 @@
                     {{ item.allowed_login_status ? 'mdi-stop' : 'mdi-play' }}
                   </v-icon>
                 </v-chip>
-                <v-chip @click.stop="handleSendEth(item)" :disabled="!item.wallet_address">
+                <v-chip @click.stop="handlePaymentSelect(item)">
                   <v-icon small>
                     mdi-currency-usd
                   </v-icon>
@@ -184,6 +184,48 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="dialog.selectPayment" max-width="700px" persistent>
+      <v-card>
+        <v-card-title class="headline">{{ dialog.selectPaymentText }}</v-card-title>
+         <v-card-text>
+          <v-container>
+            <v-row>
+              <v-col
+                cols="12"
+              >
+                <v-btn color="info" @click="handleSendEth" :disabled="!form.wallet_address">eth transaction</v-btn>
+              </v-col>
+              <v-col
+                cols="12"
+              >
+                <v-btn color="info" @click="handleDirectDeduct">directly deduct from database</v-btn>
+              </v-col>
+              <v-col
+                cols="12"
+              >
+                <v-text-field
+                  :value="formAmountDisplay"
+                  @input="form.amount = $event"
+                  label="Amount"
+                  counter="24"
+                  v-show="dialog.isDirectDeduct"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="handlePaymentClose">close</v-btn>
+          <v-btn
+            color="info"
+            @click="handleDirectDeductConfirm"
+            v-show="dialog.isDirectDeduct"
+            :disabled="!form.amount"
+          >save</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -202,15 +244,60 @@ import { getTrimmedAddressEllipsisMiddle, isConnected } from '~/utils/wallet'
   layout: 'admin'
 })
 export default class MemberIndex extends Vue {
-  private async handleSendEth(item: any) {
-    console.log(item);
-    const { wallet_address: to } = item
+  private get formAmountDisplay() {
+    return Number(this.form.amount)
+    // return numberWithCommas(Number(this.form.amount))
+  }
+
+  private handlePaymentClose() {
+    this.dialog.selectPayment = false
+    this.dialog.isDirectDeduct = false
+    this.clearForm()
+  }
+
+  private handlePaymentSelect(item: any) {
+    const { wallet_address, id, wallet_id } = item
+    this.form.wallet_address = wallet_address
+    this.form.id = id
+    this.form.wallet_id = wallet_id
+    this.dialog.selectPayment = true
+  }
+
+  private async handleDirectDeduct() {
+    this.dialog.isDirectDeduct = true
+  }
+
+  private async handleDirectDeductConfirm() {
+    const { id, amount, wallet_id } = this.form
+    const _req = await $apiUser.post('/transaction', {
+      member_id: id,
+      amount,
+      direction: false,
+      wallet_id
+    })
+    httpResponseMapper(_req)
+    if (errorStore.isActive) {
+      this.snackbar.text = `Transaction creation failure: ${errorStore.message}`
+      errorStore.clearError()
+    } else {
+      await this.init()
+      this.snackbar.text = 'Transaction creation success'
+      this.dialog.new = false
+      this.dialog.isEditMode = false
+      this.dialog.selectPayment = false
+      this.clearForm()
+    }
+    this.snackbar.toggle = true
+  }
+
+  private async handleSendEth() {
+    this.dialog.isDirectDeduct = false
     const { address: from } = await isConnected()
     const transactionParameters = {
       // nonce: '0x00', // ignored by MetaMask
       gasPrice: '0x09184e72a000', // customizable by user during MetaMask confirmation.
       gas: '0x2710', // customizable by user during MetaMask confirmation.
-      to, // Required except during contract publications.
+      to: this.form.wallet_address, // Required except during contract publications.
       from, // must match user's active address.
       value: '0x00', // Only required to send ether to the recipient from the initiating external account.
       // data:
@@ -289,11 +376,14 @@ export default class MemberIndex extends Vue {
     email: '',
     accessLevel: '5',
     id: '',
-    wallet_address: ''
+    wallet_address: '',
+    amount: '',
+    wallet_id: ''
   }
 
   private dialog: any = {
     isEditMode: false,
+    isDirectDeduct: false,
     activateConfimationText: 'Activate this account?',
     activate: false,
     deleteConfimationText: 'Deactivate this account?',
@@ -301,7 +391,9 @@ export default class MemberIndex extends Vue {
     error: false,
     errorTitle: 'Server Error. Please try again later.',
     new: false,
-    title: 'Edit Artist Account'
+    title: 'Edit Artist Account',
+    selectPayment: false,
+    selectPaymentText: 'Select Payment Type'
   }
 
   private handleRowClick(row: any, col: any) {
@@ -329,7 +421,9 @@ export default class MemberIndex extends Vue {
       email: '',
       accessLevel: '5',
       id: '',
-      wallet_address: ''
+      wallet_address: '',
+      amount: '',
+      wallet_id: ''
     }
   }
 
