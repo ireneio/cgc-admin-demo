@@ -34,6 +34,12 @@ namespace DataParser {
     ended: 1,
     ongoing: 2,
   }
+
+  export enum TransactionTags {
+    ArtistPayoutCash = 'system_payable_admin_to_artist',
+    ArtistPayoutBlockchain = 'system_payable_admin_to_artist_bc',
+    ArtistIncome = 'system_income_artist',
+  }
 }
 
 export default DataParser

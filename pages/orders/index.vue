@@ -92,6 +92,7 @@
 import moment from 'moment'
 import { Component, Vue } from 'nuxt-property-decorator'
 import { $apiUser } from '~/utils/api'
+import DataParser from '~/utils/data'
 import { dateToISOEndOfDay, dateToISOStartOfDay } from '~/utils/date'
 import { numberWithCommas } from '~/utils/formatters'
 import { httpResponseMapper } from '~/utils/http'
@@ -160,7 +161,9 @@ export default class OrdersIndex extends Vue {
     if (_rows && _rows.length) {
       this.tableData = [..._rows]
       .filter((item) => {
-        return item.tag !== 'system_payable_admin_to_artist' && item.tag !== 'system_payable_admin_to_artist_bc'
+        return item.tag !== DataParser.TransactionTags.ArtistIncome &&
+          item.tag !== DataParser.TransactionTags.ArtistPayoutBlockchain &&
+          item.tag !== DataParser.TransactionTags.ArtistPayoutCash
       })
       .map((item) => ({
           ...item,
