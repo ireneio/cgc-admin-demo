@@ -161,6 +161,70 @@
                 </v-menu>
               </v-col>
               <v-col
+                cols="6"
+              >
+                <v-menu
+                  ref="menu"
+                  v-model="dialog.time"
+                  :close-on-content-click="false"
+                  :nudge-right="40"
+                  :return-value.sync="form.timeStart"
+                  transition="scale-transition"
+                  offset-y
+                  max-width="290px"
+                  min-width="290px"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      v-model="form.timeStart"
+                      label="Select Time of Start Date (GMT+0)"
+                      prepend-icon="mdi-clock-time-four-outline"
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"
+                    ></v-text-field>
+                  </template>
+                  <v-time-picker
+                    full-width
+                    v-if="dialog.time"
+                    v-model="form.timeStart"
+                    @click:minute="$refs.menu.save(form.timeStart)"
+                  ></v-time-picker>
+                </v-menu>
+              </v-col>
+              <v-col
+                cols="6"
+              >
+                <v-menu
+                  ref="menu2"
+                  v-model="dialog.time2"
+                  :close-on-content-click="false"
+                  :nudge-right="40"
+                  :return-value.sync="form.timeEnd"
+                  transition="scale-transition"
+                  offset-y
+                  max-width="290px"
+                  min-width="290px"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      v-model="form.timeEnd"
+                      label="Select Time of End Date (GMT+0)"
+                      prepend-icon="mdi-clock-time-four-outline"
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"
+                    ></v-text-field>
+                  </template>
+                  <v-time-picker
+                    full-width
+                    v-if="dialog.time2"
+                    v-model="form.timeEnd"
+                    @click:minute="$refs.menu2.save(form.timeEnd)"
+                  ></v-time-picker>
+                </v-menu>
+              </v-col>
+              <v-col
                 cols="3"
               >
                 <v-text-field
@@ -327,6 +391,8 @@ export default class ProductAuctions extends Vue {
     product_id: '',
     sku: '',
     dateRange: [],
+    timeStart: '',
+    timeEnd: '',
     price_floor: 0,
     price_bought: 0,
     bid_min: 0,
@@ -355,6 +421,8 @@ export default class ProductAuctions extends Vue {
     error: false,
     errorTitle: 'Server Error. Please try again later.',
     date: false,
+    time: false,
+    time2: false,
     dateSearch: false,
   }
 
@@ -399,6 +467,8 @@ export default class ProductAuctions extends Vue {
       product_id: '',
       sku: '',
       dateRange: [],
+      timeStart: '',
+      timeEnd: '',
       price_floor: 0,
       price_bought: 0,
       bid_min: 0,
@@ -431,6 +501,9 @@ export default class ProductAuctions extends Vue {
     if (this.form.dateRange.length !== 2) {
       return false
     }
+    if (!this.form.timeStart || !this.form.timeEnd) {
+      return false
+    }
     return true
   }
 
@@ -441,8 +514,8 @@ export default class ProductAuctions extends Vue {
     const [dateStart, dateEnd] = this.form.dateRange
     const _payload = {
       ...this.form,
-      date_start: dateToISOStartOfDay(dateStart),
-      date_end: dateToISOStartOfDay(dateEnd)
+      date_start: moment(dateStart + ' ' + this.form.timeStart).toISOString(),
+      date_end: moment(dateEnd + ' ' + this.form.timeEnd).toISOString()
     }
     const _endpoint = '/auction'
     const _req = await $apiPlatform.post(_endpoint, _payload)
