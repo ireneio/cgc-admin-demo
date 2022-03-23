@@ -5,7 +5,11 @@
         <v-col cols="12" sm="8">
           <v-card class="elevation-12">
             <v-toolbar color="primary" dark flat>
-              <v-toolbar-title>DFON</v-toolbar-title>
+              <v-toolbar-title
+                class="d-flex justify-center align-center"
+              >
+                <img src="/logo.png" alt="logo" width="32px" />
+              </v-toolbar-title>
               <v-spacer></v-spacer>
               <v-icon>mdi-code-tags</v-icon>
             </v-toolbar>

@@ -73,8 +73,9 @@
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title style="width: 300px" class="ml-0 pl-4">
-        <span class="hidden-sm-and-down">
-          {{ info.h1 }}
+        <span class="hidden-sm-and-down d-flex align-center">
+          <img src="/logo.png" alt="logo" width="32px" />
+          <span class="ml-2" v-if="$vuetify.breakpoint.lgAndUp">{{ info.h1 }}</span>
         </span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
@@ -489,17 +490,10 @@ export default class DefaultLayout extends Vue {
   }
 
   private async handleWalletConn() {
-    const { address, status } = await isConnected()
-    if (!address) {
-      const { address, status } = await connect()
-      this.wallet.address = address
-      this.wallet.connected = true
-      this.wallet.btnText = getTrimmedAddressEllipsisMiddle(address)
-    } else {
-      this.wallet.address = address
-      this.wallet.connected = true
-      this.wallet.btnText = getTrimmedAddressEllipsisMiddle(address)
-    }
+    const { address, status } = await connect()
+    this.wallet.address = address
+    this.wallet.connected = true
+    this.wallet.btnText = getTrimmedAddressEllipsisMiddle(address)
   }
 
   private mounted() {
