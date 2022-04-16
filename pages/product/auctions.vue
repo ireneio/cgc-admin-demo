@@ -541,7 +541,7 @@ export default class ProductAuctions extends Vue {
       !isNatural(this.form.bid_max) ||
       !isNatural(this.form.bid_min) ||
       !this.form.sku ||
-      !this.form.product_id ||
+      // !this.form.product_id ||
       this.form.dateRange.length !== 2
     )
   }
