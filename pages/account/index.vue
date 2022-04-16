@@ -46,19 +46,24 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <!-- <v-btn
-                  color="primary"
-                  :disabled="invalid"
-                  @click="handleSignIn"
-                >
-                  sign in
-                </v-btn> -->
                 <v-btn
-                  color="primary"
+                  color="info"
+                  :disabled="invalid"
+                  @click="handleSignInArtist"
+                  x-large
+                >
+                  <img src='https://developers-dot-devsite-v2-prod.appspot.com/identity/sign-in/g-normal.png' alt='google_sign_in' />
+                  <span class="ml-2">artist sign in</span>
+                </v-btn>
+                <v-btn
+                  color="success"
                   :disabled="false"
                   @click="handleSignIn"
+                  x-large
+                  v-if="isNonce"
                 >
-                  sign in
+                  <img src='https://developers-dot-devsite-v2-prod.appspot.com/identity/sign-in/g-normal.png' alt='google_sign_in' />
+                  <span class="ml-2">sign in</span>
                 </v-btn>
               </v-card-actions>
             </validation-observer>
@@ -95,6 +100,9 @@ import { $apiUser } from '~/utils/api'
 import { Firebase } from '~/utils/firebase'
 import { httpResponseMapper } from '~/utils/http'
 import Token from '~/utils/token'
+import { uuid } from 'vue-uuid'
+
+const isValidUuid = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i
 
 @Component({
   layout: 'login',
@@ -105,6 +113,12 @@ import Token from '~/utils/token'
   }
 })
 export default class AccountIndex extends Vue {
+  private getNonce () {
+    return this.$route?.query?.nonce
+  }
+
+  private isNonce = false
+
   private snackbar = {
     toggle: false,
     timeout: 2000,
@@ -117,21 +131,47 @@ export default class AccountIndex extends Vue {
     password: ''
   }
 
-  // private async handleSignIn(valid?: boolean): Promise<void> {
-  //   // if (!valid) return
-  //   const result = await authStore.getTokenLocal({
-  //     password: this.form.password,
-  //     email: this.form.username
-  //   })
-  //   if (errorStore.isActive) {
-  //     this.snackbar.text = '登入資訊錯誤'
-  //     errorStore.clearError()
-  //   } else {
-  //     this.snackbar.text = '登入成功'
-  //     this.$router.push('/')
-  //   }
-  //   this.snackbar.toggle = true
-  // }
+  private showError () {
+    this.snackbar.text = 'invalid credentials'
+    this.snackbar.toggle = true
+    Token.removeValue()
+    return
+  }
+
+  private async artistRegister (token: string) {
+    const _reg = await $apiUser.post('/member/artists/registration', {}, { headers: { authorization: `Bearer ${token}` } })
+    const _regRes = httpResponseMapper(_reg)
+    return _regRes
+  }
+
+  private async artistSignIn (token: string) {
+    const _signIn = await $apiUser.post('/member/artists/signIn', {}, { headers: { authorization: `Bearer ${token}` } })
+    const _signInRes = httpResponseMapper(_signIn)
+    return _signInRes
+  }
+
+  private async handleSignInArtist(type: string): Promise<void> {
+    const token = await Firebase.signIn({ email: '', password: '' }, 'google')
+    try {
+      if (token) {
+        const _regRes = await this.artistRegister(token)        
+        if (_regRes?.error && _regRes?.error.includes('account already exist')) {          
+           const _signInRes = await this.artistSignIn(token)           
+           if (_signInRes?.error) {
+              this.showError()
+              return
+           }
+        } else if (_regRes?.error) {
+          this.showError()
+          return
+        }
+        Token.setValue(token)
+        this.$router.push('/')
+      }
+    } catch (e: unknown) {
+      // console.log('Error: ' + String(e))
+    }
+  }
 
   private async handleFirebaseSignIn(type: string): Promise<void> {
     const token = await Firebase.signIn({ email: '', password: '' }, 'google')
@@ -155,6 +195,13 @@ export default class AccountIndex extends Vue {
 
   private async handleSignIn(): Promise<void> {
     await this.handleFirebaseSignIn('google')
+  }
+
+  private mounted() {
+    const _nonce = this.getNonce()
+    if (isValidUuid.test(String(_nonce))) {
+      this.isNonce = true
+    }
   }
 }
 </script>

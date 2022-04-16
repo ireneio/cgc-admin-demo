@@ -238,6 +238,7 @@ import { addWalletListener, connect, getTrimmedAddressEllipsisMiddle, isConnecte
 @Component({
   middleware: ['auth']
 })
+
 export default class DefaultLayout extends Vue {
   private wallet = {
     connected: false,
