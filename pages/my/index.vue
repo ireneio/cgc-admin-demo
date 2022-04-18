@@ -23,13 +23,6 @@
                 >
                   <v-icon>mdi-plus</v-icon> Add Award
                 </v-btn>
-                <v-btn
-                  color="info"
-                  @click="handleCreateItem"
-                  class="ml-4"
-                >
-                  <v-icon>mdi-plus</v-icon> Add Expo
-                </v-btn>
               </div>
             </div>
           </v-toolbar>
@@ -256,6 +249,7 @@ export default class My extends Vue {
   }
 
   private form: any = {
+    id: '',
     name: '',
     origin: '',
     birthday: '',
@@ -304,6 +298,7 @@ export default class My extends Vue {
   private clearForm(): void {
     this.form = {
       ...this.form,
+      id: '',
       award_year: '',
       award_type: '',
       award_name: ''
@@ -340,6 +335,8 @@ export default class My extends Vue {
   private async handleCreateSave() {
     const _payload = {
       ...this.form,
+      userId: authStore.id,
+      itemId: this.form.id
     }
     const _endpoint = '/member/info/award'
     const _req = await $apiUser.post(_endpoint, _payload, { headers: { authorization: `Bearer ${Token.getValue()}` } })
