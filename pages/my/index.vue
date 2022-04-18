@@ -74,6 +74,15 @@
                     ></v-date-picker>
                   </v-menu>
                 </v-col>
+                <v-col
+                  cols="12"
+                >
+                  <v-textarea
+                    v-model="form.about"
+                    label="About Me"
+                    :disabled="!isEditMode"
+                  ></v-textarea>
+                </v-col>
               </v-row>
             </v-container>
             <v-data-table
@@ -178,12 +187,8 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
 import { authStore, errorStore } from '~/store'
-import { $apiPlatform, $apiUser } from '~/utils/api'
-import { numberWithCommas, numberWithDollarSign } from '~/utils/formatters'
+import { $apiUser } from '~/utils/api'
 import { httpResponseMapper } from '~/utils/http'
-import DataParser from '~/utils/data'
-import { isNatural } from '~/utils/number'
-import { dateToISOEndOfDay, dateToISOStartOfDay } from '~/utils/date'
 import moment from 'moment'
 import Token from '~/utils/token'
 
@@ -255,7 +260,8 @@ export default class My extends Vue {
     birthday: '',
     award_year: '',
     award_type: '',
-    award_name: ''
+    award_name: '',
+    about: ''
   }
 
   private dialog: any = {
@@ -367,6 +373,7 @@ export default class My extends Vue {
       this.form.name = info?.name
       this.form.origin = info?.origin
       this.form.birthday = info?.birthday ? moment(info?.birthday) : ''
+      this.form.about = info?.about
     } catch (e: unknown) {
 
     }
