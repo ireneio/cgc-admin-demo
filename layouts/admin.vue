@@ -403,6 +403,21 @@ export default class DefaultLayout extends Vue {
         }
       ]
     },
+    {
+      icon: 'mdi-account',
+      'icon-alt': 'mdi-account-outline',
+      text: 'Info',
+      model: false,
+      allowAccess: '=5',
+      children: [
+        {
+          text: 'My Info',
+          icon: 'mdi-checkbox-blank-circle-outline',
+          route: 'my',
+          allowAccess: '5'
+        }
+      ]
+    },
     // {
     //   icon: 'mdi-clipboard-text',
     //   'icon-alt': 'mdi-clipboard-text-outline',
@@ -487,6 +502,9 @@ export default class DefaultLayout extends Vue {
 
   private isAllowAccess(val: string) {
     // TODO permission
+    if (val.includes('=')) {
+      return Number(this.userAccessLevel) === Number(val.slice(1))
+    }
     return Number(this.userAccessLevel) >= Number(val)
   }
 
