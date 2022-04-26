@@ -16,9 +16,9 @@ export default {
   general: {
     art: 'art',
     label: 'label',
-    edit_label: 'ddit product labels',
+    edit_label: 'Edit Product Labels',
     add: 'add',
-    show_only_in_stock: 'only In-Stock',
+    show_only_in_stock: 'Only In-Stock',
     search_sku: 'Search SKU',
     sku: 'SKU',
     price: 'price',

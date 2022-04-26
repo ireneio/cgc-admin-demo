@@ -259,7 +259,7 @@ export default class DefaultLayout extends Vue {
       username: 'Welcome,',
       companyName: authStore.info.email ? authStore.info.email : 'user',
       dp: '',
-      h1: 'DFON Management',
+      h1: this.$vuetify.lang.t('$vuetify.headers.title'),
       lastUpdated: new Date().toLocaleDateString('en',
       { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' }),
       version: '1.0.0',

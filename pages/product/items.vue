@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12">
-        <h2 class="mb-4">Edit Product Labels</h2>
+        <h2 class="mb-4">{{ this.$vuetify.lang.t('$vuetify.general.edit_label') }}</h2>
         <v-card outlined>
           <v-toolbar flat class="mb-n4">
             <v-btn
@@ -19,14 +19,14 @@
                 skuLabels.sku_painting_year.length === 0
               "
             >
-            
-              <v-icon>mdi-plus</v-icon> Add
+
+              <v-icon>mdi-plus</v-icon> {{ this.$vuetify.lang.t('$vuetify.general.add') }}
             </v-btn>
           </v-toolbar>
           <v-card-text class="pt-0">
             <v-row class="mb-n8">
               <v-col cols="6" md="3" lg="3" class="">
-                <v-checkbox label="Only In-Stock" v-model="form.inStockOnly"></v-checkbox>
+                <v-checkbox :label="$vuetify.lang.t('$vuetify.general.show_only_in_stock')" v-model="form.inStockOnly"></v-checkbox>
               </v-col>
             </v-row>
             <v-data-table
@@ -44,7 +44,7 @@
               <template v-slot:top>
                 <v-text-field
                   v-model="tableSearch"
-                  label="Search SKU"
+                  :label="$vuetify.lang.t('$vuetify.general.search_sku')"
                   class="mx-4"
                 ></v-text-field>
               </template>
@@ -133,20 +133,20 @@
               text
               @click="handleCreateSave"
             >
-              Save
+              {{ this.$vuetify.lang.t('$vuetify.general.save') }}
             </v-btn>
           </v-toolbar-items>
         </v-toolbar>
         <v-card-text>
           <v-container>
             <v-row>
-              <v-col cols="12" class="mb-n6"><h4>Basic Information</h4></v-col>
+              <v-col cols="12" class="mb-n6"><h4>{{ this.$vuetify.lang.t('$vuetify.general.basic_info') }}</h4></v-col>
               <v-col
                 cols="6"
               >
                 <v-text-field
                   v-model="form.descriptionMain"
-                  label="Title"
+                  :label="$vuetify.lang.t('$vuetify.general.title')"
                   :counter="fieldInputLengths.descriptionMain"
                 ></v-text-field>
               </v-col>
@@ -155,7 +155,7 @@
               >
                 <v-text-field
                   v-model="form.descriptionSub"
-                  label="Description"
+                  :label="$vuetify.lang.t('$vuetify.general.description')"
                   :counter="fieldInputLengths.descriptionSub"
                 ></v-text-field>
               </v-col>
@@ -165,7 +165,7 @@
                 <v-text-field
                   @input="handlePriceInput"
                   :value="form.price"
-                  label="Price"
+                  :label="$vuetify.lang.t('$vuetify.general.price')"
                   append-icon="mdi-currency-usd"
                   :counter="fieldInputLengths.price"
                 ></v-text-field>
@@ -175,7 +175,7 @@
               >
                 <v-text-field
                   v-model="form.priceDeduction"
-                  label="Price Deduction"
+                  :label="$vuetify.lang.t('$vuetify.general.sale')"
                   append-icon="mdi-percent"
                   :counter="fieldInputLengths.price"
                 ></v-text-field>
@@ -186,20 +186,20 @@
                 <v-text-field
                   readonly
                   outlined
-                  label="Price Final"
+                  :label="$vuetify.lang.t('$vuetify.general.price_final')"
                   append-icon="mdi-currency-usd"
                   v-model="priceFinal"
                 ></v-text-field>
               </v-col>
               <v-col cols="3">
                 <v-text-field
-                  label="Stock"
+                  :label="$vuetify.lang.t('$vuetify.general.stock')"
                   v-model="form.stock"
                 ></v-text-field>
               </v-col>
               <v-col cols="6">
                 <v-select
-                  label="Category"
+                  :label="$vuetify.lang.t('$vuetify.general.categories')"
                   multiple
                   :items="categoryDisplay"
                   single-line
@@ -959,7 +959,7 @@ export default class ProductItems extends Vue {
   }
 
   private async setSkuLabels() {
-    const _data = await this.getSkuLabels()    
+    const _data = await this.getSkuLabels()
     const {
       sku_author,
       sku_color,
@@ -983,7 +983,7 @@ export default class ProductItems extends Vue {
   }
 
   private async getProducts() {
-    const { inStockOnly, displayOnly, recommendedOnly, landingOnly, featuredOnly, allowPurchaseOnly } = this.form    
+    const { inStockOnly, displayOnly, recommendedOnly, landingOnly, featuredOnly, allowPurchaseOnly } = this.form
     const _req = await $apiPlatform.get(
       `/product?userId=${authStore.id}&in_stock=${inStockOnly}&shelf=${displayOnly}&recommended=${recommendedOnly}&main=${landingOnly}&featured=${featuredOnly}&allow_purchase=${allowPurchaseOnly}`
    )
@@ -995,7 +995,7 @@ export default class ProductItems extends Vue {
   }
 
   private async init() {
-    const _rows = await this.getProducts()    
+    const _rows = await this.getProducts()
     if (_rows && _rows.length) {
       this.tableData = [..._rows]
     } else {
