@@ -80,6 +80,34 @@
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-menu
+        v-model="menuSetting.i18nValue"
+        :disabled="menuSetting.disabled"
+        :absolute="menuSetting.absolute"
+        :open-on-hover="menuSetting.openOnHover"
+        :close-on-click="menuSetting.closeOnClick"
+        :close-on-content-click="menuSetting.closeOnContentClick"
+        :offset-x="menuSetting.offsetX"
+        :offset-y="menuSetting.offsetY"
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn color="default" class="ml-2" text v-bind="attrs" v-on="on" :style="{ width: '150px' }">
+            {{ $vuetify.lang.current === 'zhHant' ? '繁體中文' : $vuetify.lang.current }}
+          </v-btn>
+        </template>
+        <v-list style="padding:0;margin:0;">
+          <v-list-item v-for="(value, key) of $vuetify.lang.locales" :key="key.toString()" style="cursor:pointer;padding:0;">
+            <v-btn
+              text
+              :color="key === $vuetify.lang.current ? 'primary' : 'default'"
+              style="width:100%;"
+              @click="handleI18nUpdate(key)"
+            >
+              {{ key === 'zhHant' ? '繁體中文' : key.toUpperCase() }}
+              </v-btn>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+      <v-menu
         v-model="menuSetting.value"
         :disabled="menuSetting.disabled"
         :absolute="menuSetting.absolute"
@@ -140,34 +168,6 @@
           </v-list-item>
         </v-list>
       </v-menu>
-      <!-- <v-menu
-        v-model="menuSetting.i18nValue"
-        :disabled="menuSetting.disabled"
-        :absolute="menuSetting.absolute"
-        :open-on-hover="menuSetting.openOnHover"
-        :close-on-click="menuSetting.closeOnClick"
-        :close-on-content-click="menuSetting.closeOnContentClick"
-        :offset-x="menuSetting.offsetX"
-        :offset-y="menuSetting.offsetY"
-      >
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn color="default" class="ml-2" text large v-bind="attrs" v-on="on">
-            {{ $vuetify.lang.current }}
-          </v-btn>
-        </template>
-        <v-list style="padding:0;margin:0;">
-          <v-list-item v-for="(value, key) of $vuetify.lang.locales" :key="key.toString()" style="cursor:pointer;padding:0;">
-            <v-btn
-              text
-              :color="key === $vuetify.lang.current ? 'primary' : 'default'"
-              style="width:100%;"
-              @click="handleI18nUpdate(key)"
-            >
-              {{ key.toUpperCase() }}
-              </v-btn>
-          </v-list-item>
-        </v-list>
-      </v-menu> -->
     </v-app-bar>
     <v-main>
       <v-container fluid class="pt-0">
@@ -468,6 +468,7 @@ export default class DefaultLayout extends Vue {
   private handleI18nUpdate(localeStr: string): void {
     this.$vuetify.lang.current = localeStr
     this.menuSetting.i18nValue = false
+    window.localStorage.setItem('lang', localeStr)
   }
 
   private getLangFromLs(): void {

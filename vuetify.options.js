@@ -1,8 +1,9 @@
 // Translation provided by Vuetify (typescript)
-import ja from 'vuetify/src/locale/ja'
+// import ja from 'vuetify/src/locale/ja'
 
 // Translation provided by Vuetify (typescript)
 import en from 'vuetify/src/locale/en'
+import zhHant from 'vuetify/src/locale/zh-Hant'
 
 export default {
   theme: {
@@ -26,7 +27,7 @@ export default {
     }
   },
   lang: {
-    locales: { en, ja },
+    locales: { en, zhHant },
     current: 'en',
   }
 }

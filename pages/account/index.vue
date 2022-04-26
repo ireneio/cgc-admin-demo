@@ -45,6 +45,34 @@
                 </v-form>
               </v-card-text>
               <v-card-actions>
+                <v-menu
+                  v-model="menuSetting.i18nValue"
+                  :disabled="menuSetting.disabled"
+                  :absolute="menuSetting.absolute"
+                  :open-on-hover="menuSetting.openOnHover"
+                  :close-on-click="menuSetting.closeOnClick"
+                  :close-on-content-click="menuSetting.closeOnContentClick"
+                  :offset-x="menuSetting.offsetX"
+                  :offset-y="menuSetting.offsetY"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn color="primary" class="ml-2" v-bind="attrs" v-on="on" :style="{ width: '150px' }">
+                      {{ $vuetify.lang.current === 'zhHant' ? '繁體中文' : $vuetify.lang.current }}
+                    </v-btn>
+                  </template>
+                  <v-list style="padding:0;margin:0;">
+                    <v-list-item v-for="(value, key) of $vuetify.lang.locales" :key="key.toString()" style="cursor:pointer;padding:0;">
+                      <v-btn
+                        text
+                        :color="key === $vuetify.lang.current ? 'primary' : 'default'"
+                        style="width:100%;"
+                        @click="handleI18nUpdate(key)"
+                      >
+                        {{ key === 'zhHant' ? '繁體中文' : key.toUpperCase() }}
+                        </v-btn>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
                 <v-spacer></v-spacer>
                 <v-btn
                   color="info"
@@ -154,9 +182,9 @@ export default class AccountIndex extends Vue {
     const token = await Firebase.signIn({ email: '', password: '' }, 'google')
     try {
       if (token) {
-        const _regRes = await this.artistRegister(token)        
-        if (_regRes?.error && _regRes?.error.includes('account already exist')) {          
-           const _signInRes = await this.artistSignIn(token)           
+        const _regRes = await this.artistRegister(token)
+        if (_regRes?.error && _regRes?.error.includes('account already exist')) {
+           const _signInRes = await this.artistSignIn(token)
            if (_signInRes?.error) {
               this.showError()
               return
@@ -197,11 +225,45 @@ export default class AccountIndex extends Vue {
     await this.handleFirebaseSignIn('google')
   }
 
+  private getLangFromLs(): void {
+    const lang = window.localStorage.getItem('lang')
+    if (lang) {
+      this.$vuetify.lang.current = lang
+    } else {
+      window.localStorage.setItem('lang', 'en')
+    }
+  }
+
+  private menuSetting: any = {
+    items: [
+      { title: 'Click Me' },
+      { title: 'Click Me' },
+      { title: 'Click Me' },
+      { title: 'Click Me 2' }
+    ],
+    disabled: false,
+    absolute: false,
+    openOnHover: false,
+    value: false,
+    i18nValue: false,
+    closeOnClick: true,
+    closeOnContentClick: false,
+    offsetX: false,
+    offsetY: true
+  }
+
+  private handleI18nUpdate(localeStr: string): void {
+    this.$vuetify.lang.current = localeStr
+    this.menuSetting.i18nValue = false
+    localStorage.setItem('lang', localeStr)
+  }
+
   private mounted() {
     const _nonce = this.getNonce()
     if (isValidUuid.test(String(_nonce))) {
       this.isNonce = true
     }
+    this.getLangFromLs()
   }
 }
 </script>
