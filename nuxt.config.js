@@ -69,8 +69,8 @@ export default {
     analyze: false
   },
   env: {
-    API_USER_URL: process.env.NUXT_ENV_API_USER_URL || 'http://localhost:9001',
-    API_PLATFORM_URL: process.env.NUXT_ENV_API_PLATFORM_URL || 'http://localhost:9000',
+    API_USER_URL: process.env.NUXT_ENV_API_USER_URL || 'https://service-user-lsbcp.ondigitalocean.app/member',
+    API_PLATFORM_URL: process.env.NUXT_ENV_API_PLATFORM_URL || 'https://service-user-lsbcp.ondigitalocean.app/platform',
     FB_APIKEY: process.env.NUXT_ENV_FB_APIKEY || 'AIzaSyBnB4nY6EjwtRClA7J75Ztz4bMUOEumrV0',
     FB_AUTHDOMAIN: process.env.NUXT_ENV_FB_AUTHDOMAIN || 'dfon-web.firebaseapp.com',
     FB_DBURL: process.env.NUXT_ENV_FB_DBURL || '',
