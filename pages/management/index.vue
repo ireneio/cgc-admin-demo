@@ -612,17 +612,17 @@ export default class Management extends Vue {
   }
 
   private async init() {
-    const _rows = await this.getUsers()
-    if (_rows && _rows.length) {
-      this.tableData = [..._rows].map((item) => ({
-        ...item,
-        balance_total_display: numberWithCommas(item.balance_total),
-        cumulative_earnings_display: numberWithCommas(item.cumulative_earnings),
-        wallet_address_display: getTrimmedAddressEllipsisMiddle(item.wallet_address)
-      }))
-    } else {
-      this.tableData = []
-    }
+    // const _rows = await this.getUsers()
+    // if (_rows && _rows.length) {
+    //   this.tableData = [..._rows].map((item) => ({
+    //     ...item,
+    //     balance_total_display: numberWithCommas(item.balance_total),
+    //     cumulative_earnings_display: numberWithCommas(item.cumulative_earnings),
+    //     wallet_address_display: getTrimmedAddressEllipsisMiddle(item.wallet_address)
+    //   }))
+    // } else {
+    //   this.tableData = []
+    // }
   }
 
   private async created() {
