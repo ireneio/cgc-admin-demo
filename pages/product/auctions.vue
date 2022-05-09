@@ -300,7 +300,7 @@
             color="blue darken-1"
             text
             @click="handleCreateSave"
-            :disabled="isSaveBtnDisabled"
+            :disabled="isSaveBtnDisabled || isSubmitting"
           >
             save
           </v-btn>
@@ -507,6 +507,8 @@ export default class ProductAuctions extends Vue {
     return true
   }
 
+  private isSubmitting = false
+
   private async handleCreateSave() {
     if (!this.fieldValidation()) {
       return
@@ -518,6 +520,7 @@ export default class ProductAuctions extends Vue {
       date_end: moment(dateEnd + ' ' + this.form.timeEnd).toISOString()
     }
     const _endpoint = '/auction'
+    this.isSubmitting = true
     const _req = await $apiPlatform.post(_endpoint, _payload)
     httpResponseMapper(_req)
     if (errorStore.isActive) {
@@ -530,6 +533,7 @@ export default class ProductAuctions extends Vue {
       this.dialog.new = false
     }
     this.snackbar.toggle = true
+    this.isSubmitting = false
   }
 
   private isSearchBtnDisabled = false

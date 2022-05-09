@@ -174,7 +174,7 @@
             color="blue darken-1"
             text
             @click="handleCreateSave"
-            :disabled="isSaveBtnDisabled"
+            :disabled="isSaveBtnDisabled || isSubmitting"
           >
             save
           </v-btn>
@@ -338,6 +338,8 @@ export default class My extends Vue {
     return this.form.award_year === '' || this.form.award_type === '' || this.form.award_name === ''
   }
 
+  private isSubmitting = false
+
   private async handleCreateSave() {
     const _payload = {
       ...this.form,
@@ -345,6 +347,7 @@ export default class My extends Vue {
       itemId: this.form.id
     }
     const _endpoint = '/member/info/award'
+    this.isSubmitting = true
     const _req = await $apiUser.post(_endpoint, _payload, { headers: { authorization: `Bearer ${Token.getValue()}` } })
     httpResponseMapper(_req)
     if (errorStore.isActive) {
@@ -357,6 +360,7 @@ export default class My extends Vue {
       this.dialog.new = false
     }
     this.snackbar.toggle = true
+    this.isSubmitting = false
   }
 
   private async getInfo() {

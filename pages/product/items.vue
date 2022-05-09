@@ -132,6 +132,7 @@
               dark
               text
               @click="handleCreateSave"
+              :disabled="isSubmitting"
             >
               {{ this.$vuetify.lang.t('$vuetify.general.save') }}
             </v-btn>
@@ -213,14 +214,14 @@
                   v-model="form.accessLevel"
                 ></v-select>
               </v-col>
-              <v-col cols="12" class="mb-n6"><h4>Sku Labels</h4></v-col>
+              <v-col cols="12" class="mb-n6"><h4>{{ $vuetify.lang.t('$vuetify.general.sku_label') }}</h4></v-col>
               <v-col cols="12">
-                <div class="mt-2">SKU is not editable</div>
+                <div class="mt-2">{{ $vuetify.lang.t('$vuetify.general.sku_label_disabled') }}</div>
               </v-col>
               <v-col cols="3" v-show="!dialog.isEditMode">
                 <v-select
                   :items="skuLabels.sku_color"
-                  label="Sku Color"
+                  :label="$vuetify.lang.t('$vuetify.general.sku_color')"
                   v-model="form.skuColor"
                   :disabled="skuLabels.sku_color.length === 0"
                 ></v-select>
@@ -228,7 +229,7 @@
               <v-col cols="3" v-show="!dialog.isEditMode">
                 <v-select
                   :items="skuLabels.sku_author"
-                  label="Sku Author"
+                  :label="$vuetify.lang.t('$vuetify.general.sku_author')"
                   v-model="form.skuAuthor"
                   :disabled="skuLabels.sku_author.length === 0"
                 ></v-select>
@@ -236,7 +237,7 @@
               <v-col cols="3" v-show="!dialog.isEditMode">
                 <v-select
                   :items="skuLabels.sku_painting_category"
-                  label="Sku Category"
+                  :label="$vuetify.lang.t('$vuetify.general.sku_categories')"
                   v-model="form.skuCategory"
                   :disabled="skuLabels.sku_painting_category.length === 0"
                 ></v-select>
@@ -244,7 +245,7 @@
               <v-col cols="3" v-show="!dialog.isEditMode">
                 <v-select
                   :items="skuLabels.sku_painting_country"
-                  label="Sku Country"
+                  :label="$vuetify.lang.t('$vuetify.general.sku_country')"
                   v-model="form.skuCountry"
                   :disabled="skuLabels.sku_painting_country.length === 0"
                 ></v-select>
@@ -252,7 +253,7 @@
               <v-col cols="3" v-show="!dialog.isEditMode">
                 <v-select
                   :items="skuLabels.sku_painting_size"
-                  label="Sku Size"
+                  :label="$vuetify.lang.t('$vuetify.general.sku_size')"
                   v-model="form.skuSize"
                   :disabled="skuLabels.sku_painting_size.length === 0"
                 ></v-select>
@@ -260,7 +261,7 @@
               <v-col cols="3" v-show="!dialog.isEditMode">
                 <v-select
                   :items="skuLabels.sku_painting_style"
-                  label="Sku Style"
+                  :label="$vuetify.lang.t('$vuetify.general.sku_style')"
                   v-model="form.skuStyle"
                   :disabled="skuLabels.sku_painting_style.length === 0"
                 ></v-select>
@@ -268,7 +269,7 @@
               <v-col cols="3" v-show="!dialog.isEditMode">
                 <v-select
                   :items="skuLabels.sku_painting_tech"
-                  label="Sku Technique"
+                  :label="$vuetify.lang.t('$vuetify.general.sku_technique')"
                   v-model="form.skuTechnique"
                   :disabled="skuLabels.sku_painting_tech.length === 0"
                 ></v-select>
@@ -276,51 +277,51 @@
               <v-col cols="3" v-show="!dialog.isEditMode">
                 <v-select
                   :items="skuLabels.sku_painting_year"
-                  label="Sku Year"
+                  :label="$vuetify.lang.t('$vuetify.general.sku_year')"
                   v-model="form.skuYear"
                   :disabled="skuLabels.sku_painting_year.length === 0"
                 ></v-select>
               </v-col>
-              <v-col cols="12" class="mb-n6"><h4>Website Logic</h4></v-col>
+              <v-col cols="12" class="mb-n6"><h4>{{ $vuetify.lang.t('$vuetify.general.website_logic') }}</h4></v-col>
               <v-col cols="6">
                 <v-checkbox
                   v-model="form.isShelf"
-                  label="Display"
+                  :label="$vuetify.lang.t('$vuetify.general.on_shelf')"
                 ></v-checkbox>
               </v-col>
               <v-col cols="6">
                 <v-checkbox
                   v-model="form.isMain"
-                  label="Display On Landing Page"
+                  :label="$vuetify.lang.t('$vuetify.general.is_show_in_landing_page')"
                   :disabled="!form.isShelf"
                 ></v-checkbox>
               </v-col>
               <v-col cols="6" class="mt-n12">
                 <v-checkbox
                   v-model="form.isFeatured"
-                  label="Show In Featured"
+                  :label="$vuetify.lang.t('$vuetify.general.is_show_in_featured')"
                   :disabled="!form.isShelf"
                 ></v-checkbox>
               </v-col>
               <v-col cols="6" class="mt-n12">
                 <v-checkbox
                   v-model="form.isRecommended"
-                  label="Show In Recommendation"
+                  :label="$vuetify.lang.t('$vuetify.general.is_show_in_is_recommended')"
                   :disabled="!form.isShelf"
                 ></v-checkbox>
               </v-col>
               <v-col cols="12" class="mt-n12">
                 <v-checkbox
                   v-model="form.isPurchaseAllowed"
-                  label="Allow Purchase"
+                  :label="$vuetify.lang.t('$vuetify.general.is_allow_purchase')"
                   :disabled="!form.isShelf"
                 ></v-checkbox>
               </v-col>
-              <v-col cols="12" class="mb-n6"><h4>Auction Options</h4></v-col>
+              <v-col cols="12" class="mb-n6"><h4>{{ $vuetify.lang.t('$vuetify.general.auction_options') }}</h4></v-col>
               <v-col cols="6">
                 <v-select
                   :items="auctionList"
-                  label="Auction"
+                  :label="$vuetify.lang.t('$vuetify.general.auction')"
                   v-model="form.auction"
                   :disabled="!isEnableAuctionOptions"
                 ></v-select>
@@ -337,7 +338,7 @@
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
                       v-model="form.auctionDates"
-                      label="Select Date Range"
+                      :label="$vuetify.lang.t('$vuetify.general.select_date')"
                       prepend-icon="mdi-calendar"
                       readonly
                       v-bind="attrs"
@@ -362,7 +363,7 @@
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
                       v-model="form.auctionStartTime"
-                      label="Select Start Time"
+                      :label="$vuetify.lang.t('$vuetify.general.start_date')"
                       prepend-icon="mdi-calendar"
                       readonly
                       v-bind="attrs"
@@ -387,7 +388,7 @@
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
                       v-model="form.auctionEndTime"
-                      label="Select End Time"
+                      :label="$vuetify.lang.t('$vuetify.general.end_date')"
                       prepend-icon="mdi-calendar"
                       readonly
                       v-bind="attrs"
@@ -453,9 +454,9 @@ export default class ProductItems extends Vue {
   }
 
   private headers: Array<any> = [
-    { text: 'SKU', value: 'sku', align: 'start', sortable: true },
+    { text: this.$vuetify.lang.t('$vuetify.general.sku'), value: 'sku', align: 'start', sortable: true },
     // { text: 'Category', value: 'category_main', align: 'start', sortable: true },
-    { text: 'Price', value: 'price', align: 'start', sortable: true, filterable: false },
+    { text: this.$vuetify.lang.t('$vuetify.general.price'), value: 'price', align: 'start', sortable: true, filterable: false },
     { text: 'Stock', value: 'stock', align: 'start', sortable: true, filterable: false },
     // { text: 'Author', value: 'author', align: 'start', sortable: true },
     { text: 'Auction', value: 'auction', align: 'start', sortable: true, filterable: false },
@@ -591,10 +592,10 @@ export default class ProductItems extends Vue {
 
   private dialog: any = {
     isEditMode: false,
-    editTitle: 'Edit Product Label',
-    newTitle: 'Create Product Label',
+    editTitle: this.$vuetify.lang.t('$vuetify.general.edit_label'),
+    newTitle: this.$vuetify.lang.t('$vuetify.general.add_label_art'),
     new: false,
-    title: 'Create Product Label',
+    title: this.$vuetify.lang.t('$vuetify.general.add_label_art'),
     error: false,
     errorTitle: 'Server Error. Please try again later.',
     startDate: false,
@@ -815,6 +816,8 @@ export default class ProductItems extends Vue {
     return true
   }
 
+  private isSubmitting = false
+
   private async handleCreateSave() {
     if (!this.fieldValidations()) {
       return
@@ -850,6 +853,8 @@ export default class ProductItems extends Vue {
     }
     const _categoryMain = categoryMain.join(',')
     const _action = this.dialog.isEditMode ? 'update' : 'create'
+
+    this.isSubmitting = true
 
     //  TODO categorySub
     const _payload = {
@@ -895,6 +900,7 @@ export default class ProductItems extends Vue {
       this.dialog.new = false
     }
     this.snackbar.toggle = true
+    this.isSubmitting = false
   }
 
   // private async handleDeleteConfirm(flag: boolean) {
