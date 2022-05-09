@@ -8,7 +8,8 @@
               <v-toolbar-title
                 class="d-flex justify-center align-center"
               >
-                <img src="/logo.png" alt="logo" width="32px" />
+                <!-- <img src="/logo.png" alt="logo" width="32px" /> -->
+                CGC Admincenter
               </v-toolbar-title>
               <v-spacer></v-spacer>
               <v-icon>mdi-code-tags</v-icon>
@@ -16,19 +17,18 @@
             <validation-observer v-slot="{ invalid }">
               <v-card-text>
                 <v-form>
-                  <validation-provider v-slot="{ errors }" rules="required">
+                  <validation-provider v-slot="{ errors }" rules="">
                     <v-text-field
-                      label="Account"
+                      label="Email"
                       name="login"
                       prepend-icon="mdi-account"
                       type="text"
                       :error="errors.length > 0"
                       :hint="errors.length ? errors[0] : ''"
                       v-model="form.username"
-                      disabled
                     ></v-text-field>
                   </validation-provider>
-                  <validation-provider v-slot="{ errors }" rules="required">
+                  <validation-provider v-slot="{ errors }" rules="">
                     <v-text-field
                       id="password"
                       label="Password"
@@ -39,7 +39,6 @@
                       :error="errors.length > 0"
                       :hint="errors.length ? errors[0] : ''"
                       @keydown.enter="handleSignIn(invalid ? false : true)"
-                      disabled
                     ></v-text-field>
                   </validation-provider>
                 </v-form>
@@ -76,22 +75,11 @@
                 <v-spacer></v-spacer>
                 <v-btn
                   color="info"
-                  :disabled="invalid"
-                  @click="handleSignInArtist"
+                  :disabled="invalid || !form.username || !form.password"
+                  @click="handleSignIn(true)"
                   x-large
                 >
-                  <img src='https://developers-dot-devsite-v2-prod.appspot.com/identity/sign-in/g-normal.png' alt='google_sign_in' />
-                  <span class="ml-2">artist sign in</span>
-                </v-btn>
-                <v-btn
-                  color="success"
-                  :disabled="false"
-                  @click="handleSignIn"
-                  x-large
-                  v-if="isNonce"
-                >
-                  <img src='https://developers-dot-devsite-v2-prod.appspot.com/identity/sign-in/g-normal.png' alt='google_sign_in' />
-                  <span class="ml-2">sign in</span>
+                  <span>sign in</span>
                 </v-btn>
               </v-card-actions>
             </validation-observer>
@@ -221,8 +209,16 @@ export default class AccountIndex extends Vue {
     }
   }
 
-  private async handleSignIn(): Promise<void> {
-    await this.handleFirebaseSignIn('google')
+  private async handleSignIn(val: boolean): Promise<void> {
+    // await this.handleFirebaseSignIn('google')
+    const payload = {
+      email: this.form.username,
+      password: this.form.password
+    }
+    const signInResult = await authStore.getTokenLocal(payload)
+    if (signInResult) {
+      this.$router.push('/')
+    }
   }
 
   private getLangFromLs(): void {

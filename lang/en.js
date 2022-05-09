@@ -7,10 +7,10 @@ export default {
   key2: "key 2 internationalization",
 
   headers: {
-    title: "DFON Management"
+    title: "CGC Admincenter"
   },
   tips: {
-    welcome: 'Welcome to DFON',
+    welcome: 'Welcome to CGC Admincenter',
     hint: 'Kindly select a functionality from the menu'
   },
   general: {

@@ -1,7 +1,7 @@
 import { Context } from '@nuxt/types'
 import { authHelper } from './helper/'
 
-const successPath = '/member'
+const successPath = '/'
 const failPath = '/account'
 
 export default async function(ctx: Context) {

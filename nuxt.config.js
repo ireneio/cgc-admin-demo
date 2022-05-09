@@ -4,11 +4,11 @@ export default {
 
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
-    title: 'DFON | Admin',
+    title: 'CGC | Admincenter',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: 'DFON Admin' }
+      { hid: 'description', name: 'description', content: 'CGC Admincenter' }
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
   },
@@ -69,7 +69,7 @@ export default {
     analyze: false
   },
   env: {
-    API_USER_URL: process.env.NUXT_ENV_API_USER_URL || 'https://service-user-lsbcp.ondigitalocean.app/member',
+    API_USER_URL: process.env.NUXT_ENV_API_USER_URL || 'https://api-dev.catheon.cloud/admincenter/v1',
     API_PLATFORM_URL: process.env.NUXT_ENV_API_PLATFORM_URL || 'https://service-user-lsbcp.ondigitalocean.app/platform',
     FB_APIKEY: process.env.NUXT_ENV_FB_APIKEY || 'AIzaSyBnB4nY6EjwtRClA7J75Ztz4bMUOEumrV0',
     FB_AUTHDOMAIN: process.env.NUXT_ENV_FB_AUTHDOMAIN || 'dfon-web.firebaseapp.com',

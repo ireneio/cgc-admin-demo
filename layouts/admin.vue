@@ -23,8 +23,8 @@
             v-model="item.model"
             :prepend-icon="item.model ? item.icon : item['icon-alt']"
             :color="isDarkMode ? '#aaa' : 'primary'"
-            v-show="isAllowAccess(item.allowAccess)"
           >
+          <!--             v-show="isAllowAccess(item.allowAccess)" -->
             <template v-slot:activator>
               <v-list-item-content>
                 <v-list-item-title>
@@ -39,8 +39,8 @@
                 link
                 @click="handleUpdateRoute(child)"
                 :color="isDarkMode ? '#fff' : 'primary'"
-                v-show="isAllowAccess(child.allowAccess)"
               >
+              <!--                 v-show="isAllowAccess(child.allowAccess)" -->
                 <v-list-item-action v-if="child.icon">
                   <v-icon x-small class="ml-2">{{ child.icon }}</v-icon>
                 </v-list-item-action>
@@ -74,8 +74,9 @@
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title style="width: 300px" class="ml-0 pl-4">
         <span class="hidden-sm-and-down d-flex align-center">
-          <img src="/logo.png" alt="logo" width="32px" />
-          <span class="ml-2" v-if="$vuetify.breakpoint.lgAndUp">{{ info.h1 }}</span>
+          <!-- <img src="/logo.png" alt="logo" width="32px" /> -->
+          <!-- <span class="ml-2" v-if="$vuetify.breakpoint.lgAndUp">{{ info.h1 }}</span> -->
+          <span v-if="$vuetify.breakpoint.lgAndUp">{{ info.h1 }}</span>
         </span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
@@ -118,10 +119,10 @@
         :offset-y="menuSetting.offsetY"
       >
         <template v-slot:activator="{ on, attrs }">
-          <v-btn color="default" text v-bind="attrs" v-on="on" large>
+          <v-btn color="default" text v-bind="attrs" v-on="on">
             <v-icon>mdi-cog</v-icon>
           </v-btn>
-          <v-btn large :text="wallet.connected" @click="handleWalletConn" v-if="userAccessLevel === '6'">
+          <v-btn large :text="wallet.connected" @click="handleWalletConn" color="default">
             {{ wallet.btnText }}
           </v-btn>
         </template>
@@ -257,14 +258,14 @@ export default class DefaultLayout extends Vue {
   private get info(): any {
     return {
       username: 'Welcome,',
-      companyName: authStore.info.email ? authStore.info.email : 'user',
+      companyName: authStore.info.username ? authStore.info.username : 'user',
       dp: '',
       h1: this.$vuetify.lang.t('$vuetify.headers.title'),
       lastUpdated: new Date().toLocaleDateString('en',
       { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' }),
       version: '1.0.0',
       crDate: '2021',
-      crSource: 'DFON'
+      crSource: 'CGC'
     }
   }
 
@@ -305,31 +306,16 @@ export default class DefaultLayout extends Vue {
 
   private items: Array<any> = [
     {
-      icon: 'mdi-cart',
-      'icon-alt': 'mdi-cart-outline',
-      text: 'Orders',
+      icon: 'mdi-account-key',
+      'icon-alt': 'mdi-account-key-outline',
+      text: 'Management',
       model: false,
       allowAccess: '6',
       children: [
         {
-          text: 'Search',
+          text: 'Accounts',
           icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'orders',
-          allowAccess: '6'
-        }
-      ]
-    },
-    {
-      icon: 'mdi-ab-testing',
-      'icon-alt': 'mdi-ab-testing',
-      text: 'Statistics',
-      model: false,
-      allowAccess: '6',
-      children: [
-        {
-          text: 'Transactions',
-          icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'stats',
+          route: 'management',
           allowAccess: '6'
         }
       ]
@@ -337,128 +323,119 @@ export default class DefaultLayout extends Vue {
     {
       icon: 'mdi-archive',
       'icon-alt': 'mdi-archive-outline',
-      text: 'Products',
+      text: 'Angrymals(Legacy)',
       model: false,
       allowAccess: '5',
       children: [
         {
-          text: 'Sku',
+          text: 'Tiers',
           icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'product-sku',
+          route: 'angrymals',
           allowAccess: '6'
         },
         {
-          text: 'Labels',
+          text: 'Legacy Whitelist',
           icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'product-items',
+          route: 'angrymals-whitelist',
           allowAccess: '5'
         },
-        {
-          text: 'Images',
-          icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'product-images',
-          allowAccess: '5'
-        }
       ]
     },
     {
-      icon: 'mdi-sitemap',
-      'icon-alt': 'mdi-sitemap-outline',
-      text: 'Site',
+      icon: 'mdi-rocket-launch',
+      'icon-alt': 'mdi-rocket-launch-outline',
+      text: 'Launchpad',
       model: false,
       allowAccess: '5',
       children: [
         {
-          text: 'Auctions',
+          text: 'NFT Presale',
           icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'product-auctions',
+          route: 'launchpad',
           allowAccess: '5'
         },
         {
-          text: 'Categories',
+          text: 'Token Presale',
           icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'product',
-          allowAccess: '6'
-        }
-      ]
-    },
-    {
-      icon: 'mdi-account-box-multiple',
-      'icon-alt': 'mdi-account-box-multiple-outline',
-      text: 'Users',
-      model: false,
-      allowAccess: '6',
-      children: [
-        {
-          text: 'Artists',
-          icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'member-artists',
-          allowAccess: '6'
-        },
-        {
-          text: 'Accounts',
-          icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'member',
-          allowAccess: '6'
-        }
-      ]
-    },
-    {
-      icon: 'mdi-account',
-      'icon-alt': 'mdi-account-outline',
-      text: 'Info',
-      model: false,
-      allowAccess: '=5',
-      children: [
-        {
-          text: 'My Info',
-          icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'my',
-          allowAccess: '5'
-        }
-      ]
-    },
-    // {
-    //   icon: 'mdi-clipboard-text',
-    //   'icon-alt': 'mdi-clipboard-text-outline',
-    //   text: '規章管理',
-    //   model: false,
-    //   allowAccess: '5',
-    //   children: [
-    //     {
-    //       text: '條款設定',
-    //       icon: 'mdi-checkbox-blank-circle-outline',
-    //       route: 'rules',
-    //       allowAccess: '5'
-    //     }
-    //   ]
-    // },
-    {
-      icon: 'mdi-cog',
-      'icon-alt': 'mdi-cog-outline',
-      text: 'Admin',
-      model: false,
-      allowAccess: '6',
-      children: [
-        {
-          text: 'Accounts',
-          icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'sys',
+          route: 'launchpad-token',
           allowAccess: '6'
         },
         {
           text: 'Whitelist',
           icon: 'mdi-checkbox-blank-circle-outline',
-          route: 'sys-whitelist',
+          route: 'launchpad-whitelist',
           allowAccess: '6'
         }
+      ]
+    },
+    {
+      icon: 'mdi-bookmark-box-multiple',
+      'icon-alt': 'mdi-bookmark-box-multiple-outline',
+      text: 'Collections',
+      model: false,
+      allowAccess: '6',
+      children: [
+        {
+          text: 'Collections',
+          icon: 'mdi-checkbox-blank-circle-outline',
+          route: 'collections',
+          allowAccess: '6'
+        },
+        {
+          text: 'Activites',
+          icon: 'mdi-checkbox-blank-circle-outline',
+          route: 'collections-activities',
+          allowAccess: '6'
+        }
+      ]
+    },
+    {
+      icon: 'mdi-account-group',
+      'icon-alt': 'mdi-account-group-outline',
+      text: 'Scholarships',
+      model: false,
+      allowAccess: '=5',
+      children: [
+        {
+          text: 'Assets',
+          icon: 'mdi-checkbox-blank-circle-outline',
+          route: 'scholarships',
+          allowAccess: '5'
+        },
+        {
+          text: 'Members',
+          icon: 'mdi-checkbox-blank-circle-outline',
+          route: 'scholarships-members',
+          allowAccess: '5'
+        },
+        {
+          text: 'Activities',
+          icon: 'mdi-checkbox-blank-circle-outline',
+          route: 'scholarships-activities',
+          allowAccess: '5'
+        }
+      ]
+    },
+    {
+      icon: 'mdi-treasure-chest',
+      'icon-alt': 'mdi-treasure-chest',
+      text: 'Treasury',
+      model: false,
+      allowAccess: '6',
+      children: [
+        {
+          text: 'Stream',
+          icon: 'mdi-checkbox-blank-circle-outline',
+          route: 'treasury',
+          allowAccess: '6'
+        },
       ]
     }
   ]
 
   private handleLogout(): void {
     try {
-      window.localStorage.removeItem('tkn')
+      window.localStorage.removeItem('creds')
       this.$router.push('/account')
     } catch (e: unknown) {
       this.dialog.error = true

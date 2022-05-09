@@ -7,10 +7,10 @@ export default {
   key2: "key 2 internationalization",
 
   headers: {
-    title: "DFON 後台管理系統"
+    title: "CGC 後台管理系統"
   },
   tips: {
-    welcome: '歡迎使用DFON後台管理系統',
+    welcome: '歡迎使用CGC後台管理系統',
     hint: '請從選單選擇功能使用'
   },
   general: {

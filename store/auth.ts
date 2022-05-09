@@ -11,10 +11,27 @@ import { httpResponseMapper } from '~/utils/http'
 export default class AuthModule extends VuexModule {
   private tokenLocal: string = ''
 
-  public info = {
+  public info: Record<string, any> = {
+    id: 0,
     email: '',
-    id: '0',
-    access_level: '0'
+    roles: [
+      {
+        createdAt: "2022-04-29T05:47:34.945Z",
+        id: 4,
+        roleDescription: "Guild admin",
+        roleName: "guildAdmin",
+        updatedAt: "2022-04-29T05:47:34.945Z",
+      }
+    ],
+    organization: {
+      id: 0,
+      isActive: false,
+      name: '',
+      type: 0
+    },
+    needChangePassword: false,
+    token: '',
+    username: ''
   }
 
   public get access_level() {
@@ -26,8 +43,10 @@ export default class AuthModule extends VuexModule {
   }
 
   @Mutation
-  public setInfo(payload: { email: string, id: string, access_level: string }) {
-    this.info = { ...payload }
+  public setInfo(payload: any) {
+    console.log(payload);
+
+    this.info = payload
   }
 
   @Mutation
@@ -40,15 +59,23 @@ export default class AuthModule extends VuexModule {
 
   @Action({ commit: 'setTokenLocal' })
   public async getTokenLocal({ email, password }: { email: string, password: string }) {
-    const requestBody = {
+    const payload = {
       email,
       password
     }
 
     try {
-      const result: ResponseObject = await $apiUser.post('/auth/local/signIn', requestBody)
-      return httpResponseMapper(result)
-    } catch (e) {
+      const login: ResponseObject = await $apiUser.post('/users/login', payload)
+      const result = httpResponseMapper(login)
+      if (result?.id && result?.isActive) {
+        window.localStorage.setItem('creds', JSON.stringify(payload))
+        this.setInfo(result)
+        return true
+      } else {
+        window.localStorage.removeItem('creds')
+        return false
+      }
+    } catch (e: any) {
       throw new Error(e)
     }
   }

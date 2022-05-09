@@ -2,20 +2,17 @@
 import { errorStore } from '~/store/'
 
 export function httpResponseMapper(result: any, next?: Function, nextArgs?: any[]) {
-  const { data: { statusCode, statusMsg, data } } = result
+  const { data } = result
   try {
-    switch (statusCode) {
-      case 200:
-        errorStore.clearError()
-        return data
-      default:
-        throw new Error(`${statusCode}~${statusMsg}`)
+    if (data) {
+      return data
     }
+    throw new Error(`api error`)
   } catch (e: unknown) {
     console.log(`[Http Error] ${String(e)}`)
-    errorStore.setError({ active: true, message: statusMsg, code: Number(statusCode) })
+    errorStore.setError({ active: true, message: String(e), code: 500 })
     return {
-      error: `[Http Error] ${statusMsg}`
+      error: `[Http Error] ${String(e)}`
     }
   }
 }
